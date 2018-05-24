@@ -4,9 +4,13 @@
 
 int main(int argc, char *argv[])
 {
-    Application a(argc, argv);
-    MainWindow w;
-    w.show();
+    Application app(argc, argv);
+    MainWindow mainWindow;
+    mainWindow.show();
 
-    return a.exec();
+    app.setWindowWidget(&mainWindow);
+    app.startApplication(T_Home);
+    //app.startApplication(T_Radio);
+
+    return app.exec();
 }

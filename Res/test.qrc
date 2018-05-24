@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/Res/drawable">
+        <file>test/logo01.png</file>
+        <file>test/home_main.png</file>
+        <file>test/home_page_1.png</file>
+        <file>test/home_page_2.png</file>
+        <file>test/radio.png</file>
+        <file>test/settings.png</file>
+        <file>test/btn_n.png</file>
+        <file>test/btn_p.png</file>
+    </qresource>
+</RCC>
