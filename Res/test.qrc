@@ -8,5 +8,10 @@
         <file>test/settings.png</file>
         <file>test/btn_n.png</file>
         <file>test/btn_p.png</file>
+        <file>test/home.png</file>
+        <file>test/music.png</file>
+        <file>test/video.png</file>
+        <file>test/Image.png</file>
+        <file>test/btphone.png</file>
     </qresource>
 </RCC>

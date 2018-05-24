@@ -12,7 +12,7 @@ void BtphonePrivate::initializeBasicWidget(QWidget *parent)
   Q_Q(Btphone);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/radio.png"));
+    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/btphone.png"));
     mBackground->setFixedSize(QSize(800, 480));
 
     mBtnTest= new BmpButton(parent);
@@ -27,7 +27,7 @@ void BtphonePrivate::initializeBasicWidget(QWidget *parent)
 void BtphonePrivate::onBtnTestRelease()
 {
   Q_Q(Btphone);
-  q->startApplication(T_Setting);
+  q->startApplication(T_USBDiskMusic);
 }
 
 //----------------------------------

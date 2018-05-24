@@ -28,7 +28,7 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
 void SettingsPrivate::onBtnTestRelease()
 {
   Q_Q(Settings);
-  q->startApplication(T_AUX);
+  q->startApplication(T_Bluetooth);
 }
 
 //----------------------------------

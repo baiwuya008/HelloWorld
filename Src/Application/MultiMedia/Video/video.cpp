@@ -13,7 +13,7 @@ void VideoPrivate::initializeBasicWidget(QWidget *parent)
   Q_Q(Video);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/radio.png"));
+    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/video.png"));
     mBackground->setFixedSize(QSize(800, 480));
 
     mBtnTest= new BmpButton(parent);
@@ -28,7 +28,7 @@ void VideoPrivate::initializeBasicWidget(QWidget *parent)
 void VideoPrivate::onBtnTestRelease()
 {
   Q_Q(Video);
-  q->startApplication(T_Setting);
+  q->startApplication(T_USBDiskImage);
 }
 
 //----------------------------------
