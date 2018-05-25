@@ -5,7 +5,7 @@
 #include "Src/Application/Radio/radio.h"
 #include "Src/Application/Settings/settings.h"
 
-#include "Src/Application/Aux/aux.h"
+#include "Src/Application/Avin/avin.h"
 #include "Src/Application/Ipod/ipod.h"
 #include "Src/Application/BlueTooth/Phone/btphone.h"
 #include "Src/Application/BlueTooth/Music/btmusic.h"

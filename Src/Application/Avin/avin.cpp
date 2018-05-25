@@ -1,18 +1,18 @@
-#include "aux.h"
+#include "avin.h"
 
-AuxPrivate::AuxPrivate(Aux *parent)
+AvinPrivate::AvinPrivate(Avin *parent)
     : q_ptr(parent)
 {
     mBackground = NULL;
     mBtnTest = NULL;
 }
 
-void AuxPrivate::initializeBasicWidget(QWidget *parent)
+void AvinPrivate::initializeBasicWidget(QWidget *parent)
 {
-  Q_Q(Aux);
+  Q_Q(Avin);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/home_page_1.png"));
+    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/radio.png"));
     mBackground->setFixedSize(QSize(800, 480));
 
     mBtnTest= new BmpButton(parent);
@@ -24,67 +24,67 @@ void AuxPrivate::initializeBasicWidget(QWidget *parent)
 
 }
 
-void AuxPrivate::onBtnTestRelease()
+void AvinPrivate::onBtnTestRelease()
 {
-  Q_Q(Aux);
-  q->startApplication(T_Ipod);
+  Q_Q(Avin);
+  q->startApplication(T_Setting);
 }
 
 //----------------------------------
 
-Aux::Aux(QObject *parent):
+Avin::Avin(QObject *parent):
  Activity(parent),
- d_ptr(new AuxPrivate(this))
+ d_ptr(new AvinPrivate(this))
 {
 
 }
 
-void Aux::onCreate(QWidget *parent)
+void Avin::onCreate(QWidget *parent)
 {
-    Q_D(Aux);
+    Q_D(Avin);
     centralWidget = new QWidget(parent);
     d->initializeBasicWidget(centralWidget);
 
     setContentView(centralWidget);
 }
-void Aux::onStart()
+void Avin::onStart()
 {
 
 }
-void Aux::onResume()
+void Avin::onResume()
 {
 
 }
-void Aux::onPause()
+void Avin::onPause()
 {
 
 }
-void Aux::onStop()
+void Avin::onStop()
 {
 
 }
-void Aux::onDestroy()
+void Avin::onDestroy()
 {
 
 }
 
-bool Aux::onBackPressed()
+bool Avin::onBackPressed()
 {
 
 return false;
 }
 
-void Aux::onLanguageChanged()
+void Avin::onLanguageChanged()
 {
 
 }
 
-void Aux::onReceiveBroadcast(AppType appType,OMessage &msg)
+void Avin::onReceiveBroadcast(AppType appType,OMessage &msg)
 {
 
 }
 
-void Aux::onReceiveCmd(AppType appType,OMessage &msg)
+void Avin::onReceiveCmd(AppType appType,OMessage &msg)
 {
 
 }

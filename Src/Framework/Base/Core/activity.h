@@ -33,15 +33,15 @@ public:
 
     // must be overlay define
     virtual void onCreate(QWidget *parent = 0)=0;
-    virtual void onStart()=0;
-    virtual void onResume()=0;
-    virtual void onPause()=0;
-    virtual void onStop()=0;
-    virtual void onDestroy()=0;
+    virtual void onStart(){}
+    virtual void onResume(){}
+    virtual void onPause(){}
+    virtual void onStop(){}
+    virtual void onDestroy(){}
     virtual bool onBackPressed(){return false;}
     virtual void onLanguageChanged()=0;
-    virtual void onReceiveBroadcast(AppType appType,OMessage &msg)=0;
-    virtual void onReceiveCmd(AppType appType,OMessage &msg)=0;
+    virtual void onReceiveBroadcast(AppType appType,OMessage &msg){}
+    virtual void onReceiveCmd(AppType appType,OMessage &msg){}
     //*************************
 
     void setContentView(QWidget *pContentView);

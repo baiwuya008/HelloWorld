@@ -137,8 +137,8 @@ bool Application::onCreate(AppType type)
     case T_Setting:
         mAppMaps.insert(type,new Settings());
         break;
-    case T_AUX:
-        mAppMaps.insert(type,new Aux());
+    case T_AVIN:
+        mAppMaps.insert(type,new Avin());
         break;
     case T_Bluetooth:
         mAppMaps.insert(type,new Btphone());
@@ -157,6 +157,8 @@ bool Application::onCreate(AppType type)
         break;
     case T_USBDiskVideo:
         mAppMaps.insert(type,new Video());
+        break;
+    default:
         break;
     }
     //end of*****here instance the app by the apptype

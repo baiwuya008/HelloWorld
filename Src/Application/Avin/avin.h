@@ -1,18 +1,18 @@
-#ifndef AUX_H
-#define AUX_H
+#ifndef AVIN_H
+#define AVIN_H
 
 #include "Src/Framework/Base/Core/activity.h"
 
 
-class AuxPrivate;
-class Aux : public Activity
+class AvinPrivate;
+class Avin : public Activity
 {
     Q_OBJECT
-    Q_DISABLE_COPY(Aux)
+    Q_DISABLE_COPY(Avin)
 
 public:
 
-    Aux(QObject *parent = 0);
+    Avin(QObject *parent = 0);
 
     void onCreate(QWidget *parent=0);
     void onStart();
@@ -26,23 +26,23 @@ public:
     void onReceiveCmd(AppType appType,OMessage &msg);
 
 private:
-    Q_DECLARE_PRIVATE(Aux)
-    AuxPrivate* const d_ptr;
+    Q_DECLARE_PRIVATE(Avin)
+    AvinPrivate* const d_ptr;
 
 };
 
-class AuxPrivate :public QObject
+class AvinPrivate :public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(AuxPrivate)
+    Q_DISABLE_COPY(AvinPrivate)
 public:
-    explicit AuxPrivate(Aux* parent);
-    ~AuxPrivate(){delete q_ptr;}
+    explicit AvinPrivate(Avin* parent);
+    ~AvinPrivate(){delete q_ptr;}
     void initializeBasicWidget(QWidget *parent);
 
 private:
-    Q_DECLARE_PUBLIC(Aux)
-    Aux* const q_ptr;
+    Q_DECLARE_PUBLIC(Avin)
+    Avin* const q_ptr;
 
     //----------
     BmpWidget *mBackground;
@@ -53,4 +53,4 @@ private slots:
 
 };
 
-#endif // AUX_H
+#endif // AVIN_H
