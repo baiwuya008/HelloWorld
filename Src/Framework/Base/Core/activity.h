@@ -23,6 +23,7 @@ enum  ActivitySta{
 };
 
 class Application;
+class ActivityPrivate;
 class Activity : public Context
 {
     Q_OBJECT
@@ -43,15 +44,11 @@ public:
     virtual void onReceiveBroadcast(AppType appType,OMessage &msg){}
     virtual void onReceiveCmd(AppType appType,OMessage &msg){}
     //*************************
-
-    void setContentView(QWidget *pContentView);
-    QWidget *centralWidget;
+//    void setContentView(QWidget *pContentView);
+//    QWidget *centralWidget;
 
 private:
-    QWidget *mpContentView;
-    ActivitySta mState;
-
-    ActivitySta getState(){return mState;}
+    ActivitySta getState();
     void doCreate(QWidget *parent = 0);
     void doStart();
     void doResume();
@@ -60,7 +57,27 @@ private:
     void doDestroy();
     //*************************
     friend class Application;
+    Q_DECLARE_PRIVATE(Activity)
+    ActivityPrivate * const d_ptr;
 
+};
+
+class ActivityPrivate :public QObject{
+    Q_OBJECT
+    Q_DISABLE_COPY(ActivityPrivate)
+public:
+    explicit ActivityPrivate(Activity *parent);
+    ~ActivityPrivate(){delete q_ptr;}
+
+private:
+    //data
+    QWidget *mpContentView;
+    ActivitySta mState;
+
+    Q_DECLARE_PUBLIC(Activity)
+    Activity * const q_ptr;
+
+private slots:
 
 };
 

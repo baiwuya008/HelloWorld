@@ -2,7 +2,7 @@
 
 
 IpodPrivate::IpodPrivate(Ipod *parent)
-    : q_ptr(parent)
+    : QObject(),q_ptr(parent)
 {
     mBackground = NULL;
     mBtnTest = NULL;
@@ -13,7 +13,7 @@ void IpodPrivate::initializeBasicWidget(QWidget *parent)
   Q_Q(Ipod);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/home_page_2.png"));
+    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/logo01.png"));
     mBackground->setFixedSize(QSize(800, 480));
 
     mBtnTest= new BmpButton(parent);
@@ -43,10 +43,10 @@ Ipod::Ipod(QObject *parent):
 void Ipod::onCreate(QWidget *parent)
 {
     Q_D(Ipod);
-    centralWidget = new QWidget(parent);
-    d->initializeBasicWidget(centralWidget);
+    //centralWidget = new QWidget(parent);
+    d->initializeBasicWidget(parent);
 
-    setContentView(centralWidget);
+    //setContentView(centralWidget);
 }
 void Ipod::onStart()
 {

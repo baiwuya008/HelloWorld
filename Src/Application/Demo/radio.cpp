@@ -1,7 +1,7 @@
 #include "radio.h"
 
 RadioPrivate::RadioPrivate(Radio *parent)
-    : q_ptr(parent)
+    : QObject(),q_ptr(parent)
 {
     mBackground = NULL;
     mBtnTest = NULL;

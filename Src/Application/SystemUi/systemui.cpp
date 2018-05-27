@@ -2,10 +2,9 @@
 
 
 SystemuiPrivate::SystemuiPrivate(Systemui *parent)
-    : q_ptr(parent)
+    :QObject(), q_ptr(parent)
 {
     mBackground = NULL;
-    mBtnTest = NULL;
 }
 
 void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
@@ -13,23 +12,53 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
   Q_Q(Systemui);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/radio.png"));
-    mBackground->setFixedSize(QSize(800, 480));
+    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/topbar_bg.png"));
+    mBackground->setFixedSize(QSize(800, 45));
 
-    mBtnTest= new BmpButton(parent);
-    mBtnTest->setNormalBmpPath(QString(":/Res/drawable/test/btn_n.png"));
-    mBtnTest->setPressBmpPath(QString(":/Res/drawable/test/btn_p.png"));
-    mBtnTest->setGeometry(600,425,195,50);
+#if (STATEBAR_WITH_BACK == 1 && STATEBAR_WITH_HOME == 1)
+    mBtnHome= new BmpButton(parent);
+    mBtnHome->setNormalBmpPath(QString(":/Res/drawable/test/home.png"));
+    mBtnHome->setPressBmpPath(QString(":/Res/drawable/test/home_pressed.png"));
+    mBtnHome->setGeometry(10,5,40,32);
+    q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnHomeRelease()));
 
-   q->connect(mBtnTest,SIGNAL(released()),this,SLOT(onBtnTestRelease()));
+    mBtnBack= new BmpButton(parent);
+    mBtnBack->setNormalBmpPath(QString(":/Res/drawable/test/back.png"));
+    mBtnBack->setPressBmpPath(QString(":/Res/drawable/test/back_pressed.png"));
+    mBtnBack->setGeometry(60,5,32,32);
+    q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnBackRelease()));
+
+#else
+    #if (STATEBAR_WITH_BACK == 1)
+    mBtnBack= new BmpButton(parent);
+    mBtnBack->setNormalBmpPath(QString(":/Res/drawable/test/back.png"));
+    mBtnBack->setPressBmpPath(QString(":/Res/drawable/test/back_pressed.png"));
+    mBtnBack->setGeometry(10,5,32,32);
+    q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnBackRelease()));
+    #endif
+    #if (STATEBAR_WITH_HOME == 1)
+    mBtnHome= new BmpButton(parent);
+    mBtnHome->setNormalBmpPath(QString(":/Res/drawable/test/home.png"));
+    mBtnHome->setPressBmpPath(QString(":/Res/drawable/test/home_pressed.png"));
+    mBtnHome->setGeometry(10,5,40,32);
+    q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnHomeRelease()));
+    #endif
+#endif
 
 }
 
-void SystemuiPrivate::onBtnTestRelease()
+void SystemuiPrivate::onBtnBackRelease()
+{
+    Q_Q(Systemui);
+    q->callBack();
+}
+
+void SystemuiPrivate::onBtnHomeRelease()
 {
   Q_Q(Systemui);
-  q->startApplication(T_Setting);
+  q->startApplication(T_Home);
 }
+
 
 //----------------------------------
 
@@ -43,10 +72,10 @@ Systemui::Systemui(QObject *parent):
 void Systemui::onCreate(QWidget *parent)
 {
     Q_D(Systemui);
-    centralWidget = new QWidget(parent);
-    d->initializeBasicWidget(centralWidget);
+    //centralWidget = new QWidget(parent);
+    d->initializeBasicWidget(parent);
 
-    setContentView(centralWidget);
+    //setContentView(centralWidget);
 }
 void Systemui::onStart()
 {
@@ -56,23 +85,10 @@ void Systemui::onResume()
 {
 
 }
-void Systemui::onPause()
-{
 
-}
-void Systemui::onStop()
-{
-
-}
 void Systemui::onDestroy()
 {
 
-}
-
-bool Systemui::onBackPressed()
-{
-
-return false;
 }
 
 void Systemui::onLanguageChanged()

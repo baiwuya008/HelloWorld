@@ -2,7 +2,7 @@
 #define SYSTEMUI_H
 
 #include "Src/Framework/Base/Core/activity.h"
-
+#include "configuration.h"
 
 class SystemuiPrivate;
 class Systemui : public Activity
@@ -17,10 +17,7 @@ public:
     void onCreate(QWidget *parent=0);
     void onStart();
     void onResume();
-    void onPause();
-    void onStop();
     void onDestroy();
-    bool onBackPressed();
     void onLanguageChanged();
     void onReceiveBroadcast(AppType appType,OMessage &msg);
     void onReceiveCmd(AppType appType,OMessage &msg);
@@ -46,10 +43,17 @@ private:
 
     //----------
     BmpWidget *mBackground;
-    BmpButton *mBtnTest;
+#if (STATEBAR_WITH_BACK == 1)
+    BmpButton *mBtnBack;
+#endif
+#if (STATEBAR_WITH_HOME == 1)
+    BmpButton *mBtnHome;
+#endif
+
     //----------
 private slots:
-    void onBtnTestRelease();
+    void onBtnBackRelease();
+    void onBtnHomeRelease();
 
 };
 

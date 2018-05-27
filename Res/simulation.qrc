@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/Res/drawable">
+        <file>simulation/simulation_da.png</file>
+        <file>simulation/simulation_da_btn_pressed.png</file>
+        <file>simulation/simulation_da_btn_normal.png</file>
+    </qresource>
+</RCC>

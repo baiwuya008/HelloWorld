@@ -9,6 +9,11 @@
 #include "context.h"
 #include "apptype.h"
 #include "message.h"
+#include "configuration.h"
+
+#if (APP_WITH_SIMULATION == 1)
+#include "simulation.h"
+#endif
 
 #if defined(oklApp)
 #undef oklApp
@@ -17,14 +22,14 @@
 
 
 
-
+class ApplicationPrivate;
 class Application : public QApplication
 {
     Q_OBJECT
     Q_DISABLE_COPY(Application)
 public:
     explicit Application(int &argc, char **argv);
-    virtual ~Application();
+
     bool setWindowWidget(QWidget *windowWidget);
     bool callBackPressed();
     bool callLanguageChanged();
@@ -36,6 +41,10 @@ public:
     bool sendCmdTo(AppType type,OMessage &msg);
     bool onReceiveCmd(AppType type,OMessage &msg);
 
+#if (APP_WITH_SIMULATION == 1)
+    bool setSimulation(Simulation *simu);
+#endif
+
 private:
     bool onCreate(AppType type);
     bool onStart(AppType type);
@@ -46,15 +55,38 @@ private:
     bool onBackPressed(AppType type);
     bool onLanguageChanged(AppType type);
 
+    Q_DECLARE_PRIVATE(Application)
+    ApplicationPrivate * const d_ptr;
+
+};
+
+class ApplicationPrivate :public QObject{
+    Q_OBJECT
+    Q_DISABLE_COPY(ApplicationPrivate)
+public:
+    explicit ApplicationPrivate(Application *parent);
+    ~ApplicationPrivate(){delete q_ptr;}
+
+private:
     //data
     QMap <AppType,Context*> mAppMaps;
-    QWidget *mWindowWidget;
+    Context * mStateBar;
     QStack <AppType> mAppStack;
     AppType mCurApp;
 
-signals:
+#if (APP_WITH_SIMULATION == 1)
+    QWidget *mSimulationWindowWidget;
+    Simulation *mSimulation;
+#endif
+    QWidget *mWindowWidget;
 
-public slots:
+    QWidget *mTopBarWidget;
+    QWidget *mContentViewWidget;
+
+    Q_DECLARE_PUBLIC(Application)
+    Application * const q_ptr;
+
+private slots:
 
 };
 

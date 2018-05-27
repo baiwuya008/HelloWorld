@@ -1,7 +1,7 @@
 #include "btmusic.h"
 
 BtmusicPrivate::BtmusicPrivate(Btmusic *parent)
-    : q_ptr(parent)
+    : QObject(),q_ptr(parent)
 {
     mBackground = NULL;
     mBtnTest = NULL;
@@ -12,7 +12,7 @@ void BtmusicPrivate::initializeBasicWidget(QWidget *parent)
   Q_Q(Btmusic);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/radio.png"));
+    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/logo01.png"));
     mBackground->setFixedSize(QSize(800, 480));
 
     mBtnTest= new BmpButton(parent);
@@ -42,10 +42,10 @@ Btmusic::Btmusic(QObject *parent):
 void Btmusic::onCreate(QWidget *parent)
 {
     Q_D(Btmusic);
-    centralWidget = new QWidget(parent);
-    d->initializeBasicWidget(centralWidget);
+    //centralWidget = new QWidget(parent);
+    d->initializeBasicWidget(parent);
 
-    setContentView(centralWidget);
+    //setContentView(centralWidget);
 }
 void Btmusic::onStart()
 {

@@ -12,7 +12,7 @@ void BtphonePrivate::initializeBasicWidget(QWidget *parent)
   Q_Q(Btphone);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/btphone.png"));
+    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/bt_phone.png"));
     mBackground->setFixedSize(QSize(800, 480));
 
     mBtnTest= new BmpButton(parent);
@@ -42,10 +42,10 @@ Btphone::Btphone(QObject *parent):
 void Btphone::onCreate(QWidget *parent)
 {
     Q_D(Btphone);
-    centralWidget = new QWidget(parent);
-    d->initializeBasicWidget(centralWidget);
+    //centralWidget = new QWidget(parent);
+    d->initializeBasicWidget(parent);
 
-    setContentView(centralWidget);
+    //setContentView(centralWidget);
 }
 void Btphone::onStart()
 {

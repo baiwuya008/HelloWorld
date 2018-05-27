@@ -1,7 +1,7 @@
 #include "radio.h"
 
 RadioPrivate::RadioPrivate(Radio *parent)
-    : q_ptr(parent)
+    : QObject(),q_ptr(parent)
 {
     mBackground = NULL;
     mBtnTest = NULL;
@@ -12,7 +12,7 @@ void RadioPrivate::initializeBasicWidget(QWidget *parent)
   Q_Q(Radio);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/radio.png"));
+    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/radio_fm.png"));
     mBackground->setFixedSize(QSize(800, 480));
 
     mBtnTest= new BmpButton(parent);
@@ -42,10 +42,10 @@ Radio::Radio(QObject *parent):
 void Radio::onCreate(QWidget *parent)
 {
     Q_D(Radio);
-    centralWidget = new QWidget(parent);
-    d->initializeBasicWidget(centralWidget);
+    //centralWidget = new QWidget(parent);
+    d->initializeBasicWidget(parent);
 
-    setContentView(centralWidget);
+    //setContentView(centralWidget);
 }
 void Radio::onStart()
 {

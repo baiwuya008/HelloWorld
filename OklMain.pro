@@ -40,9 +40,12 @@ SOURCES += main.cpp\
     Src/Application/MultiMedia/Music/music.cpp \
     Src/Application/MultiMedia/Video/video.cpp \
     Src/Application/SystemUi/systemui.cpp \
-    Src/Application/Avin/avin.cpp
+    Src/Application/Avin/avin.cpp \
+    Src/Framework/Base/Core/simulation.cpp \
+    Src/Simulation/simulationda.cpp
 
 HEADERS  += mainwindow.h \
+    configuration.h \
     Src/CommonUserWidget/BmpButton.h \
     Src/CommonUserWidget/BmpWidget.h \
     Src/CommonUserWidget/CustomItemDelegate.h \
@@ -71,9 +74,13 @@ HEADERS  += mainwindow.h \
     Src/Application/MultiMedia/Video/video.h \
     Src/Application/SystemUi/systemui.h \
     Src/Application/BlueTooth/Music/btmusic.h \
-    Src/Application/Avin/avin.h
+    Src/Application/Avin/avin.h \
+    Src/Framework/Base/Core/simulation.h \
+    Src/Simulation/simulationda.h
+
 
 
 RESOURCES += \
-    Res/test.qrc
+    Res/test.qrc \
+    Res/simulation.qrc
 

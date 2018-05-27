@@ -11,7 +11,7 @@
 #endif
 #define ConnectType (static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection))
 
-
+class ContextPrivate;
 class Context : public QObject
 {
     Q_OBJECT
@@ -22,17 +22,35 @@ public:
 
     bool startApplication(AppType type,char **argv= 0);
 
+    void callBack();
+
     void sendBroadcast(AppType type,OMessage &msg);
 
     void sendCmdTo(AppType type,OMessage &msg);
 
+    AppType getAppType();
+
 private:
-    int mApptype;
+    Q_DECLARE_PRIVATE(Context)
+    ContextPrivate * const d_ptr;
 
+};
 
-signals:
+class ContextPrivate :public QObject{
+    Q_OBJECT
+    Q_DISABLE_COPY(ContextPrivate)
+public:
+    explicit ContextPrivate(Context *parent);
+    ~ContextPrivate(){delete q_ptr;}
 
-public slots:
+private:
+    //data
+    AppType mApptype;
+
+    Q_DECLARE_PUBLIC(Context)
+    Context * const q_ptr;
+
+private slots:
 
 };
 

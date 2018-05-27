@@ -2,7 +2,7 @@
 
 
 SettingsPrivate::SettingsPrivate(Settings *parent)
-    : q_ptr(parent)
+    : QObject(),q_ptr(parent)
 {
     mBackground = NULL;
     mBtnTest = NULL;
@@ -43,10 +43,10 @@ Settings::Settings(QObject *parent):
 void Settings::onCreate(QWidget *parent)
 {
     Q_D(Settings);
-    centralWidget = new QWidget(parent);
-    d->initializeBasicWidget(centralWidget);
+    //centralWidget = new QWidget(parent);
+    d->initializeBasicWidget(parent);
 
-    setContentView(centralWidget);
+    //setContentView(centralWidget);
 }
 void Settings::onStart()
 {

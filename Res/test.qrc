@@ -1,17 +1,30 @@
 <RCC>
     <qresource prefix="/Res/drawable">
         <file>test/logo01.png</file>
-        <file>test/home_main.png</file>
-        <file>test/home_page_1.png</file>
-        <file>test/home_page_2.png</file>
-        <file>test/radio.png</file>
         <file>test/settings.png</file>
         <file>test/btn_n.png</file>
         <file>test/btn_p.png</file>
-        <file>test/home.png</file>
         <file>test/music.png</file>
         <file>test/video.png</file>
-        <file>test/Image.png</file>
-        <file>test/btphone.png</file>
+        <file>test/bt_phone.png</file>
+        <file>test/music_list.png</file>
+        <file>test/radio_am_list.png</file>
+        <file>test/radio_am_preset.png</file>
+        <file>test/radio_fm.png</file>
+        <file>test/radio_fm_list.png</file>
+        <file>test/raido_am.png</file>
+        <file>test/radio_fm_preset.png</file>
+        <file>test/video_list.png</file>
+        <file>test/image.png</file>
+        <file>test/media_home.png</file>
+        <file>test/vol_bar_normal_item.png</file>
+        <file>test/vol_bar_valid_item.png</file>
+        <file>test/vol_icon.png</file>
+        <file>test/vol_icon_mute.png</file>
+        <file>test/topbar_bg.png</file>
+        <file>test/back.png</file>
+        <file>test/back_pressed.png</file>
+        <file>test/home.png</file>
+        <file>test/home_pressed.png</file>
     </qresource>
 </RCC>

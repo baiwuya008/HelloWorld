@@ -2,7 +2,7 @@
 
 
 MusicPrivate::MusicPrivate(Music *parent)
-    : q_ptr(parent)
+    : QObject(),q_ptr(parent)
 {
     mBackground = NULL;
     mBtnTest = NULL;
@@ -43,10 +43,10 @@ Music::Music(QObject *parent):
 void Music::onCreate(QWidget *parent)
 {
     Q_D(Music);
-    centralWidget = new QWidget(parent);
-    d->initializeBasicWidget(centralWidget);
+    //centralWidget = new QWidget(parent);
+    d->initializeBasicWidget(parent);
 
-    setContentView(centralWidget);
+    //setContentView(centralWidget);
 }
 void Music::onStart()
 {

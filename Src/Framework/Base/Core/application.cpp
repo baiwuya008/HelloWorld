@@ -3,55 +3,112 @@
 #include "service.h"
 #include "Src/Application/AllApplication.h"
 
+ApplicationPrivate::ApplicationPrivate(Application *parent):
+    QObject(),q_ptr(parent)
+{
+
+}
+
+//------------------------
+
 Application::Application(int &argc, char **argv) :
-    QApplication(argc, argv)
+    QApplication(argc, argv),
+    d_ptr(new ApplicationPrivate(this))
 {
 
 }
 
-Application::~Application()
-{
 
+#if (APP_WITH_SIMULATION == 1)
+bool Application::setSimulation(Simulation *simu)
+{
+    Q_D(Application)
+    d->mSimulation = simu;
 }
+#endif
 
 bool Application::setWindowWidget(QWidget *windowWidget)
 {
-  mWindowWidget = windowWidget;
+ Q_D(Application);
+ #if (APP_WITH_SIMULATION == 1)
+    d->mSimulationWindowWidget = windowWidget;
+
+    d->mSimulation->onCreate(d->mSimulationWindowWidget);
+
+
+    d->mWindowWidget = new QWidget(d->mSimulationWindowWidget);
+    d->mWindowWidget->setFixedSize(800,480); //固定窗口大小
+    d->mWindowWidget->setGeometry(100,10,800,480);
+
+    d->mTopBarWidget = new QWidget(d->mWindowWidget);
+    d->mTopBarWidget->setFixedSize(800,45); //固定窗口大小
+    d->mTopBarWidget->setGeometry(0,0,800,45);
+
+    d->mContentViewWidget = new QWidget(d->mWindowWidget);
+    d->mContentViewWidget->setFixedSize(800,435); //固定窗口大小
+    d->mContentViewWidget->setGeometry(0,45,800,435);
+
+ #else
+    d->mWindowWidget = windowWidget;
+
+    d->mTopBarWidget = new QWidget(d->mWindowWidget);
+    d->mTopBarWidget->setFixedSize(800,45); //固定窗口大小
+    d->mTopBarWidget->setGeometry(0,0,800,45);
+
+    d->mContentViewWidget = new QWidget(d->mWindowWidget);
+    d->mContentViewWidget->setFixedSize(800,435); //固定窗口大小
+    d->mContentViewWidget->setGeometry(0,45,800,435);
+ #endif
+
   return true;
 }
 
 
 bool Application::startApplication(AppType type,char **argv)
 {
-    if(type > T_None && type < T_ServiceSectionStart)
+    Q_D(Application);
+    if(type == T_SystemUi)
+    {
+      //for state bar
+        if(d->mStateBar == NULL)
+        {
+           onCreate(type);
+        }
+        //*********onStart
+        onStart(type);
+        //*********onResume
+        onResume(type);
+
+    }
+    else if(type >= T_Home && type < T_ServiceSectionStart)
     {
         //for activity
-        if(mAppMaps.isEmpty() || !mAppMaps.contains(type))
+        if(d->mAppMaps.isEmpty() || !d->mAppMaps.contains(type))
         {
             //first create here!!
             //*********onCreate
            onCreate(type);
         }
-        mCurApp = type;
+        d->mCurApp = type;
 
         if(type == T_Home){
-            if(!mAppStack.isEmpty()){
-                mAppStack.clear();
+            if(!d->mAppStack.isEmpty()){
+                d->mAppStack.clear();
             }
-           mAppStack.push(type);
+           d->mAppStack.push(type);
         }else{
             //for check three times to clear up the same type already open
-            if(mAppStack.contains(type)){
-               mAppStack.remove(mAppStack.indexOf(type));
+            if(d->mAppStack.contains(type)){
+               d->mAppStack.remove(d->mAppStack.indexOf(type));
             }
-            if(mAppStack.contains(type)){
-               mAppStack.remove(mAppStack.indexOf(type));
+            if(d->mAppStack.contains(type)){
+               d->mAppStack.remove(d->mAppStack.indexOf(type));
             }
-            if(mAppStack.contains(type)){
-               mAppStack.remove(mAppStack.indexOf(type));
+            if(d->mAppStack.contains(type)){
+               d->mAppStack.remove(d->mAppStack.indexOf(type));
             }
 
-            mAppStack.push(type);
+            d->mAppStack.push(type);
         }
 
         //*********onStart
@@ -61,8 +118,8 @@ bool Application::startApplication(AppType type,char **argv)
         onResume(type);
 
         //the others onPause() and onStop()
-        for (int var = 0; var < mAppMaps.size(); ++var) {
-            AppType otherType = mAppMaps.keys().takeAt(var);
+        for (int var = 0; var < d->mAppMaps.size(); ++var) {
+            AppType otherType = d->mAppMaps.keys().takeAt(var);
             if(otherType != type ){
                 //*********onPause()
                 onPause(otherType);
@@ -74,7 +131,7 @@ bool Application::startApplication(AppType type,char **argv)
     }else if(type > T_ServiceSectionStart && type < T_All)
     {
         //for service
-        if(mAppMaps.isEmpty() || !mAppMaps.contains(type))
+        if(d->mAppMaps.isEmpty() || !d->mAppMaps.contains(type))
         {
             //create first
             //*********onCreate
@@ -87,16 +144,18 @@ bool Application::startApplication(AppType type,char **argv)
 
 bool Application::callBackPressed()
 {
- if(mCurApp<T_Home && mCurApp < T_ServiceSectionStart){
-     return onBackPressed(mCurApp);
+ Q_D(Application);
+ if(d->mCurApp>T_Home && d->mCurApp < T_ServiceSectionStart){
+     return onBackPressed(d->mCurApp);
  }
  return false;
 }
 
 bool Application::callLanguageChanged()
 {
-    for (int var = 0; var < mAppMaps.size(); ++var) {
-        AppType appType = mAppMaps.keys().takeAt(var);
+ Q_D(Application);
+    for (int var = 0; var < d->mAppMaps.size(); ++var) {
+        AppType appType = d->mAppMaps.keys().takeAt(var);
         onLanguageChanged(appType);
     }
  return true;
@@ -107,7 +166,6 @@ bool Application::callLanguageChanged()
 //{
 // return true;
 //}
-
 
 bool Application::sendBroadcast(AppType type,OMessage &msg)
 {
@@ -125,49 +183,58 @@ bool Application::sendCmdTo(AppType type,OMessage &msg)
 //-------------------- the next section need add more mode for different app -------------------//
 bool Application::onCreate(AppType type)
 {
+  Q_D(Application);
     //*********here instance the app by the apptype
     switch (type) {
     case T_Home:
         //for launcher
-        mAppMaps.insert(type,new Launcher());
+        d->mAppMaps.insert(type,new Launcher());
         break;
     case T_Radio:
-        mAppMaps.insert(type,new Radio());
+        d->mAppMaps.insert(type,new Radio());
         break;
     case T_Setting:
-        mAppMaps.insert(type,new Settings());
+        d->mAppMaps.insert(type,new Settings());
         break;
     case T_AVIN:
-        mAppMaps.insert(type,new Avin());
+        d->mAppMaps.insert(type,new Avin());
         break;
     case T_Bluetooth:
-        mAppMaps.insert(type,new Btphone());
+        d->mAppMaps.insert(type,new Btphone());
         break;
     case T_BluetoothMusic:
-        mAppMaps.insert(type,new Btmusic());
+        d->mAppMaps.insert(type,new Btmusic());
         break;
     case T_Ipod:
-        mAppMaps.insert(type,new Ipod());
+        d->mAppMaps.insert(type,new Ipod());
         break;
     case T_USBDiskMusic:
-        mAppMaps.insert(type,new Music());
+        d->mAppMaps.insert(type,new Music());
         break;
     case T_USBDiskImage:
-        mAppMaps.insert(type,new Image());
+        d->mAppMaps.insert(type,new Image());
         break;
     case T_USBDiskVideo:
-        mAppMaps.insert(type,new Video());
+        d->mAppMaps.insert(type,new Video());
         break;
     default:
         break;
     }
     //end of*****here instance the app by the apptype
 
-
-    if(type>T_None && type< T_ServiceSectionStart){
-        (static_cast<Activity *>(mAppMaps.find(type).value()))->onCreate(mWindowWidget);
-        (static_cast<Activity *>(mAppMaps.find(type).value()))->doCreate(mWindowWidget);
-    }else if(type> T_ServiceSectionStart && T_All){
+    if(type == T_SystemUi)
+    {
+        (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onCreate(d->mTopBarWidget);
+        (static_cast<Activity *>(d->mAppMaps.find(type).value()))->doCreate(d->mTopBarWidget);
+    }
+    else if(type>=T_Home && type< T_ServiceSectionStart){
+        QWidget *contextView = new QWidget(d->mContentViewWidget);
+        (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onCreate(contextView);
+        (static_cast<Activity *>(d->mAppMaps.find(type).value()))->doCreate(contextView);
+        //set size here
+        contextView->setFixedSize(800,435);
+        //contextView->setGeometry(0,45,800,435);
+    }else if(type> T_ServiceSectionStart && type<T_All){
 
     }
 
@@ -178,15 +245,20 @@ bool Application::onCreate(AppType type)
 
 bool Application::onReceiveBroadcast(AppType type,OMessage &msg)
 {
+   Q_D(Application);
     if(type == T_All){
-        for (int var = 0; var < mAppMaps.size(); ++var) {
-            AppType appType = mAppMaps.keys().takeAt(var);
+        for (int var = 0; var < d->mAppMaps.size(); ++var) {
+            AppType appType = d->mAppMaps.keys().takeAt(var);
             onReceiveBroadcast(appType,msg);
         }
     }else{
-        if(type>T_None && type< T_ServiceSectionStart){
-            (static_cast<Activity *>(mAppMaps.find(type).value()))->onReceiveBroadcast(type,msg);
-        }else if(type> T_ServiceSectionStart && T_All){
+        if(type == T_SystemUi)
+        {
+            (static_cast<Activity *>(d->mStateBar))->onReceiveBroadcast(type,msg);
+        }
+        else if(type>=T_Home && type< T_ServiceSectionStart){
+            (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onReceiveBroadcast(type,msg);
+        }else if(type> T_ServiceSectionStart && type<T_All){
 
         }
     }
@@ -196,15 +268,20 @@ bool Application::onReceiveBroadcast(AppType type,OMessage &msg)
 
 bool Application::onReceiveCmd(AppType type,OMessage &msg)
 {
+    Q_D(Application);
     if(type == T_All){
-        for (int var = 0; var < mAppMaps.size(); ++var) {
-            AppType appType = mAppMaps.keys().takeAt(var);
+        for (int var = 0; var < d->mAppMaps.size(); ++var) {
+            AppType appType = d->mAppMaps.keys().takeAt(var);
             onReceiveCmd(appType,msg);
         }
     }else{
-        if(type>T_None && type< T_ServiceSectionStart){
-            (static_cast<Activity *>(mAppMaps.find(type).value()))->onReceiveCmd(type,msg);
-        }else if(type> T_ServiceSectionStart && T_All){
+        if(type == T_SystemUi)
+        {
+            (static_cast<Activity *>(d->mStateBar))->onReceiveCmd(type,msg);
+        }
+        else if(type>=T_Home && type< T_ServiceSectionStart){
+            (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onReceiveCmd(type,msg);
+        }else if(type> T_ServiceSectionStart && type<T_All){
 
         }
     }
@@ -215,10 +292,16 @@ bool Application::onReceiveCmd(AppType type,OMessage &msg)
 
 bool Application::onStart(AppType type)
 {
-    if(type>T_None && type< T_ServiceSectionStart){
-        (static_cast<Activity *>(mAppMaps.find(type).value()))->onStart();
-        (static_cast<Activity *>(mAppMaps.find(type).value()))->doStart();
-    }else if(type> T_ServiceSectionStart && T_All){
+   Q_D(Application);
+     if(type == T_SystemUi)
+      {
+        (static_cast<Activity *>(d->mStateBar))->onStart();
+        (static_cast<Activity *>(d->mStateBar))->doStart();
+      }
+    else if(type>=T_Home && type< T_ServiceSectionStart){
+        (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onStart();
+        (static_cast<Activity *>(d->mAppMaps.find(type).value()))->doStart();
+    }else if(type> T_ServiceSectionStart && type<T_All){
 
     }
    return true;
@@ -226,10 +309,16 @@ bool Application::onStart(AppType type)
 
 bool Application::onResume(AppType type)
 {
-   if(type>T_None && type< T_ServiceSectionStart){
-        (static_cast<Activity *>(mAppMaps.find(type).value()))->onResume();
-        (static_cast<Activity *>(mAppMaps.find(type).value()))->doResume();
-   }else if(type> T_ServiceSectionStart && T_All){
+   Q_D(Application);
+    if(type == T_SystemUi)
+      {
+       (static_cast<Activity *>(d->mStateBar))->onResume();
+       (static_cast<Activity *>(d->mStateBar))->doResume();
+      }
+   else if(type>=T_Home && type< T_ServiceSectionStart){
+        (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onResume();
+        (static_cast<Activity *>(d->mAppMaps.find(type).value()))->doResume();
+   }else if(type> T_ServiceSectionStart && type<T_All){
 
    }
 
@@ -238,12 +327,13 @@ bool Application::onResume(AppType type)
 
 bool Application::onPause(AppType type)
 {
-    if(type>T_None && type< T_ServiceSectionStart){
-        if((static_cast<Activity *>(mAppMaps.find(type).value()))->getState() == Sta_Resume){
-            (static_cast<Activity *>(mAppMaps.find(type).value()))->onPause();
-            (static_cast<Activity *>(mAppMaps.find(type).value()))->doPause();
+  Q_D(Application);
+   if(type>=T_Home && type< T_ServiceSectionStart){
+        if((static_cast<Activity *>(d->mAppMaps.find(type).value()))->getState() == Sta_Resume){
+            (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onPause();
+            (static_cast<Activity *>(d->mAppMaps.find(type).value()))->doPause();
         }
-    }else if(type> T_ServiceSectionStart && T_All){
+    }else if(type> T_ServiceSectionStart && type<T_All){
 
     }
    return true;
@@ -251,13 +341,14 @@ bool Application::onPause(AppType type)
 
 bool Application::onStop(AppType type)
 {
-    if(type>T_None && type< T_ServiceSectionStart){
-        if((static_cast<Activity *>(mAppMaps.find(type).value()))->getState() == Sta_Start||
-           (static_cast<Activity *>(mAppMaps.find(type).value()))->getState() == Sta_Resume ){
-            (static_cast<Activity *>(mAppMaps.find(type).value()))->onStop();
-            (static_cast<Activity *>(mAppMaps.find(type).value()))->doStop();
+   Q_D(Application);
+    if(type>=T_Home && type< T_ServiceSectionStart){
+        if((static_cast<Activity *>(d->mAppMaps.find(type).value()))->getState() == Sta_Start||
+           (static_cast<Activity *>(d->mAppMaps.find(type).value()))->getState() == Sta_Resume ){
+            (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onStop();
+            (static_cast<Activity *>(d->mAppMaps.find(type).value()))->doStop();
         }
-    }else if(type> T_ServiceSectionStart && T_All){
+    }else if(type> T_ServiceSectionStart && type<T_All){
 
     }
 
@@ -266,12 +357,20 @@ bool Application::onStop(AppType type)
 
 bool Application::onDestroy(AppType type)
 {
-    if(type>T_None && type< T_ServiceSectionStart){
-        if((static_cast<Activity *>(mAppMaps.find(type).value()))->getState() != Sta_Destroy){
-            (static_cast<Activity *>(mAppMaps.find(type).value()))->onDestroy();
-            (static_cast<Activity *>(mAppMaps.find(type).value()))->doDestroy();
+   Q_D(Application);
+    if(type == T_SystemUi)
+       {
+        if((static_cast<Activity *>(d->mStateBar))->getState() != Sta_Destroy){
+            (static_cast<Activity *>(d->mStateBar))->onDestroy();
+            (static_cast<Activity *>(d->mStateBar))->doDestroy();
         }
-    }else if(type> T_ServiceSectionStart && T_All){
+       }
+    else if(type>=T_Home && type< T_ServiceSectionStart){
+        if((static_cast<Activity *>(d->mAppMaps.find(type).value()))->getState() != Sta_Destroy){
+            (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onDestroy();
+            (static_cast<Activity *>(d->mAppMaps.find(type).value()))->doDestroy();
+        }
+    }else if(type> T_ServiceSectionStart && type<T_All){
 
     }
 
@@ -281,23 +380,24 @@ bool Application::onDestroy(AppType type)
 
 bool Application::onBackPressed(AppType type)
 {
+   Q_D(Application);
     bool ret = false;
-   if(type>T_None && type< T_ServiceSectionStart){
-       if((static_cast<Activity *>(mAppMaps.find(type).value()))->getState() == Sta_Resume){
-           ret= (static_cast<Activity *>(mAppMaps.find(type).value()))->onBackPressed();
+   if(type>=T_Home && type< T_ServiceSectionStart){
+       if((static_cast<Activity *>(d->mAppMaps.find(type).value()))->getState() == Sta_Resume){
+           ret= (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onBackPressed();
            if(!ret)
            {
-               if(!mAppStack.isEmpty()){
-                   mAppStack.pop();
-                   if(mAppStack.isEmpty()){
+               if(!d->mAppStack.isEmpty()){
+                   d->mAppStack.pop();
+                   if(d->mAppStack.isEmpty()){
                        startApplication(T_Home);
                    }else{
-                       startApplication(mAppStack.pop());
+                       startApplication(d->mAppStack.pop());
                    }
                }
            }
         }
-   }else if(type> T_ServiceSectionStart && T_All){
+   }else if(type> T_ServiceSectionStart && type<T_All){
 
    }
 
@@ -306,9 +406,14 @@ bool Application::onBackPressed(AppType type)
 
 bool Application::onLanguageChanged(AppType type)
 {
-    if(type>T_None && type< T_ServiceSectionStart){
-         (static_cast<Activity *>(mAppMaps.find(type).value()))->onLanguageChanged();
-    }else if(type> T_ServiceSectionStart && T_All){
+   Q_D(Application);
+    if(type == T_SystemUi)
+      {
+       (static_cast<Activity *>(d->mStateBar))->onLanguageChanged();
+      }
+    else if(type>T_None && type< T_ServiceSectionStart){
+         (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onLanguageChanged();
+    }else if(type> T_ServiceSectionStart && type<T_All){
 
     }
    return true;

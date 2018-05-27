@@ -2,7 +2,7 @@
 
 
 ImagePrivate::ImagePrivate(Image *parent)
-    : q_ptr(parent)
+    : QObject(),q_ptr(parent)
 {
     mBackground = NULL;
     mBtnTest = NULL;
@@ -13,7 +13,7 @@ void ImagePrivate::initializeBasicWidget(QWidget *parent)
   Q_Q(Image);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/radio.png"));
+    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/image.png"));
     mBackground->setFixedSize(QSize(800, 480));
 
     mBtnTest= new BmpButton(parent);
@@ -43,10 +43,10 @@ Image::Image(QObject *parent):
 void Image::onCreate(QWidget *parent)
 {
     Q_D(Image);
-    centralWidget = new QWidget(parent);
-    d->initializeBasicWidget(centralWidget);
+    //centralWidget = new QWidget(parent);
+    d->initializeBasicWidget(parent);
 
-    setContentView(centralWidget);
+    //setContentView(centralWidget);
 }
 void Image::onStart()
 {

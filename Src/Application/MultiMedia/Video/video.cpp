@@ -2,7 +2,7 @@
 
 
 VideoPrivate::VideoPrivate(Video *parent)
-    : q_ptr(parent)
+    : QObject(),q_ptr(parent)
 {
     mBackground = NULL;
     mBtnTest = NULL;
@@ -43,10 +43,10 @@ Video::Video(QObject *parent):
 void Video::onCreate(QWidget *parent)
 {
     Q_D(Video);
-    centralWidget = new QWidget(parent);
-    d->initializeBasicWidget(centralWidget);
+    //centralWidget = new QWidget(parent);
+    d->initializeBasicWidget(parent);
 
-    setContentView(centralWidget);
+    //setContentView(centralWidget);
 }
 void Video::onStart()
 {

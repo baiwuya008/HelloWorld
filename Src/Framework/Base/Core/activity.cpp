@@ -1,60 +1,81 @@
 #include "activity.h"
 
-Activity::Activity(QObject *parent):
-    Context(parent)
+ActivityPrivate::ActivityPrivate(Activity *parent):
+    QObject(),q_ptr(parent)
 {
     mpContentView=NULL;
     mState=Sta_None;
 }
 
+Activity::Activity(QObject *parent):
+    Context(parent),
+    d_ptr(new ActivityPrivate(this))
+{
+
+}
+
 
 void Activity::doCreate(QWidget *parent)
 {
-   mState = Sta_Create;
+   Q_D(Activity);
+   d->mpContentView = parent;
+   d->mState = Sta_Create;
 }
 
 void Activity::doStart()
 {
-    if(mpContentView == NULL){
+    Q_D(Activity);
+    if(d->mpContentView == NULL){
         //throw exception here!!
 
     }
-    mState = Sta_Start;
+    d->mState = Sta_Start;
 }
 
 void Activity::doResume()
 {
-  if(mpContentView != NULL&& mpContentView->isHidden()){
-      mpContentView->setVisible(true);
+  Q_D(Activity);
+  if(d->mpContentView != NULL&& d->mpContentView->isHidden()){
+      d->mpContentView->setVisible(true);
   }
-  mState = Sta_Resume;
+  d->mState = Sta_Resume;
 }
 
 void Activity::doPause()
 {
-    if(mpContentView != NULL && !mpContentView->isHidden()){
-        mpContentView->setVisible(false);
+    Q_D(Activity);
+    if(d->mpContentView != NULL && !d->mpContentView->isHidden()){
+        d->mpContentView->setVisible(false);
     }
-    mState = Sta_Pause;
+    d->mState = Sta_Pause;
 }
 
 void Activity::doStop()
 {
-    if(mpContentView != NULL && !mpContentView->isHidden()){
-        mpContentView->setVisible(false);
+    Q_D(Activity);
+    if(d->mpContentView != NULL && !d->mpContentView->isHidden()){
+        d->mpContentView->setVisible(false);
     }
-    mState = Sta_Stop;
+    d->mState = Sta_Stop;
 }
 
 void Activity::doDestroy()
 {
+    Q_D(Activity);
 //delete mpContentView;
-    mState = Sta_Destroy;
+    d->mState = Sta_Destroy;
 }
 
-void Activity::setContentView(QWidget *pContentView)
+ActivitySta Activity::getState()
 {
-    mpContentView = pContentView;
-    mpContentView->setFixedSize(QSize(800, 480));
-
+    Q_D(Activity);
+    return d->mState;
 }
+
+//void Activity::setContentView(QWidget *pContentView)
+//{
+//    //Q_D(Activity)
+//    //d->mpContentView = pContentView;
+//    //d->mpContentView->setFixedSize(QSize(800, 480));
+
+//}
