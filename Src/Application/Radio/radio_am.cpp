@@ -1,18 +1,18 @@
-#include "radio.h"
+#include "radio_am.h"
 
-RadioPrivate::RadioPrivate(Radio *parent)
+RadioAmPrivate::RadioAmPrivate(RadioAm *parent)
     : QObject(),q_ptr(parent)
 {
     mBackground = NULL;
     mBtnTest = NULL;
 }
 
-void RadioPrivate::initializeBasicWidget(QWidget *parent)
+void RadioAmPrivate::initializeBasicWidget(QWidget *parent)
 {
-  Q_Q(Radio);
+  Q_Q(RadioAm);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/radio_fm.png"));
+    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/raido_am.png"));
     mBackground->setFixedSize(QSize(800, 435));
 
 //    mBtnTest= new BmpButton(parent);
@@ -24,64 +24,64 @@ void RadioPrivate::initializeBasicWidget(QWidget *parent)
 
 }
 
-void RadioPrivate::onBtnTestRelease()
+void RadioAmPrivate::onBtnTestRelease()
 {
-  Q_Q(Radio);
+  Q_Q(RadioAm);
   q->startApplication(T_Setting);
 }
 
 //----------------------------------
 
-Radio::Radio(QObject *parent):
+RadioAm::RadioAm(QObject *parent):
  Activity(parent),
- d_ptr(new RadioPrivate(this))
+ d_ptr(new RadioAmPrivate(this))
 {
 
 }
 
-void Radio::onCreate(QWidget *parent)
+void RadioAm::onCreate(QWidget *parent)
 {
-    Q_D(Radio);
+    Q_D(RadioAm);
     d->initializeBasicWidget(parent);
 }
-void Radio::onStart()
+void RadioAm::onStart()
 {
 
 }
-void Radio::onResume()
+void RadioAm::onResume()
 {
 
 }
-void Radio::onPause()
+void RadioAm::onPause()
 {
 
 }
-void Radio::onStop()
+void RadioAm::onStop()
 {
 
 }
-void Radio::onDestroy()
+void RadioAm::onDestroy()
 {
 
 }
 
-bool Radio::onBackPressed()
+bool RadioAm::onBackPressed()
 {
 
 return false;
 }
 
-void Radio::onLanguageChanged()
+void RadioAm::onLanguageChanged()
 {
 
 }
 
-void Radio::onReceiveBroadcast(AppType appType,OMessage &msg)
+void RadioAm::onReceiveBroadcast(AppType appType,OMessage &msg)
 {
 
 }
 
-void Radio::onReceiveCmd(AppType appType,OMessage &msg)
+void RadioAm::onReceiveCmd(AppType appType,OMessage &msg)
 {
 
 }

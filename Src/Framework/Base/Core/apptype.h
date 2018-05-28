@@ -9,6 +9,7 @@ enum AppType {
     T_ViewPaper0,
     T_ViewPaper1,
     T_Radio,
+    T_RadioAm,
     T_Bluetooth,
     T_BluetoothDial,
     T_BluetoothContact,

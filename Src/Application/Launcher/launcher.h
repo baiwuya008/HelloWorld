@@ -46,10 +46,28 @@ private:
 
     //----------
     BmpWidget *mBackground;
-    BmpButton *mBtnTest;
+
+    BmpButton *mBtnFm;
+    BmpButton *mBtnAm;
+    BmpButton *mBtnMusic;
+    BmpButton *mBtnVideo;
+    BmpButton *mBtnElink;
+    BmpButton *mBtnBlueTooth;
+    BmpButton *mBtnImage;
+    BmpButton *mBtnSettings;
+    BmpButton *mBtnAvin; //Aux
     //----------
 private slots:
-    void onBtnTestRelease();
+    void onBtnFmRelease();
+    void onBtnAmRelease();
+    void onBtnMusicRelease();
+    void onBtnVideoRelease();
+    void onBtnElinkRelease();
+    void onBtnBlueToothRelease();
+    void onBtnImagetRelease();
+    void onBtnSettingsRelease();
+    void onBtnAvinRelease();
+
 
 };
 

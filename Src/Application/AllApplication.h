@@ -3,6 +3,7 @@
 
 #include "Src/Application/Launcher/launcher.h"
 #include "Src/Application/Radio/radio.h"
+#include "Src/Application/Radio/radio_am.h"
 #include "Src/Application/Settings/settings.h"
 
 #include "Src/Application/Avin/avin.h"

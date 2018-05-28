@@ -199,6 +199,9 @@ bool Application::onCreate(AppType type)
     case T_Radio:
         d->mAppMaps.insert(type,new Radio());
         break;
+    case T_RadioAm:
+        d->mAppMaps.insert(type,new RadioAm());
+        break;
     case T_Setting:
         d->mAppMaps.insert(type,new Settings());
         break;

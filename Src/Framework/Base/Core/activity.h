@@ -44,8 +44,6 @@ public:
     virtual void onReceiveBroadcast(AppType appType,OMessage &msg){}
     virtual void onReceiveCmd(AppType appType,OMessage &msg){}
     //*************************
-//    void setContentView(QWidget *pContentView);
-//    QWidget *centralWidget;
 
 private:
     ActivitySta getState();
