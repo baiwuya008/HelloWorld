@@ -3,7 +3,7 @@
 #include "Src/Framework/Base/Core/application.h"
 #include "configuration.h"
 #if (APP_WITH_SIMULATION == 1)
-  #include "Src/Simulation/simulation_da.h"
+  #include "Src/Simulation/simulationda.h"
 #endif
 
 int main(int argc, char *argv[])
@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     MainWindow mainWindow;
     mainWindow.show();
 #if (APP_WITH_SIMULATION == 1)
-    app.setSimulation(new Simulation_Da());
+    app.setSimulation(new SimulationDa());
 #endif
     app.setWindowWidget(&mainWindow);
     app.startApplication(T_SystemUi); //状态栏启动

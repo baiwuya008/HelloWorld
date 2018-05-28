@@ -22,7 +22,7 @@ Application::Application(int &argc, char **argv) :
 #if (APP_WITH_SIMULATION == 1)
 bool Application::setSimulation(Simulation *simu)
 {
-    Q_D(Application)
+    Q_D(Application);
     d->mSimulation = simu;
 }
 #endif
@@ -38,26 +38,32 @@ bool Application::setWindowWidget(QWidget *windowWidget)
 
     d->mWindowWidget = new QWidget(d->mSimulationWindowWidget);
     d->mWindowWidget->setFixedSize(800,480); //固定窗口大小
-    d->mWindowWidget->setGeometry(100,10,800,480);
+    d->mWindowWidget->setGeometry(146,10,800,480);
+    d->mWindowWidget->setVisible(true);
 
     d->mTopBarWidget = new QWidget(d->mWindowWidget);
     d->mTopBarWidget->setFixedSize(800,45); //固定窗口大小
     d->mTopBarWidget->setGeometry(0,0,800,45);
+    d->mTopBarWidget->setVisible(true);
 
     d->mContentViewWidget = new QWidget(d->mWindowWidget);
     d->mContentViewWidget->setFixedSize(800,435); //固定窗口大小
     d->mContentViewWidget->setGeometry(0,45,800,435);
+    d->mContentViewWidget->setVisible(true);
 
  #else
-    d->mWindowWidget = windowWidget;
+    d->mWindowWidget = windowWidget;//new QWidget(windowWidget);
+    //d->mWindowWidget->setFixedSize(800,480); //固定窗口大小
 
     d->mTopBarWidget = new QWidget(d->mWindowWidget);
     d->mTopBarWidget->setFixedSize(800,45); //固定窗口大小
     d->mTopBarWidget->setGeometry(0,0,800,45);
+    d->mTopBarWidget->setVisible(true);
 
     d->mContentViewWidget = new QWidget(d->mWindowWidget);
     d->mContentViewWidget->setFixedSize(800,435); //固定窗口大小
     d->mContentViewWidget->setGeometry(0,45,800,435);
+    d->mContentViewWidget->setVisible(true);
  #endif
 
   return true;
@@ -70,10 +76,10 @@ bool Application::startApplication(AppType type,char **argv)
     if(type == T_SystemUi)
     {
       //for state bar
-        if(d->mStateBar == NULL)
-        {
+        //if(d->mStateBar == NULL)
+        //{
            onCreate(type);
-        }
+        //}
         //*********onStart
         onStart(type);
         //*********onResume
@@ -217,6 +223,9 @@ bool Application::onCreate(AppType type)
     case T_USBDiskVideo:
         d->mAppMaps.insert(type,new Video());
         break;
+    case T_SystemUi:
+        d->mStateBar= new Systemui();
+        break;
     default:
         break;
     }
@@ -224,8 +233,8 @@ bool Application::onCreate(AppType type)
 
     if(type == T_SystemUi)
     {
-        (static_cast<Activity *>(d->mAppMaps.find(type).value()))->onCreate(d->mTopBarWidget);
-        (static_cast<Activity *>(d->mAppMaps.find(type).value()))->doCreate(d->mTopBarWidget);
+        (static_cast<Activity *>(d->mStateBar))->onCreate(d->mTopBarWidget);
+        (static_cast<Activity *>(d->mStateBar))->doCreate(d->mTopBarWidget);
     }
     else if(type>=T_Home && type< T_ServiceSectionStart){
         QWidget *contextView = new QWidget(d->mContentViewWidget);

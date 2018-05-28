@@ -13,19 +13,22 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
 
     mBackground = new BmpWidget(parent); //设置背景图片
     mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/topbar_bg.png"));
-    mBackground->setFixedSize(QSize(800, 45));
+    mBackground->setGeometry(0,0,800,45);
+    mBackground->setVisible(true);
 
 #if (STATEBAR_WITH_BACK == 1 && STATEBAR_WITH_HOME == 1)
     mBtnHome= new BmpButton(parent);
     mBtnHome->setNormalBmpPath(QString(":/Res/drawable/test/home.png"));
     mBtnHome->setPressBmpPath(QString(":/Res/drawable/test/home_pressed.png"));
     mBtnHome->setGeometry(10,5,40,32);
-    q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnHomeRelease()));
+    mBtnHome->setVisible(true);
+    q->connect(mBtnHome,SIGNAL(released()),this,SLOT(onBtnHomeRelease()));
 
     mBtnBack= new BmpButton(parent);
     mBtnBack->setNormalBmpPath(QString(":/Res/drawable/test/back.png"));
     mBtnBack->setPressBmpPath(QString(":/Res/drawable/test/back_pressed.png"));
-    mBtnBack->setGeometry(60,5,32,32);
+    mBtnBack->setGeometry(80,5,32,32);
+    mBtnBack->setVisible(true);
     q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnBackRelease()));
 
 #else
@@ -34,6 +37,7 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
     mBtnBack->setNormalBmpPath(QString(":/Res/drawable/test/back.png"));
     mBtnBack->setPressBmpPath(QString(":/Res/drawable/test/back_pressed.png"));
     mBtnBack->setGeometry(10,5,32,32);
+    mBtnBack->setVisible(true);
     q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnBackRelease()));
     #endif
     #if (STATEBAR_WITH_HOME == 1)
@@ -41,7 +45,8 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
     mBtnHome->setNormalBmpPath(QString(":/Res/drawable/test/home.png"));
     mBtnHome->setPressBmpPath(QString(":/Res/drawable/test/home_pressed.png"));
     mBtnHome->setGeometry(10,5,40,32);
-    q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnHomeRelease()));
+    mBtnHome->setVisible(true);
+    q->connect(mBtnHome,SIGNAL(released()),this,SLOT(onBtnHomeRelease()));
     #endif
 #endif
 

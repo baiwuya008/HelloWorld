@@ -14,14 +14,14 @@ void VideoPrivate::initializeBasicWidget(QWidget *parent)
 
     mBackground = new BmpWidget(parent); //设置背景图片
     mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/video.png"));
-    mBackground->setFixedSize(QSize(800, 480));
+    mBackground->setFixedSize(QSize(800, 435));
 
-    mBtnTest= new BmpButton(parent);
-    mBtnTest->setNormalBmpPath(QString(":/Res/drawable/test/btn_n.png"));
-    mBtnTest->setPressBmpPath(QString(":/Res/drawable/test/btn_p.png"));
-    mBtnTest->setGeometry(600,425,195,50);
+//    mBtnTest= new BmpButton(parent);
+//    mBtnTest->setNormalBmpPath(QString(":/Res/drawable/test/btn_n.png"));
+//    mBtnTest->setPressBmpPath(QString(":/Res/drawable/test/btn_p.png"));
+//    mBtnTest->setGeometry(600,300,195,50);
 
-   q->connect(mBtnTest,SIGNAL(released()),this,SLOT(onBtnTestRelease()));
+//   q->connect(mBtnTest,SIGNAL(released()),this,SLOT(onBtnTestRelease()));
 
 }
 
@@ -43,10 +43,8 @@ Video::Video(QObject *parent):
 void Video::onCreate(QWidget *parent)
 {
     Q_D(Video);
-    //centralWidget = new QWidget(parent);
     d->initializeBasicWidget(parent);
 
-    //setContentView(centralWidget);
 }
 void Video::onStart()
 {

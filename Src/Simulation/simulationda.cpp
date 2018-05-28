@@ -33,53 +33,62 @@ void SimulationDaPrivate::initializeBasicWidget(QWidget *parent)
       mBackground = new BmpWidget(parent); //设置背景图片
       mBackground->setBackgroundBmpPath(QString(":/Res/drawable/simulation/simulation_da.png"));
       mBackground->setFixedSize(QSize(1088, 498));
+      mBackground->setVisible(true);
 
       mBtnPWR= new BmpButton(parent);
       mBtnPWR->setNormalBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_normal.png"));
       mBtnPWR->setPressBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_pressed.png"));
-      mBtnPWR->setGeometry(600,425,110,76);
+      mBtnPWR->setGeometry(10,24,110,76);
+      mBtnPWR->setVisible(true);
       q->connect(mBtnPWR,SIGNAL(released()),this,SLOT(onBtnPWR_Release()));
 
       mBtnFM_AM= new BmpButton(parent);
       mBtnFM_AM->setNormalBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_normal.png"));
       mBtnFM_AM->setPressBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_pressed.png"));
-      mBtnFM_AM->setGeometry(600,425,110,76);
+      mBtnFM_AM->setGeometry(10,100,110,76);
+      mBtnFM_AM->setVisible(true);
       q->connect(mBtnFM_AM,SIGNAL(released()),this,SLOT(onBtnFM_AM_Release()));
 
       mBtnVOL_UP= new BmpButton(parent);
       mBtnVOL_UP->setNormalBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_normal.png"));
       mBtnVOL_UP->setPressBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_pressed.png"));
-      mBtnVOL_UP->setGeometry(600,425,110,76);
+      mBtnVOL_UP->setGeometry(10,180,110,76);
+      mBtnVOL_UP->setVisible(true);
       q->connect(mBtnVOL_UP,SIGNAL(released()),this,SLOT(onBtnVOL_UP_Release()));
 
       mBtnVOL_DOWN= new BmpButton(parent);
       mBtnVOL_DOWN->setNormalBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_normal.png"));
       mBtnVOL_DOWN->setPressBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_pressed.png"));
-      mBtnVOL_DOWN->setGeometry(600,425,110,76);
+      mBtnVOL_DOWN->setGeometry(10,260,110,76);
+      mBtnVOL_DOWN->setVisible(true);
       q->connect(mBtnVOL_DOWN,SIGNAL(released()),this,SLOT(onBtnVOL_DOWN_Release()));
 
       mBtnPHONE= new BmpButton(parent);
       mBtnPHONE->setNormalBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_normal.png"));
       mBtnPHONE->setPressBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_pressed.png"));
-      mBtnPHONE->setGeometry(600,425,110,76);
+      mBtnPHONE->setGeometry(970,24,110,76);
+      mBtnPHONE->setVisible(true);
       q->connect(mBtnPHONE,SIGNAL(released()),this,SLOT(onBtnPHONE_Release()));
 
       mBtnMEDIA= new BmpButton(parent);
       mBtnMEDIA->setNormalBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_normal.png"));
       mBtnMEDIA->setPressBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_pressed.png"));
-      mBtnMEDIA->setGeometry(600,425,110,76);
+      mBtnMEDIA->setGeometry(970,103,110,76);
+      mBtnMEDIA->setVisible(true);
       q->connect(mBtnMEDIA,SIGNAL(released()),this,SLOT(onBtnMEDIA_Release()));
 
       mBtnDISP= new BmpButton(parent);
       mBtnDISP->setNormalBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_normal.png"));
       mBtnDISP->setPressBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_pressed.png"));
-      mBtnDISP->setGeometry(600,425,110,76);
+      mBtnDISP->setGeometry(970,180,110,76);
+      mBtnDISP->setVisible(true);
       q->connect(mBtnDISP,SIGNAL(released()),this,SLOT(onBtnDISP_Release()));
 
       mBtnSETUP= new BmpButton(parent);
       mBtnSETUP->setNormalBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_normal.png"));
       mBtnSETUP->setPressBmpPath(QString(":/Res/drawable/simulation/simulation_da_btn_pressed.png"));
-      mBtnSETUP->setGeometry(600,425,110,76);
+      mBtnSETUP->setGeometry(970,260,110,76);
+      mBtnSETUP->setVisible(true);
       q->connect(mBtnSETUP,SIGNAL(released()),this,SLOT(onBtnSETUP_Release()));
 
 
