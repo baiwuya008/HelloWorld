@@ -50,6 +50,16 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
     #endif
 #endif
 
+    //init System Time
+    QLabel *labelSystemTime = new QLabel();
+    QTime currentTime = QTime::currentTime();
+    QString time = currentTime.toString("HH:mm AP");
+    //qDebug() << time;
+    labelSystemTime->setText(time);
+
+    labelSystemTime->setGeometry(800,0,100,100);
+    labelSystemTime->setAlignment(Qt::AlignRight);
+    labelSystemTime->show();
 }
 
 void SystemuiPrivate::onBtnBackRelease()

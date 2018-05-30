@@ -4,6 +4,11 @@
 #include "Src/Framework/Base/Core/activity.h"
 #include "configuration.h"
 
+#include <QLabel>
+#include <QTime>
+#include <QDebug>
+#include <QString>
+
 class SystemuiPrivate;
 class Systemui : public Activity
 {
