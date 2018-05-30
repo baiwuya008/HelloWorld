@@ -8,6 +8,8 @@
 #include <QTime>
 #include <QDebug>
 #include <QString>
+#include <QTimer>
+#include <QFont>
 
 class SystemuiPrivate;
 class Systemui : public Activity
@@ -55,10 +57,13 @@ private:
     BmpButton *mBtnHome;
 #endif
 
+    BmpButton * mSyTime;
+
     //----------
 private slots:
     void onBtnBackRelease();
     void onBtnHomeRelease();
+    void getSyTime();
 
 };
 

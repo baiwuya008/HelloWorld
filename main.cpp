@@ -6,8 +6,14 @@
   #include "Src/Simulation/simulationda.h"
 #endif
 
+#include <QTextCodec>
+
 int main(int argc, char *argv[])
 {
+    //application encoding
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("GB2312"));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+
     Application app(argc, argv);
     MainWindow mainWindow;
     mainWindow.show();
