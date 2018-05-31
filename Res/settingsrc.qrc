@@ -16,5 +16,13 @@
         <file>setting/img_sound_seat_right_b.png</file>
         <file>setting/img_sound_seat_top_a.png</file>
         <file>setting/img_sound_seat_top_b.png</file>
+        <file>setting/img_sound_left_a.png</file>
+        <file>setting/img_sound_left_b.png</file>
+        <file>setting/img_sound_progress_bg.png</file>
+        <file>setting/img_sound_progress_point.png</file>
+        <file>setting/img_sound_right_a.png</file>
+        <file>setting/img_sound_right_b.png</file>
+        <file>setting/img_key_sound_off.png</file>
+        <file>setting/img_key_sound_on.png</file>
     </qresource>
 </RCC>

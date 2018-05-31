@@ -18,7 +18,7 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
 
     //init System Time
     mSyTime = new BmpButton(parent);
-    QFont font;
+    QFont font("Microsoft YaHei");
     font.setPixelSize(20);
     font.setBold(true);
     mSyTime->setFont(font);

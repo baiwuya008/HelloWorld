@@ -2,7 +2,8 @@
 #define SETTINGS_H
 #include "Src/Framework/Base/Core/activity.h"
 
-#include <QPoint>
+#include <QMouseEvent>
+#include <QLabel>
 
 class SettingsPrivate;
 class Settings : public Activity
@@ -43,17 +44,22 @@ public:
 
 
 private:
-
     void selectTab(int index);
+
+protected:
+    void mouseMoveEvent(QMouseEvent *e);
+    void mousePressEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent*e);
 
 private:
     Q_DECLARE_PUBLIC(Settings)
     Settings* const q_ptr;
 
     //----------
+    BmpWidget *mBackTitle;
     BmpWidget *mBackground;
     BmpButton *mBtnTest;
-    //----------
+    //----------`
 
     BmpButton *mBmpSoundTab;
     BmpButton *mBmpBrightnessTab;
@@ -71,6 +77,31 @@ private:
     BmpButton *mRightControl;
     BmpButton *mSeatPoint;
 
+    bool isClickTouch;
+
+    QLabel * mSoundSLabel;
+
+    BmpButton* mKeySoundSwitch;
+    bool isKeySound = true;
+
+    BmpButton * mLowSoundLeft;
+    BmpButton * mLowSoundRight;
+    BmpButton * mLowSoundPoint;
+    BmpWidget * mLowSoundBg;
+    QLabel * mLabelLowSound;
+
+    BmpButton * mCenSoundLeft;
+    BmpButton * mCenSoundRight;
+    BmpButton * mCenSoundPoint;
+    BmpWidget * mCenSoundBg;
+    QLabel * mLabelCenSound;
+
+    BmpButton * mHeightSoundLeft;
+    BmpButton * mHeightSoundRight;
+    BmpButton * mHeightSoundPoint;
+    BmpWidget * mHeightSoundBg;
+    QLabel * mLabelHeightSound;
+
 private slots:
     void onBtnTestRelease();
 
@@ -79,6 +110,13 @@ private slots:
     void onBtnSystemTabClick();
 
     void onBtnCentreClick();
+
+    void onBtnSoundTopClick();
+    void onBtnSoundBottomClick();
+    void onBtnSoundLeftClick();
+    void onBtnSoundRightClick();
+
+    void onBtnKeySoundtClick();
 
 };
 
