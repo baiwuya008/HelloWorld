@@ -102,6 +102,14 @@ private:
     BmpWidget * mHeightSoundBg;
     QLabel * mLabelHeightSound;
 
+    BmpWidget *mBmpDisplayImg;
+
+    BmpButton * mDisplayLeft;
+    BmpButton * mDisplayRight;
+    BmpButton * mDisplayPoint;
+    BmpWidget * mDisplayBg;
+    QLabel * mLabelmDisplay;
+
 private slots:
     void onBtnTestRelease();
 

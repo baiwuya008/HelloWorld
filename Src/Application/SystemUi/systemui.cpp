@@ -20,7 +20,6 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
     mSyTime = new BmpButton(parent);
     QFont font("Microsoft YaHei");
     font.setPixelSize(20);
-    font.setBold(true);
     mSyTime->setFont(font);
     mSyTime->setGeometry(690,5,110,45);
     mSyTime->setVisible(true);
