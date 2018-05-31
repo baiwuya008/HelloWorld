@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>SystemUI/img_back_a.png</file>
+        <file>SystemUI/img_back_b.png</file>
+        <file>SystemUI/img_home_a.png</file>
+        <file>SystemUI/img_home_b.png</file>
+    </qresource>
+</RCC>

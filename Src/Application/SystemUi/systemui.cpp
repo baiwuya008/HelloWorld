@@ -35,15 +35,15 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
 
 #if (STATEBAR_WITH_BACK == 1 && STATEBAR_WITH_HOME == 1)
     mBtnHome= new BmpButton(parent);
-    mBtnHome->setNormalBmpPath(QString(":/Res/drawable/test/home.png"));
-    mBtnHome->setPressBmpPath(QString(":/Res/drawable/test/home_pressed.png"));
+    mBtnHome->setNormalBmpPath(QString(":/img/SystemUI/img_home_a.png"));
+    mBtnHome->setPressBmpPath(QString(":/img/SystemUI/img_home_b.png"));
     mBtnHome->setGeometry(10,5,40,32);
     mBtnHome->setVisible(true);
     q->connect(mBtnHome,SIGNAL(released()),this,SLOT(onBtnHomeRelease()));
 
     mBtnBack= new BmpButton(parent);
-    mBtnBack->setNormalBmpPath(QString(":/Res/drawable/test/back.png"));
-    mBtnBack->setPressBmpPath(QString(":/Res/drawable/test/back_pressed.png"));
+    mBtnBack->setNormalBmpPath(QString(":/img/SystemUI/img_back_a.png"));
+    mBtnBack->setPressBmpPath(QString(":/img/SystemUI/img_back_b.png"));
     mBtnBack->setGeometry(80,5,32,32);
     mBtnBack->setVisible(true);
     q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnBackRelease()));
@@ -51,16 +51,16 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
 #else
 #if (STATEBAR_WITH_BACK == 1)
     mBtnBack= new BmpButton(parent);
-    mBtnBack->setNormalBmpPath(QString(":/Res/drawable/test/back.png"));
-    mBtnBack->setPressBmpPath(QString(":/Res/drawable/test/back_pressed.png"));
+    mBtnBack->setNormalBmpPath(QString(":/img/SystemUI/img_back_a.png"));
+    mBtnBack->setPressBmpPath(QString(":/img/SystemUI/img_back_b.png"));
     mBtnBack->setGeometry(10,5,32,32);
     mBtnBack->setVisible(true);
     q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnBackRelease()));
 #endif
 #if (STATEBAR_WITH_HOME == 1)
     mBtnHome= new BmpButton(parent);
-    mBtnHome->setNormalBmpPath(QString(":/Res/drawable/test/home.png"));
-    mBtnHome->setPressBmpPath(QString(":/Res/drawable/test/home_pressed.png"));
+    mBtnHome->setNormalBmpPath(QString(":/img/SystemUI/img_home_a.png"));
+    mBtnHome->setPressBmpPath(QString(":/img/SystemUI/img_home_b.png"));
     mBtnHome->setGeometry(10,5,40,32);
     mBtnHome->setVisible(true);
     q->connect(mBtnHome,SIGNAL(released()),this,SLOT(onBtnHomeRelease()));

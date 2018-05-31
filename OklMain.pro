@@ -86,5 +86,6 @@ RESOURCES += \
     Res/test.qrc \
     Res/simulation.qrc \
     Res/settingsrc.qrc \
-    Res/commonsrc.qrc
+    Res/commonsrc.qrc \
+    Res/systemuisrc.qrc
 
