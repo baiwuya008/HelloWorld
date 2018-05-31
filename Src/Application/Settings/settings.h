@@ -4,6 +4,8 @@
 
 #include <QMouseEvent>
 #include <QLabel>
+#include <QListWidget>
+#include <QListWidgetItem>
 
 class SettingsPrivate;
 class Settings : public Activity
@@ -109,6 +111,8 @@ private:
     BmpButton * mDisplayPoint;
     BmpWidget * mDisplayBg;
     QLabel * mLabelmDisplay;
+
+    QListWidget* mListWidget;
 
 private slots:
     void onBtnTestRelease();

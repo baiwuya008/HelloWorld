@@ -252,7 +252,7 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mLabelmDisplay->setFont(font);
     mLabelmDisplay->setPalette(pa);
     mLabelmDisplay->setText(tr("亮度"));
-    mLabelmDisplay->setGeometry(400,320,50,50);
+    mLabelmDisplay->setGeometry(380,320,50,50);
 
     //---------------------------------------------------------
 
@@ -260,6 +260,37 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mBmpSystem = new BmpWidget(parent);
     mBmpSystem->setBackgroundBmpPath(":/img/Common/img_wap_bg.png");
     mBmpSystem->setGeometry(0,50,800,435);
+
+    mListWidget = new QListWidget(mBmpSystem);
+    mListWidget->setStyleSheet("background-color:transparent");
+    mListWidget->setGeometry(0,50,800,480);
+    //去除白边框
+    mListWidget->setFrameShape(QListWidget::NoFrame);
+    //设置无焦点
+    mListWidget->setFocusPolicy(Qt::NoFocus);
+    //点击事件
+
+    QStringList mList;
+    mList << "更改语言";
+    mList << "硬件版本";
+    mList << "蓝牙版本";
+    mList << "时间格式";
+    mList << "时间设置";
+    mList << "重置蓝牙设置";
+
+    for (int i = 0; i < mList.size(); ++i) {
+        QListWidgetItem*item=new QListWidgetItem;
+        //居中
+        item->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+        //行高
+        item->setSizeHint(QSize(60, 40));
+        //去除选中效果
+        item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+        item->setFont(font);
+        item->setTextColor(Qt::white);
+        item->setText(mList.at(i));
+        mListWidget->addItem(item);
+    }
 
     //def widget
     selectTab(0);
