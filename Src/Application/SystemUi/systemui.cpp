@@ -72,19 +72,10 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
 
 void SystemuiPrivate::getSyTime()
 {
-    QTime currentTime = QTime::currentTime();
-    QString time = currentTime.toString("HH");
-    QString mDisplayTime = currentTime.toString("HH:mm");
-    bool ok;
-    int ITime = time.toInt(&ok);
-    if(ok){
-        if(ITime <= 12){
-            mDisplayTime +=" AM";
-        }else{
-            mDisplayTime +=" PM";
-        }
-    }
-    mSyTime->setText(mDisplayTime);
+    currentTime = QTime::currentTime();
+    mLo = QLocale::English;
+    time = mLo.toString(currentTime,"HH:mm AP");
+    mSyTime->setText(time);
 }
 
 void SystemuiPrivate::onBtnBackRelease()

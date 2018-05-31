@@ -59,6 +59,10 @@ private:
 
     BmpButton * mSyTime;
 
+    QTime currentTime;
+    QLocale mLo ;
+    QString time ;
+
     //----------
 private slots:
     void onBtnBackRelease();

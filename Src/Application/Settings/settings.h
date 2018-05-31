@@ -2,6 +2,8 @@
 #define SETTINGS_H
 #include "Src/Framework/Base/Core/activity.h"
 
+#include <QPoint>
+
 class SettingsPrivate;
 class Settings : public Activity
 {
@@ -39,6 +41,11 @@ public:
     ~SettingsPrivate(){delete q_ptr;}
     void initializeBasicWidget(QWidget *parent);
 
+
+private:
+
+    void selectTab(int index);
+
 private:
     Q_DECLARE_PUBLIC(Settings)
     Settings* const q_ptr;
@@ -47,8 +54,31 @@ private:
     BmpWidget *mBackground;
     BmpButton *mBtnTest;
     //----------
+
+    BmpButton *mBmpSoundTab;
+    BmpButton *mBmpBrightnessTab;
+    BmpButton *mBmpSystemTab;
+
+    BmpWidget *mBmpSound;
+    BmpWidget *mBmpBrightness;
+    BmpWidget *mBmpSystem;
+
+    BmpButton *mBmpCentre;
+    BmpWidget *mSoundControlGroup;
+    BmpButton *mTopControl;
+    BmpButton *mBottomControl;
+    BmpButton *mLeftControl;
+    BmpButton *mRightControl;
+    BmpButton *mSeatPoint;
+
 private slots:
     void onBtnTestRelease();
+
+    void onBtnSoundTabClick();
+    void onBtnBrightnessTabClick();
+    void onBtnSystemTabClick();
+
+    void onBtnCentreClick();
 
 };
 
