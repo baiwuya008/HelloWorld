@@ -11,9 +11,9 @@ void AvinPrivate::initializeBasicWidget(QWidget *parent)
 {
   Q_Q(Avin);
 
-    mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/logo01.png"));
-    mBackground->setFixedSize(QSize(800, 435));
+//    mBackground = new BmpWidget(parent); //设置背景图片
+//    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/logo01.png"));
+//    mBackground->setFixedSize(QSize(800, 435));
 
 //    mBtnTest= new BmpButton(parent);
 //    mBtnTest->setNormalBmpPath(QString(":/Res/drawable/test/btn_n.png"));

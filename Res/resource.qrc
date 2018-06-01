@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>drawable/topbar_bg.png</file>
+        <file>drawable/main_bluetooth.png</file>
+        <file>drawable/main_bluetooth_pressed.png</file>
+        <file>drawable/main_image.png</file>
+        <file>drawable/main_image_pressed.png</file>
+        <file>drawable/main_link.png</file>
+        <file>drawable/main_link_pressed.png</file>
+        <file>drawable/main_music.png</file>
+        <file>drawable/main_music_pressed.png</file>
+        <file>drawable/main_radio_am.png</file>
+        <file>drawable/main_radio_am_pressed.png</file>
+        <file>drawable/main_radio_fm.png</file>
+        <file>drawable/main_radio_fm_pressed.png</file>
+        <file>drawable/main_settings.png</file>
+        <file>drawable/main_settings_pressed.png</file>
+        <file>drawable/main_video.png</file>
+        <file>drawable/main_video_pressed.png</file>
+        <file>drawable/wallpaper_01.png</file>
+        <file>drawable/app_statebar.png</file>
+        <file>drawable/app_bottombar_3btns_bg.png</file>
+        <file>drawable/app_bottombar_4btns_bg.png</file>
+        <file>drawable/radio_scale_bar_bg.png</file>
+        <file>drawable/app_statebar_btn.png</file>
+        <file>drawable/app_statebar_btn_pressed.png</file>
+    </qresource>
+</RCC>

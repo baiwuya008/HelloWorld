@@ -2,7 +2,7 @@
 #define RADIO_H
 
 #include "Src/Framework/Base/Core/activity.h"
-
+#include<QStackedLayout>
 
 class RadioPrivate;
 class Radio : public Activity
@@ -45,8 +45,25 @@ private:
     Radio* const q_ptr;
 
     //----------
-    BmpWidget *mBackground;
-    BmpButton *mBtnTest;
+    BmpWidget *mTabBar;
+    BmpButton *mStateBarTab_FM;
+    TextWidget *mTabFmTextView;
+    BmpButton *mStateBarTab_Preset;
+    TextWidget *mTabPresetTextView;
+    BmpButton *mStateBarTab_List;
+    TextWidget *mTabListTextView;
+
+    QStackedLayout *mFragmentViewLayout;
+    QWidget *mFmFragmentView;
+    QWidget *mPresetFragmentView;
+    QWidget *mListFragmentView;
+
+    QStackedLayout *mBottomBarLayout;
+    BmpWidget *mBottomBar;
+    QWidget *mBottom_Fm;
+    QWidget *mBottom_Preset;
+    QWidget *mBottom_List;
+
     //----------
 private slots:
     void onBtnTestRelease();

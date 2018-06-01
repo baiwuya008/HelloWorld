@@ -12,7 +12,7 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
   Q_Q(Systemui);
 
     mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/topbar_bg.png"));
+    mBackground->setBackgroundBmpPath(QString(":/res/drawable/topbar_bg.png"));
     mBackground->setGeometry(0,0,800,45);
     mBackground->setVisible(true);
 

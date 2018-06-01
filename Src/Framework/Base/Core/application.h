@@ -11,6 +11,7 @@
 #include "message.h"
 #include "configuration.h"
 
+
 #if (APP_WITH_SIMULATION == 1)
 #include "simulation.h"
 #endif
@@ -31,6 +32,7 @@ public:
     explicit Application(int &argc, char **argv);
 
     bool setWindowWidget(QWidget *windowWidget);
+    bool setWindowWallPaper(const QString &path);
     bool callBackPressed();
     bool callLanguageChanged();
 
@@ -79,6 +81,7 @@ private:
     Simulation *mSimulation;
 #endif
     QWidget *mWindowWidget;
+    QWidget *mWindowWallPaper;
 
     QWidget *mTopBarWidget;
     QWidget *mContentViewWidget;

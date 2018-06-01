@@ -84,5 +84,6 @@ HEADERS  += mainwindow.h \
 
 RESOURCES += \
     Res/test.qrc \
-    Res/simulation.qrc
+    Res/simulation.qrc \
+    Res/resource.qrc
 

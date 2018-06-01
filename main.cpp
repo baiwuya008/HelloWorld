@@ -15,6 +15,8 @@ int main(int argc, char *argv[])
     app.setSimulation(new SimulationDa());
 #endif
     app.setWindowWidget(&mainWindow);
+    app.setWindowWallPaper(QString(":/res/drawable/wallpaper_01.png"));
+
     app.startApplication(T_SystemUi); //状态栏启动
     app.startApplication(T_Home);//启动媒体主界面
     //app.startApplication(T_Radio);//启动收音机

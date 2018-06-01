@@ -29,6 +29,13 @@ bool Context::startApplication(AppType type,char **argv)
  Q_D(Context);
  d->mApptype = type;
  oklApp->startApplication(type,argv);
+ return true;
+}
+
+bool Context::setWindowWallPaper(const QString &path)
+{
+    oklApp->setWindowWallPaper(path);
+    return true;
 }
 
 void Context::callBack(){

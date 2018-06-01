@@ -1,6 +1,7 @@
 #include "application.h"
 #include "activity.h"
 #include "service.h"
+#include "Src/CommonUserWidget/BmpWidget.h"
 #include "Src/Application/AllApplication.h"
 
 ApplicationPrivate::ApplicationPrivate(Application *parent):
@@ -24,6 +25,7 @@ bool Application::setSimulation(Simulation *simu)
 {
     Q_D(Application);
     d->mSimulation = simu;
+    return true;
 }
 #endif
 
@@ -41,6 +43,10 @@ bool Application::setWindowWidget(QWidget *windowWidget)
     d->mWindowWidget->setGeometry(146,10,800,480);
     d->mWindowWidget->setVisible(true);
 
+    d->mWindowWallPaper = new BmpWidget(d->mWindowWidget);
+    d->mWindowWallPaper->setFixedSize(800,480); //固定窗口大小
+    d->mWindowWallPaper->setVisible(true);
+
     d->mTopBarWidget = new QWidget(d->mWindowWidget);
     d->mTopBarWidget->setFixedSize(800,45); //固定窗口大小
     d->mTopBarWidget->setGeometry(0,0,800,45);
@@ -54,6 +60,10 @@ bool Application::setWindowWidget(QWidget *windowWidget)
  #else
     d->mWindowWidget = windowWidget;//new QWidget(windowWidget);
     //d->mWindowWidget->setFixedSize(800,480); //固定窗口大小
+
+    d->mWindowWallPaper = new BmpWidget(d->mWindowWidget);
+    d->mWindowWallPaper->setFixedSize(800,480); //固定窗口大小
+    d->mWindowWallPaper->setVisible(true);
 
     d->mTopBarWidget = new QWidget(d->mWindowWidget);
     d->mTopBarWidget->setFixedSize(800,45); //固定窗口大小
@@ -69,6 +79,14 @@ bool Application::setWindowWidget(QWidget *windowWidget)
   return true;
 }
 
+bool Application::setWindowWallPaper(const QString &path)
+{
+   Q_D(Application);
+    if(d->mWindowWallPaper != NULL){
+       (static_cast<BmpWidget *>(d->mWindowWallPaper))->setBackgroundBmpPath(path);
+    }
+   return true;
+}
 
 bool Application::startApplication(AppType type,char **argv)
 {

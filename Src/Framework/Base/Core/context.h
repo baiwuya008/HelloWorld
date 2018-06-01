@@ -21,6 +21,7 @@ public:
     explicit Context(QObject *parent = 0);
 
     bool startApplication(AppType type,char **argv= 0);
+    bool setWindowWallPaper(const QString &path);
 
     void callBack();
 
