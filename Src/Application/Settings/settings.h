@@ -48,11 +48,6 @@ public:
 private:
     void selectTab(int index);
 
-protected:
-    void mouseMoveEvent(QMouseEvent *e);
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent*e);
-
 private:
     Q_DECLARE_PUBLIC(Settings)
     Settings* const q_ptr;
@@ -114,6 +109,11 @@ private:
 
     QListWidget* mListWidget;
 
+    bool isEventSeatPoint;
+    bool isEventSoundLow;
+    bool isEventSoundCentre;
+    bool isEventSoundHeight;
+
 private slots:
     void onBtnTestRelease();
 
@@ -129,6 +129,18 @@ private slots:
     void onBtnSoundRightClick();
 
     void onBtnKeySoundtClick();
+
+    void onSeatPointDown();
+    void onSeatPointUp();
+
+    //------------
+    void onBmpSoundWidgetMove(QMouseEvent*e);
+    //void onBmpSoundWidgetPress(QMouseEvent*e);
+    //void onBmpSoundWidgetRelease(QMouseEvent*e);
+
+    void onBmpBrightnessWidgetMove(QMouseEvent*e);
+    //void onBmpBrightnessWidgetPress(QMouseEvent*e);
+    //void onBmpBrightnessWidgetRelease(QMouseEvent*e);
 
 };
 

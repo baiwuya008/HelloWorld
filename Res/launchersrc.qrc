@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>Launcher/img_launcher_am_a.png</file>
+        <file>Launcher/img_launcher_am_b.png</file>
+        <file>Launcher/img_launcher_bt_music_a.png</file>
+        <file>Launcher/img_launcher_bt_music_b.png</file>
+        <file>Launcher/img_launcher_elink_a.png</file>
+        <file>Launcher/img_launcher_elink_b.png</file>
+        <file>Launcher/img_launcher_fm_a.png</file>
+        <file>Launcher/img_launcher_fm_b.png</file>
+        <file>Launcher/img_launcher_img_a.png</file>
+        <file>Launcher/img_launcher_img_b.png</file>
+        <file>Launcher/img_launcher_music_a.png</file>
+        <file>Launcher/img_launcher_music_b.png</file>
+        <file>Launcher/img_launcher_setting_a.png</file>
+        <file>Launcher/img_launcher_setting_b.png</file>
+        <file>Launcher/img_launcher_video_a.png</file>
+        <file>Launcher/img_launcher_video_b.png</file>
+    </qresource>
+</RCC>

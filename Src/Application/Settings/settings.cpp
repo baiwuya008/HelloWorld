@@ -61,6 +61,10 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mBmpSound->setBackgroundBmpPath(":/img/Common/img_wap_bg.png");
     mBmpSound->setGeometry(0,50,800,480);
 
+    connect(mBmpSound,SIGNAL(mouseMove(QMouseEvent*)),this,SLOT(onBmpSoundWidgetMove(QMouseEvent*)));
+    //connect(mBmpSound,SIGNAL(mousePress(QMouseEvent*)),this,SLOT(onBmpSoundWidgetPress(QMouseEvent*)));
+    //connect(mBmpSound,SIGNAL(mouseRelease(QMouseEvent*)),this,SLOT(onBmpSoundWidgetRelease(QMouseEvent*)));
+
     //居中按钮
     mBmpCentre = new BmpButton(mBmpSound);
     mBmpCentre->setText(tr("居中"));
@@ -103,6 +107,9 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mSeatPoint->setNormalBmpPath(":/img/setting/img_sound_seat_point_a.png");
     mSeatPoint->setPressBmpPath(":/img/setting/img_sound_seat_point_b.png");
     mSeatPoint->setGeometry(180,170,50,50);
+
+    connect(mSeatPoint,SIGNAL(pressed()),this,SLOT(onSeatPointDown()));
+    connect(mSeatPoint,SIGNAL(released()),this,SLOT(onSeatPointUp()));
 
     //声音调节
     mSoundSLabel = new QLabel(mBmpSound);
@@ -327,28 +334,6 @@ void SettingsPrivate::selectTab(int index)
     }
 }
 
-void SettingsPrivate::mouseMoveEvent(QMouseEvent *e)
-{
-    qDebug() << e->x() << ":" << e->y();
-    if(e->button() == Qt::LeftButton){
-        this->isClickTouch = true;
-    }
-}
-
-void SettingsPrivate::mousePressEvent(QMouseEvent *e)
-{
-    qDebug() << "mousePressEvent";
-    if(isClickTouch){
-        mSeatPoint->move(e->x(),e->y());
-    }
-}
-
-void SettingsPrivate::mouseReleaseEvent(QMouseEvent *e)
-{
-    qDebug() << "mouseReleaseEvent";
-    this->isClickTouch = false;
-}
-
 void SettingsPrivate::onBtnTestRelease()
 {
     Q_Q(Settings);
@@ -408,6 +393,36 @@ void SettingsPrivate::onBtnKeySoundtClick()
         mKeySoundSwitch->setCheckBmpPath(":/img/setting/img_key_sound_off.png");
     }
 }
+
+void SettingsPrivate::onSeatPointDown()
+{
+    qDebug() << "onSeatPointDown";
+    isEventSeatPoint = true;
+}
+
+void SettingsPrivate::onSeatPointUp()
+{
+    qDebug() << "onSeatPointUp";
+    isEventSeatPoint = false;
+}
+
+//------------------------------------------------------------
+void SettingsPrivate::onBmpSoundWidgetMove(QMouseEvent *e)
+{
+    qDebug() << e->x() << ":" << e->y();
+    if(isEventSeatPoint){
+        //左上：65 85 左下：65 255 右上：285 85 右下 285 255
+        if(e->x() >= 65 && e->x() <= 285 && e->y() >= 85 && e->y() <= 255){
+            mSeatPoint->move(e->x(),e->y());
+        }
+    }
+}
+
+void SettingsPrivate::onBmpBrightnessWidgetMove(QMouseEvent *e)
+{
+
+}
+
 
 //----------------------------------
 

@@ -2,6 +2,9 @@
 #define LAUNCHER_H
 #include "Src/Framework/Base/Core/activity.h"
 
+#include <QMouseEvent>
+#include <QFont>
+
 class LauncherPrivate;
 
 class Launcher : public Activity
@@ -23,11 +26,10 @@ public:
     void onReceiveBroadcast(AppType appType,OMessage &msg);
     void onReceiveCmd(AppType appType,OMessage &msg);
 
+
 private:
     Q_DECLARE_PRIVATE(Launcher)
-    LauncherPrivate* const d_ptr;
-
-
+    LauncherPrivate* const d_ptr; 
 };
 
 class LauncherPrivate :public QObject
@@ -56,7 +58,24 @@ private:
     BmpButton *mBtnImage;
     BmpButton *mBtnSettings;
     BmpButton *mBtnAvin; //Aux
+
+    BmpWidget *mBackTitle;
+    BmpButton *mBmpMultimedia;
+
+    BmpWidget *mHomePagerOne;
+    BmpWidget *mHomePagerTwo;
+
+    QLabel * mLabelFm;
+    QLabel * mLabelAm;
+    QLabel * mLabelMusic;
+    QLabel * mLabelVideo;
+    QLabel * mLabelElink;
+    QLabel * mLabelBlueTooth;
+    QLabel * mLabelImage;
+    QLabel * mLabelSetting;
+
     //----------
+
 private slots:
     void onBtnFmRelease();
     void onBtnAmRelease();

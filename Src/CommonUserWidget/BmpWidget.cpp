@@ -46,6 +46,21 @@ void BmpWidget::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 }
 
+void BmpWidget::mouseMoveEvent(QMouseEvent *e)
+{
+    emit mouseMove(e);
+}
+
+void BmpWidget::mousePressEvent(QMouseEvent *e)
+{
+    emit mousePress(e);
+}
+
+void BmpWidget::mouseReleaseEvent(QMouseEvent *e)
+{
+    emit mouseRelease(e);
+}
+
 BmpWidgetPrivate::BmpWidgetPrivate(BmpWidget *parent)
     : m_Parent(parent)
 {

@@ -87,5 +87,6 @@ RESOURCES += \
     Res/simulation.qrc \
     Res/settingsrc.qrc \
     Res/commonsrc.qrc \
-    Res/systemuisrc.qrc
+    Res/systemuisrc.qrc \
+    Res/launchersrc.qrc
 
