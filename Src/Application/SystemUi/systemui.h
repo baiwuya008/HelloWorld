@@ -64,6 +64,10 @@ private:
     QString time ;
 
     //----------
+
+private:
+    void initSoundLine(QWidget *parent,int index);
+
 private slots:
     void onBtnBackRelease();
     void onBtnHomeRelease();

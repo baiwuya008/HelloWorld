@@ -4,5 +4,8 @@
         <file>SystemUI/img_back_b.png</file>
         <file>SystemUI/img_home_a.png</file>
         <file>SystemUI/img_home_b.png</file>
+        <file>SystemUI/img_ui_sound_a.png</file>
+        <file>SystemUI/img_ui_sound_b.png</file>
+        <file>SystemUI/img_ui_sound_icon.png</file>
     </qresource>
 </RCC>
