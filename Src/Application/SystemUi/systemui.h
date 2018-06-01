@@ -10,6 +10,7 @@
 #include <QString>
 #include <QTimer>
 #include <QFont>
+#include <QList>
 
 class SystemuiPrivate;
 class Systemui : public Activity
@@ -64,6 +65,10 @@ private:
     QString time ;
 
     //----------
+    BmpButton *mLabelTitle;
+    BmpWidget * mBmpSoundIcon ;
+
+    QList<BmpWidget *>mList;
 
 private:
     void initSoundLine(QWidget *parent,int index);
