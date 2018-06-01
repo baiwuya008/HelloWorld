@@ -275,7 +275,6 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mListWidget->setFrameShape(QListWidget::NoFrame);
     //设置无焦点
     mListWidget->setFocusPolicy(Qt::NoFocus);
-    //点击事件
 
     QStringList mList;
     mList << "更改语言";
@@ -287,6 +286,10 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
 
     for (int i = 0; i < mList.size(); ++i) {
         QListWidgetItem*item=new QListWidgetItem;
+        //分割线
+        QListWidgetItem*itemLine=new QListWidgetItem;
+        itemLine->setBackground(QBrush(QPixmap(":/img/setting/img_setting_list_line.png")));
+        itemLine->setSizeHint(QSize(30, 3));
         //居中
         item->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
         //行高
@@ -297,6 +300,7 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
         item->setTextColor(Qt::white);
         item->setText(mList.at(i));
         mListWidget->addItem(item);
+        mListWidget->addItem(itemLine);
     }
 
     //def widget

@@ -25,5 +25,6 @@
         <file>setting/img_key_sound_off.png</file>
         <file>setting/img_key_sound_on.png</file>
         <file>setting/img_display_bg.png</file>
+        <file>setting/img_setting_list_line.png</file>
     </qresource>
 </RCC>

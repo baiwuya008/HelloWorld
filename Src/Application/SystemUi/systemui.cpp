@@ -73,7 +73,7 @@ void SystemuiPrivate::getSyTime()
 {
     currentTime = QTime::currentTime();
     mLo = QLocale::English;
-    time = mLo.toString(currentTime,"HH:mm AP");
+    time = mLo.toString(currentTime,"hh:mm AP");
     mSyTime->setText(time);
 }
 
