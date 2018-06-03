@@ -17,6 +17,8 @@ public:
     explicit TextWidget(QWidget *parent = NULL);
     ~TextWidget();
     void setText(const QString &text);
+    void setTextColor(Qt::GlobalColor color);
+    void setTextColor(const QColor &color);
     void setLanguageType(const TextWidget::Type type);
     void setAlignmentFlag(const int flags);
     void setFontPointSize(const int pointSize);

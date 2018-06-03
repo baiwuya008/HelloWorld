@@ -24,5 +24,25 @@
         <file>drawable/radio_scale_bar_bg.png</file>
         <file>drawable/app_statebar_btn.png</file>
         <file>drawable/app_statebar_btn_pressed.png</file>
+        <file>drawable/bottom_bar_next.png</file>
+        <file>drawable/bottom_bar_next_pressed.png</file>
+        <file>drawable/bottom_bar_prev.png</file>
+        <file>drawable/bottom_bar_prev_pressed.png</file>
+        <file>drawable/bottom_bar_seek_next.png</file>
+        <file>drawable/bottom_bar_seek_next_pressed.png</file>
+        <file>drawable/bottom_bar_seek_prev.png</file>
+        <file>drawable/bottom_bar_seek_prev_pressed.png</file>
+        <file>drawable/bottom_bar_page_down.png</file>
+        <file>drawable/bottom_bar_page_down_pressed.png</file>
+        <file>drawable/bottom_bar_page_up.png</file>
+        <file>drawable/bottom_bar_page_up_pressed.png</file>
+        <file>drawable/edit_remove.png</file>
+        <file>drawable/edit_remove_pressed.png</file>
+        <file>drawable/edit_save.png</file>
+        <file>drawable/edit_save_pressed.png</file>
+        <file>drawable/bottom_bar_btn_normal.png</file>
+        <file>drawable/bottom_bar_btn_pressed.png</file>
+        <file>drawable/radio_freq_bg.png</file>
+        <file>drawable/radio_scale_pointer.png</file>
     </qresource>
 </RCC>

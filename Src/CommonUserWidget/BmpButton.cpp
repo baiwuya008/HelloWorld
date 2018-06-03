@@ -21,6 +21,7 @@ public:
     QTimer* m_Timer;
     bool m_Filter;
     bool m_LongPressRestore;
+
 private:
     BmpButton* m_Parent;
 };
@@ -30,6 +31,9 @@ BmpButton::BmpButton(QWidget *parent)
     : QAbstractButton(parent)
     , m_Private(new BmpButtonPrivate(this))
 {
+    QPalette myPale =palette();
+    myPale.setColor(QPalette::ButtonText,Qt::white);
+    setPalette(myPale);
 }
 
 BmpButton::~BmpButton()
@@ -80,6 +84,29 @@ BmpButton::ButtonStatus BmpButton::getStatus()
 {
     return m_Private->m_Status;
 }
+
+void BmpButton::setTextColor(Qt::GlobalColor color)
+{
+    QPalette myPale =palette();
+    myPale.setColor(QPalette::ButtonText,color);
+    setPalette(myPale);
+}
+void BmpButton::setTextColor(const QColor &color)
+{
+   QPalette myPale =palette();
+   myPale.setColor(QPalette::ButtonText,color);
+   setPalette(myPale);
+}
+void BmpButton::setFontPointSize(const int pointSize)
+{
+    QFont myFont = font();
+    myFont.setPointSize(pointSize);
+    setFont(myFont);
+    if (isVisible()) {
+        update();
+    }
+}
+
 
 void BmpButton::enableLongPress(const bool flag)
 {
@@ -165,9 +192,10 @@ void BmpButton::paintEvent(QPaintEvent *event)
     }
     }
     if (!text().isEmpty()) {
-        painter.setPen(Qt::white);
+        //painter.setPen(Qt::white);
         if (BmpButton::T_Translate == m_Private->m_LanguageType) {
-            painter.drawText(rect(), Qt::AlignCenter, QObject::tr(text().toLocal8Bit().constData()));
+            //painter.drawText(rect(), Qt::AlignCenter, QObject::tr(text().toLocal8Bit().constData()));
+            painter.drawText(rect(), Qt::AlignCenter, QObject::tr(text().toUtf8()));
         } else {
             painter.drawText(rect(), Qt::AlignCenter, text());
         }

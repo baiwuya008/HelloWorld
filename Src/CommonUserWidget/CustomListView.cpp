@@ -56,8 +56,9 @@ void CustomListView::setCurrentIndex(const QModelIndex &index)
 
 void CustomListView::setItemDelegate(QAbstractItemDelegate *delegate)
 {
-    connectSignalAndSlotByNamesake(this, delegate, SLOT(onPressIndexChanged(const QModelIndex &)));
-    connectSignalAndSlotByNamesake(this, delegate, SLOT(onCurrentIndexChange(const QModelIndex &)));
+    //connectSignalAndSlotByNamesake(this, delegate, SLOT(onPressIndexChanged(const QModelIndex &)));
+    //connectSignalAndSlotByNamesake(this, delegate, SLOT(onCurrentIndexChange(const QModelIndex &)));
+
     QListView::setItemDelegate(delegate);
 }
 

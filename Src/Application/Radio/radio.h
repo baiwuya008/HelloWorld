@@ -40,6 +40,12 @@ public:
     ~RadioPrivate(){delete q_ptr;}
     void initializeBasicWidget(QWidget *parent);
 
+    enum Tab{
+        FM =0,
+        PRESET,
+        LIST,
+    };
+
 private:
     Q_DECLARE_PUBLIC(Radio)
     Radio* const q_ptr;
@@ -47,26 +53,49 @@ private:
     //----------
     BmpWidget *mTabBar;
     BmpButton *mStateBarTab_FM;
-    TextWidget *mTabFmTextView;
     BmpButton *mStateBarTab_Preset;
-    TextWidget *mTabPresetTextView;
     BmpButton *mStateBarTab_List;
-    TextWidget *mTabListTextView;
 
     QStackedLayout *mFragmentViewLayout;
+    QWidget *mFmFragmentContain;
     QWidget *mFmFragmentView;
     QWidget *mPresetFragmentView;
     QWidget *mListFragmentView;
 
-    QStackedLayout *mBottomBarLayout;
-    BmpWidget *mBottomBar;
-    QWidget *mBottom_Fm;
-    QWidget *mBottom_Preset;
-    QWidget *mBottom_List;
+    BmpWidget *mFmFragment_FreqBg;
+    TextWidget *mFmFragment_FreqText;
+    BmpWidget *mFmFragment_ScaleBarBg;
+    BmpWidget *mFmFragment_ScalePointer;
 
+    QStackedLayout *mBottomBarLayout;
+    QWidget *mBottomBar;
+    BmpWidget *mBottom_Fm;
+    BmpWidget *mBottom_Preset;
+    BmpWidget *mBottom_List;
+
+    BmpButton *mBottom_Fm_Prev;
+    BmpButton *mBottom_Fm_Seek_Prev;
+    BmpButton *mBottom_Fm_Seek_Next;
+    BmpButton *mBottom_Fm_Next;
+
+    BmpButton *mBottom_Preset_PageUp;
+    BmpButton *mBottom_Preset_AutoSearch;
+    BmpButton *mBottom_Preset_PageDown;
+
+    BmpButton *mBottom_List_PageUp;
+    BmpButton *mBottom_List_Search;
+    BmpButton *mBottom_List_PageDown;
+
+
+
+    Tab mTab;
+
+    void tabSwitch(const Tab mytab);
     //----------
 private slots:
-    void onBtnTestRelease();
+    void onBtnTabFm();
+    void onBtnTabPreset();
+    void onBtnTabList();
 
 };
 

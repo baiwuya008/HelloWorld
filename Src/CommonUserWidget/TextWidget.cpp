@@ -1,5 +1,6 @@
 #include "TextWidget.h"
 #include <QPainter>
+#include <QPen>
 #include <QTimer>
 #include <QDebug>
 #include <QtGlobal>
@@ -13,6 +14,7 @@ public:
     QString m_Text;
     int m_Flags;
     QFont m_Font;
+    QPen m_Pen;
     TextWidget::Type m_LanguageType;
     bool m_Animation;
     int m_TextWidth;
@@ -27,6 +29,7 @@ TextWidget::TextWidget(QWidget *parent)
     : QWidget(parent)
     , m_Private(new TextWidgetPrivate(this))
 {
+
 }
 
 TextWidget::~TextWidget()
@@ -52,6 +55,21 @@ void TextWidget::setText(const QString &text)
     }
 }
 
+void TextWidget::setTextColor(Qt::GlobalColor color)
+{
+    m_Private->m_Pen.setColor(color);
+    if (isVisible()) {
+        update();
+    }
+}
+void TextWidget::setTextColor(const QColor &color)
+{
+    m_Private->m_Pen.setColor(color);
+    if (isVisible()) {
+        update();
+    }
+}
+
 void TextWidget::setLanguageType(const TextWidget::Type type)
 {
     m_Private->m_LanguageType = type;
@@ -70,6 +88,9 @@ void TextWidget::setAlignmentFlag(const int flags)
 
 void TextWidget::setFontPointSize(const int pointSize)
 {
+//    QFont myfont = font();
+//    myfont.setPointSize(pointSize);
+//    setFont(myfont);
     m_Private->m_Font.setPointSize(pointSize);
     setFont(m_Private->m_Font);
     if (isVisible()) {
@@ -101,9 +122,11 @@ void TextWidget::paintEvent(QPaintEvent *event)
 {
     if (!m_Private->m_Text.isEmpty()) {
         QPainter painter(this);
-        painter.setPen(QPen(Qt::white));
+        //painter.setPen(QPen(Qt::white));
+        painter.setPen(m_Private->m_Pen);
         if (TextWidget::T_Translate == m_Private->m_LanguageType) {
-            painter.drawText(rect(), m_Private->m_Flags, QObject::tr(m_Private->m_Text.toLocal8Bit().constData()));
+            //painter.drawText(rect(), m_Private->m_Flags, QObject::tr(m_Private->m_Text.toLocal8Bit().constData()));
+            painter.drawText(rect(), m_Private->m_Flags, QObject::tr(m_Private->m_Text.toUtf8()));
         } else {
             if (NULL != m_Private->m_Timer) {
                 if (m_Private->m_TextWidth > width()) {
@@ -143,6 +166,7 @@ TextWidgetPrivate::TextWidgetPrivate(TextWidget* parent)
     m_Timer = NULL;
     m_TextElideMode = ElideRight;
     m_Parent->setFont(m_Font);
+    m_Pen.setColor(Qt::white);
 }
 
 TextWidgetPrivate::~TextWidgetPrivate()

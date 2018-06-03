@@ -22,6 +22,7 @@ SOURCES += main.cpp\
     Src/CommonUserWidget/Slider.cpp \
     Src/CommonUserWidget/TextWidget.cpp \
     Src/CommonUserWidget/UserInterfaceUtility.cpp \
+    Src/CommonUserWidget/CustomListView.cpp \
     Src/Framework/Base/Core/application.cpp \
     Src/Framework/Base/Audio/audiomanager.cpp \
     Src/Framework/Base/Video/videomanager.cpp \
@@ -45,6 +46,7 @@ SOURCES += main.cpp\
     Src/Simulation/simulationda.cpp \
     Src/Application/Radio/radio_am.cpp
 
+
 HEADERS  += mainwindow.h \
     configuration.h \
     Src/CommonUserWidget/BmpButton.h \
@@ -55,6 +57,7 @@ HEADERS  += mainwindow.h \
     Src/CommonUserWidget/Slider.h \
     Src/CommonUserWidget/TextWidget.h \
     Src/CommonUserWidget/UserInterfaceUtility.h \
+    Src/CommonUserWidget/CustomListView.h \
     Src/Framework/Base/Core/application.h \
     Src/Framework/Base/Audio/audiomanager.h \
     Src/Framework/Base/Video/videomanager.h \
@@ -79,6 +82,7 @@ HEADERS  += mainwindow.h \
     Src/Framework/Base/Core/simulation.h \
     Src/Simulation/simulationda.h \
     Src/Application/Radio/radio_am.h
+
 
 
 
