@@ -1,0 +1,43 @@
+<RCC>
+    <qresource prefix="/Res/drawable">
+        <file>multimedia/main_second_line.png</file>
+        <file>multimedia/music_album_icon.png</file>
+        <file>multimedia/music_file_icon.png</file>
+        <file>multimedia/music_line.png</file>
+        <file>multimedia/music_mode_loop_focus.png</file>
+        <file>multimedia/music_mode_loop_normal.png</file>
+        <file>multimedia/music_mode_random_focus.png</file>
+        <file>multimedia/music_mode_random_normal.png</file>
+        <file>multimedia/music_next_focus .png</file>
+        <file>multimedia/music_next_normal.png</file>
+        <file>multimedia/music_pause_focus.png</file>
+        <file>multimedia/music_pause_normal.png</file>
+        <file>multimedia/music_play_0.png</file>
+        <file>multimedia/music_play_1.png</file>
+        <file>multimedia/music_play_2.png</file>
+        <file>multimedia/music_play_3.png</file>
+        <file>multimedia/music_play_4.png</file>
+        <file>multimedia/music_play_5.png</file>
+        <file>multimedia/music_play_6.png</file>
+        <file>multimedia/music_play_7.png</file>
+        <file>multimedia/music_play_8.png</file>
+        <file>multimedia/music_play_9.png</file>
+        <file>multimedia/music_play_10.png</file>
+        <file>multimedia/music_play_11.png</file>
+        <file>multimedia/music_play_12.png</file>
+        <file>multimedia/music_play_13.png</file>
+        <file>multimedia/music_play_14.png</file>
+        <file>multimedia/music_play_15.png</file>
+        <file>multimedia/music_play_16.png</file>
+        <file>multimedia/music_play_focus.png</file>
+        <file>multimedia/music_play_icon.png</file>
+        <file>multimedia/music_play_normal.png</file>
+        <file>multimedia/music_prev_focus.png</file>
+        <file>multimedia/music_prev_normal.png</file>
+        <file>multimedia/music_singer_icon.png</file>
+        <file>multimedia/music_slider_bg.png</file>
+        <file>multimedia/music_slider_focus.png</file>
+        <file>multimedia/music_slider_point.png</file>
+        <file>multimedia/music_song_icon.png</file>
+    </qresource>
+</RCC>

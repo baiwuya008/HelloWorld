@@ -28,7 +28,7 @@ bool Context::startApplication(AppType type,char **argv)
 {
  Q_D(Context);
  d->mApptype = type;
- oklApp->startApplication(type,argv);
+ return oklApp->startApplication(type,argv);
 }
 
 void Context::callBack(){

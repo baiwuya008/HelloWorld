@@ -43,7 +43,13 @@ SOURCES += main.cpp\
     Src/Application/Avin/avin.cpp \
     Src/Framework/Base/Core/simulation.cpp \
     Src/Simulation/simulationda.cpp \
-    Src/Application/Radio/radio_am.cpp
+    Src/Application/Radio/radio_am.cpp \
+    Src/Application/MultiMedia/Music/musicplaywidget.cpp \
+    Src/Application/MultiMedia/Music/musiclistwidget.cpp \
+    Src/Application/MultiMedia/Music/musiclistitem.cpp \
+    Src/Application/MultiMedia/Music/musicprogresswidget.cpp \
+    Src/Application/MultiMedia/Music/musicclickwidget.cpp \
+    Src/CommonUserWidget/rotatewidget.cpp
 
 HEADERS  += mainwindow.h \
     configuration.h \
@@ -78,11 +84,20 @@ HEADERS  += mainwindow.h \
     Src/Application/Avin/avin.h \
     Src/Framework/Base/Core/simulation.h \
     Src/Simulation/simulationda.h \
-    Src/Application/Radio/radio_am.h
+    Src/Application/Radio/radio_am.h \
+    Src/Application/MultiMedia/Music/musicplaywidget.h \
+    Src/Application/MultiMedia/Music/musiclistwidget.h \
+    Src/Application/MultiMedia/Music/musiclistitem.h \
+    Src/Application/MultiMedia/Music/musicprogresswidget.h \
+    Src/Application/MultiMedia/Music/musicclickwidget.h \
+    Src/CommonUserWidget/rotatewidget.h
 
 
 
 RESOURCES += \
     Res/test.qrc \
-    Res/simulation.qrc
+    Res/simulation.qrc \
+    Res/multimedia.qrc
+
+DISTFILES += \
 
