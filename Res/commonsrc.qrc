@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>Common/img_wap_bg.png</file>
+    </qresource>
+</RCC>

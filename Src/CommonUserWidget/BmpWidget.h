@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QScopedPointer>
+#include <QMouseEvent>
 
 class BmpWidgetPrivate;
 class BmpWidget : public QWidget
@@ -15,6 +16,15 @@ public:
     void setBackgroundBmpPath(const QString &path);
 protected:
     void paintEvent(QPaintEvent* event);
+    void mouseMoveEvent(QMouseEvent*);
+    void mousePressEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent*);
+
+signals:
+    void mouseMove(QMouseEvent*e);
+    void mousePress(QMouseEvent*e);
+    void mouseRelease(QMouseEvent*e);
+
 private:
     QScopedPointer<BmpWidgetPrivate> m_Private;
 };

@@ -2,6 +2,11 @@
 #define SETTINGS_H
 #include "Src/Framework/Base/Core/activity.h"
 
+#include <QMouseEvent>
+#include <QLabel>
+#include <QListWidget>
+#include <QListWidgetItem>
+
 class SettingsPrivate;
 class Settings : public Activity
 {
@@ -39,16 +44,103 @@ public:
     ~SettingsPrivate(){delete q_ptr;}
     void initializeBasicWidget(QWidget *parent);
 
+
+private:
+    void selectTab(int index);
+
 private:
     Q_DECLARE_PUBLIC(Settings)
     Settings* const q_ptr;
 
     //----------
+    BmpWidget *mBackTitle;
     BmpWidget *mBackground;
     BmpButton *mBtnTest;
-    //----------
+    //----------`
+
+    BmpButton *mBmpSoundTab;
+    BmpButton *mBmpBrightnessTab;
+    BmpButton *mBmpSystemTab;
+
+    BmpWidget *mBmpSound;
+    BmpWidget *mBmpBrightness;
+    BmpWidget *mBmpSystem;
+
+    BmpButton *mBmpCentre;
+    BmpWidget *mSoundControlGroup;
+    BmpButton *mTopControl;
+    BmpButton *mBottomControl;
+    BmpButton *mLeftControl;
+    BmpButton *mRightControl;
+    BmpButton *mSeatPoint;
+
+    bool isClickTouch;
+
+    QLabel * mSoundSLabel;
+
+    BmpButton* mKeySoundSwitch;
+    bool isKeySound = true;
+
+    BmpButton * mLowSoundLeft;
+    BmpButton * mLowSoundRight;
+    BmpButton * mLowSoundPoint;
+    BmpWidget * mLowSoundBg;
+    QLabel * mLabelLowSound;
+
+    BmpButton * mCenSoundLeft;
+    BmpButton * mCenSoundRight;
+    BmpButton * mCenSoundPoint;
+    BmpWidget * mCenSoundBg;
+    QLabel * mLabelCenSound;
+
+    BmpButton * mHeightSoundLeft;
+    BmpButton * mHeightSoundRight;
+    BmpButton * mHeightSoundPoint;
+    BmpWidget * mHeightSoundBg;
+    QLabel * mLabelHeightSound;
+
+    BmpWidget *mBmpDisplayImg;
+
+    BmpButton * mDisplayLeft;
+    BmpButton * mDisplayRight;
+    BmpButton * mDisplayPoint;
+    BmpWidget * mDisplayBg;
+    QLabel * mLabelmDisplay;
+
+    QListWidget* mListWidget;
+
+    bool isEventSeatPoint;
+    bool isEventSoundLow;
+    bool isEventSoundCentre;
+    bool isEventSoundHeight;
+
 private slots:
     void onBtnTestRelease();
+
+    void onBtnSoundTabClick();
+    void onBtnBrightnessTabClick();
+    void onBtnSystemTabClick();
+
+    void onBtnCentreClick();
+
+    void onBtnSoundTopClick();
+    void onBtnSoundBottomClick();
+    void onBtnSoundLeftClick();
+    void onBtnSoundRightClick();
+
+    void onBtnKeySoundtClick();
+
+    void onSeatPointDown();
+    void onSeatPointUp();
+
+    //------------
+    void onBmpSoundWidgetMove(QMouseEvent*e);
+    //void onBmpSoundWidgetPress(QMouseEvent*e);
+    //void onBmpSoundWidgetRelease(QMouseEvent*e);
+
+    void onBmpBrightnessWidgetMove(QMouseEvent*e);
+    //void onBmpBrightnessWidgetPress(QMouseEvent*e);
+    //void onBmpBrightnessWidgetRelease(QMouseEvent*e);
 
 };
 

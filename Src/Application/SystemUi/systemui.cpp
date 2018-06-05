@@ -18,9 +18,8 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
 
     //init System Time
     mSyTime = new BmpButton(parent);
-    QFont font;
+    QFont font("Microsoft YaHei");
     font.setPixelSize(20);
-    font.setBold(true);
     mSyTime->setFont(font);
     mSyTime->setGeometry(690,5,110,45);
     mSyTime->setVisible(true);
@@ -34,17 +33,23 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
     //start system time timer
     syTimer->start(1000);
 
+    this->initSoundLine(parent,16);
+    this->initSoundLine(parent,12);
+    this->initSoundLine(parent,30);
+    this->initSoundLine(parent,5);
+    this->initSoundLine(parent,18);
+
 #if (STATEBAR_WITH_BACK == 1 && STATEBAR_WITH_HOME == 1)
     mBtnHome= new BmpButton(parent);
-    mBtnHome->setNormalBmpPath(QString(":/Res/drawable/test/home.png"));
-    mBtnHome->setPressBmpPath(QString(":/Res/drawable/test/home_pressed.png"));
+    mBtnHome->setNormalBmpPath(QString(":/img/SystemUI/img_home_a.png"));
+    mBtnHome->setPressBmpPath(QString(":/img/SystemUI/img_home_b.png"));
     mBtnHome->setGeometry(10,5,40,32);
     mBtnHome->setVisible(true);
     q->connect(mBtnHome,SIGNAL(released()),this,SLOT(onBtnHomeRelease()));
 
     mBtnBack= new BmpButton(parent);
-    mBtnBack->setNormalBmpPath(QString(":/Res/drawable/test/back.png"));
-    mBtnBack->setPressBmpPath(QString(":/Res/drawable/test/back_pressed.png"));
+    mBtnBack->setNormalBmpPath(QString(":/img/SystemUI/img_back_a.png"));
+    mBtnBack->setPressBmpPath(QString(":/img/SystemUI/img_back_b.png"));
     mBtnBack->setGeometry(80,5,32,32);
     mBtnBack->setVisible(true);
     q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnBackRelease()));
@@ -52,16 +57,16 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
 #else
 #if (STATEBAR_WITH_BACK == 1)
     mBtnBack= new BmpButton(parent);
-    mBtnBack->setNormalBmpPath(QString(":/Res/drawable/test/back.png"));
-    mBtnBack->setPressBmpPath(QString(":/Res/drawable/test/back_pressed.png"));
+    mBtnBack->setNormalBmpPath(QString(":/img/SystemUI/img_back_a.png"));
+    mBtnBack->setPressBmpPath(QString(":/img/SystemUI/img_back_b.png"));
     mBtnBack->setGeometry(10,5,32,32);
     mBtnBack->setVisible(true);
     q->connect(mBtnBack,SIGNAL(released()),this,SLOT(onBtnBackRelease()));
 #endif
 #if (STATEBAR_WITH_HOME == 1)
     mBtnHome= new BmpButton(parent);
-    mBtnHome->setNormalBmpPath(QString(":/Res/drawable/test/home.png"));
-    mBtnHome->setPressBmpPath(QString(":/Res/drawable/test/home_pressed.png"));
+    mBtnHome->setNormalBmpPath(QString(":/img/SystemUI/img_home_a.png"));
+    mBtnHome->setPressBmpPath(QString(":/img/SystemUI/img_home_b.png"));
     mBtnHome->setGeometry(10,5,40,32);
     mBtnHome->setVisible(true);
     q->connect(mBtnHome,SIGNAL(released()),this,SLOT(onBtnHomeRelease()));
@@ -70,21 +75,58 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
 
 }
 
+void SystemuiPrivate::initSoundLine(QWidget *parent,int index)
+{
+    if( NULL != mBmpSoundIcon){
+        delete mBmpSoundIcon;
+    }
+
+    if( NULL != mLabelTitle){
+        delete mLabelTitle;
+    }
+
+    if(mList.size() > 0){
+        for (int i = 0; i < mList.size(); ++i) {
+            delete mList.at(i);
+        }
+        mList.clear();
+    }
+
+    //图标
+    mBmpSoundIcon = new BmpWidget(parent);
+    mBmpSoundIcon->setBackgroundBmpPath(":/img/SystemUI/img_ui_sound_icon.png");
+    mBmpSoundIcon->setGeometry(268,8,30,30);
+    mBmpSoundIcon->setVisible(true);
+
+    int a = 0;
+    for (int i = 0; i < 35; ++i) {
+        a += 5;
+        BmpWidget * mBmpLine = new BmpWidget(parent);
+        if(index > i){
+            mBmpLine->setBackgroundBmpPath(":/img/SystemUI/img_ui_sound_b.png");
+        }else{
+            mBmpLine->setBackgroundBmpPath(":/img/SystemUI/img_ui_sound_a.png");
+        }
+        mBmpLine->setGeometry(291+a,9,30,30);
+        mBmpLine->setVisible(true);
+        mList.append(mBmpLine);
+    }
+    //文字
+    mLabelTitle = new BmpButton(parent);
+    QFont font("Microsoft YaHei");
+    font.setPixelSize(20);
+    mLabelTitle->setFont(font);
+    mLabelTitle->setGeometry(485,8,100,30);
+    mLabelTitle->setVisible(true);
+    mLabelTitle->setText(QString::number(index) + tr(" 收音机"));
+}
+
 void SystemuiPrivate::getSyTime()
 {
-    QTime currentTime = QTime::currentTime();
-    QString time = currentTime.toString("HH");
-    QString mDisplayTime = currentTime.toString("HH:mm");
-    bool ok;
-    int ITime = time.toInt(&ok);
-    if(ok){
-        if(ITime <= 12){
-            mDisplayTime +=" AM";
-        }else{
-            mDisplayTime +=" PM";
-        }
-    }
-    mSyTime->setText(mDisplayTime);
+    currentTime = QTime::currentTime();
+    mLo = QLocale::English;
+    time = mLo.toString(currentTime,"HH:mm AP");
+    mSyTime->setText(time);
 }
 
 void SystemuiPrivate::onBtnBackRelease()

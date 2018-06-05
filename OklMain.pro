@@ -50,6 +50,7 @@ SOURCES += main.cpp\
     Src/Application/MultiMedia/Music/musicprogresswidget.cpp \
     Src/Application/MultiMedia/Music/musicclickwidget.cpp \
     Src/CommonUserWidget/rotatewidget.cpp
+    Src/Application/Radio/radio_am.cpp
 
 HEADERS  += mainwindow.h \
     configuration.h \
@@ -91,6 +92,7 @@ HEADERS  += mainwindow.h \
     Src/Application/MultiMedia/Music/musicprogresswidget.h \
     Src/Application/MultiMedia/Music/musicclickwidget.h \
     Src/CommonUserWidget/rotatewidget.h
+    Src/Application/Radio/radio_am.h
 
 
 
@@ -100,4 +102,8 @@ RESOURCES += \
     Res/multimedia.qrc
 
 DISTFILES += \
+    Res/settingsrc.qrc \
+    Res/commonsrc.qrc \
+    Res/systemuisrc.qrc \
+    Res/launchersrc.qrc
 
