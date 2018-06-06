@@ -39,6 +39,7 @@ protected:
     virtual void checkPaint(QPainter& painter);
 signals:
     void longPressed();
+    void OnPressed();
 private slots:
     void onTimeout();
 //signals:

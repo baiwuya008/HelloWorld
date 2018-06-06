@@ -108,7 +108,7 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mSeatPoint->setPressBmpPath(":/img/setting/img_sound_seat_point_b.png");
     mSeatPoint->setGeometry(180,170,50,50);
 
-    connect(mSeatPoint,SIGNAL(pressed()),this,SLOT(onSeatPointDown()));
+    connect(mSeatPoint,SIGNAL(OnPressed()),this,SLOT(onSeatPointDown()));
     connect(mSeatPoint,SIGNAL(released()),this,SLOT(onSeatPointUp()));
 
     //声音调节
@@ -153,9 +153,15 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     //mLowSoundPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
     //mLowSoundPoint->setGeometry(460,110,30,30);
 
-    QSlider* mLowSoundSlider = new QSlider(mBmpSound);
+    mLowSoundSlider = new QSlider(mBmpSound);
     mLowSoundSlider->setGeometry(450,110,260,30);
     mLowSoundSlider->setOrientation(Qt::Horizontal);
+
+    mLowSoundSlider->setStyleSheet(
+                "QSlider::handle:horizontal { "
+                "background-image:url(:/img/setting/img_sound_progress_point.png);"
+                "}"
+                );
 
     //低 字
     mLabelLowSound = new QLabel(mBmpSound);
@@ -187,9 +193,15 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     //mCenSoundPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
     //mCenSoundPoint->setGeometry(550,210,30,30);
 
-    QSlider* mCenSoundSlider = new QSlider(mBmpSound);
+    mCenSoundSlider = new QSlider(mBmpSound);
     mCenSoundSlider->setGeometry(450,210,260,30);
     mCenSoundSlider->setOrientation(Qt::Horizontal);
+
+    mCenSoundSlider->setStyleSheet(
+                "QSlider::handle:horizontal { "
+                "background-image:url(:/img/setting/img_sound_progress_point.png);"
+                "}"
+                );
 
     //中 字
     mLabelCenSound = new QLabel(mBmpSound);
@@ -221,9 +233,15 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     //mHeightSoundPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
     //mHeightSoundPoint->setGeometry(600,310,30,30);
 
-    QSlider* mHeightSoundSlider = new QSlider(mBmpSound);
+    mHeightSoundSlider = new QSlider(mBmpSound);
     mHeightSoundSlider->setGeometry(450,310,260,30);
     mHeightSoundSlider->setOrientation(Qt::Horizontal);
+
+    mHeightSoundSlider->setStyleSheet(
+                "QSlider::handle:horizontal { "
+                "background-image:url(:/img/setting/img_sound_progress_point.png);"
+                "}"
+                );
 
     //高 字
     mLabelHeightSound = new QLabel(mBmpSound);
@@ -267,8 +285,8 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     //mDisplayPoint->setGeometry(500,300,30,30);
 
     //面 点 以面的坐标
-    QSlider* mDisplaySlider = new QSlider(mBmpBrightness);
-    mDisplaySlider->setGeometry(280,300,280,30);
+    mDisplaySlider = new QSlider(mBmpBrightness);
+    mDisplaySlider->setGeometry(275,300,280,30);
     mDisplaySlider->setOrientation(Qt::Horizontal);
 
     mDisplaySlider->setStyleSheet(
@@ -276,8 +294,6 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
                 "background-image:url(:/img/setting/img_sound_progress_point.png);"
                 "}"
                 );
-
-
     //亮度 字
     mLabelmDisplay = new QLabel(mBmpBrightness);
     mLabelmDisplay->setFont(font);
@@ -301,21 +317,23 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mListWidget->setFocusPolicy(Qt::NoFocus);
 
     QStringList mList;
-    mList << "更改语言";
-    mList << "硬件版本";
-    mList << "蓝牙版本";
-    mList << "时间格式";
-    mList << "时间设置";
-    mList << "重置蓝牙设置";
+    mList << "Change Language ENGLISH";
+    mList << "SW Version (MI)";
+    mList << "BT Version";
+    mList << "Time Format 12 Hours";
+    mList << "Time Setting";
+    mList << "Reset Bluetooth settings";
 
     for (int i = 0; i < mList.size(); ++i) {
         QListWidgetItem*item=new QListWidgetItem;
         //分割线
         QListWidgetItem*itemLine=new QListWidgetItem;
         itemLine->setBackground(QBrush(QPixmap(":/img/setting/img_setting_list_line.png")));
-        itemLine->setSizeHint(QSize(30, 3));
+        itemLine->setSizeHint(QSize(20, 1.5));
         //居中
-        item->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+        item->setTextAlignment(Qt::AlignCenter);
+        //对齐
+
         //行高
         item->setSizeHint(QSize(60, 40));
         //去除选中效果

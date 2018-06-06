@@ -114,6 +114,11 @@ private:
     bool isEventSoundCentre;
     bool isEventSoundHeight;
 
+    QSlider* mLowSoundSlider;
+    QSlider* mCenSoundSlider;
+    QSlider* mHeightSoundSlider;
+    QSlider* mDisplaySlider;
+
 private slots:
     void onBtnTestRelease();
 
