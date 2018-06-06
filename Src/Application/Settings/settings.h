@@ -6,6 +6,9 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QModelIndex>
+#include <QDialog>
+#include <QMenu>
 
 class SettingsPrivate;
 class Settings : public Activity
@@ -47,6 +50,7 @@ public:
 
 private:
     void selectTab(int index);
+    void initLanguageDialog();
 
 private:
     Q_DECLARE_PUBLIC(Settings)
@@ -119,6 +123,8 @@ private:
     QSlider* mHeightSoundSlider;
     QSlider* mDisplaySlider;
 
+    QDialog* mLanguageDialog;
+
 private slots:
     void onBtnTestRelease();
 
@@ -138,14 +144,17 @@ private slots:
     void onSeatPointDown();
     void onSeatPointUp();
 
+    void onLowSoundValuesChange(int);
+    void onCenSoundValuesChange(int);
+    void onHeightSoundValuesChange(int);
+
+    void onBrightnessValuesChange(int);
+
+    void onSystemListLanguagePressed(QModelIndex);
+    void onLanguageSelectPressed(QModelIndex);
+
     //------------
     void onBmpSoundWidgetMove(QMouseEvent*e);
-    //void onBmpSoundWidgetPress(QMouseEvent*e);
-    //void onBmpSoundWidgetRelease(QMouseEvent*e);
-
-    void onBmpBrightnessWidgetMove(QMouseEvent*e);
-    //void onBmpBrightnessWidgetPress(QMouseEvent*e);
-    //void onBmpBrightnessWidgetRelease(QMouseEvent*e);
 
 };
 

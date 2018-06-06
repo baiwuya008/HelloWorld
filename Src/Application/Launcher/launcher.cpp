@@ -148,11 +148,7 @@ void LauncherPrivate::initializeBasicWidget(QWidget *parent)
     //   mBtnAvin->setPressBmpPath(QString(":/Res/drawable/test/btn_p.png"));
     //   mBtnAvin->setGeometry(600,425,90,90);
     //   q->connect(mBtnAvin,SIGNAL(released()),this,SLOT(onBtnAvinRelease()));
-
-
-
 }
-
 
 void LauncherPrivate::onBtnFmRelease()
 {

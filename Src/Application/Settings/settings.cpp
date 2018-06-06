@@ -157,6 +157,8 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mLowSoundSlider->setGeometry(450,110,260,30);
     mLowSoundSlider->setOrientation(Qt::Horizontal);
 
+    connect(mLowSoundSlider,SIGNAL(valueChanged(int)),this,SLOT(onLowSoundValuesChange(int)));
+
     mLowSoundSlider->setStyleSheet(
                 "QSlider::handle:horizontal { "
                 "background-image:url(:/img/setting/img_sound_progress_point.png);"
@@ -197,6 +199,8 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mCenSoundSlider->setGeometry(450,210,260,30);
     mCenSoundSlider->setOrientation(Qt::Horizontal);
 
+    connect(mCenSoundSlider,SIGNAL(valueChanged(int)),this,SLOT(onCenSoundValuesChange(int)));
+
     mCenSoundSlider->setStyleSheet(
                 "QSlider::handle:horizontal { "
                 "background-image:url(:/img/setting/img_sound_progress_point.png);"
@@ -236,6 +240,8 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mHeightSoundSlider = new QSlider(mBmpSound);
     mHeightSoundSlider->setGeometry(450,310,260,30);
     mHeightSoundSlider->setOrientation(Qt::Horizontal);
+
+    connect(mHeightSoundSlider,SIGNAL(valueChanged(int)),this,SLOT(onHeightSoundValuesChange(int)));
 
     mHeightSoundSlider->setStyleSheet(
                 "QSlider::handle:horizontal { "
@@ -289,6 +295,8 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mDisplaySlider->setGeometry(275,300,280,30);
     mDisplaySlider->setOrientation(Qt::Horizontal);
 
+    connect(mDisplaySlider,SIGNAL(valueChanged(int)),this,SLOT(onBrightnessValuesChange(int)));
+
     mDisplaySlider->setStyleSheet(
                 "QSlider::handle:horizontal { "
                 "background-image:url(:/img/setting/img_sound_progress_point.png);"
@@ -315,6 +323,9 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mListWidget->setFrameShape(QListWidget::NoFrame);
     //设置无焦点
     mListWidget->setFocusPolicy(Qt::NoFocus);
+    //按下事件
+    connect(mListWidget,SIGNAL(pressed(QModelIndex)),this,SLOT(onSystemListLanguagePressed(QModelIndex)));
+
 
     QStringList mList;
     mList << "Change Language ENGLISH";
@@ -345,12 +356,17 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
         mListWidget->addItem(itemLine);
     }
 
+    //init
+    this->initLanguageDialog();
     //def widget
     selectTab(0);
 }
 
 void SettingsPrivate::selectTab(int index)
 {
+    if(mLanguageDialog->isEnabled()){
+        mLanguageDialog->hide();
+    }
     if(index == 0){
         mBmpSound->setVisible(true);
         mBmpBrightness->setVisible(false);
@@ -377,6 +393,55 @@ void SettingsPrivate::selectTab(int index)
         mBmpSoundTab->setNormalBmpPath(":/img/setting/img_btn_tab_a.png");
         mBmpBrightnessTab->setNormalBmpPath(":/img/setting/img_btn_tab_a.png");
         mBmpSystemTab->setNormalBmpPath(":/img/setting/img_btn_tab_b.png");
+    }
+}
+
+//init dialog
+void SettingsPrivate::initLanguageDialog()
+{
+    QFont font("Microsoft YaHei");
+    font.setPointSize(16);
+    QPalette pl;
+    pl.setColor(QPalette::WindowText,Qt::blue);
+    const int DIALOG_W = 120;
+    const int DIALOG_H = 240;
+    mLanguageDialog = new QDialog(mBmpSystem);
+    mLanguageDialog->resize(350,80);
+    mLanguageDialog->setFixedSize(DIALOG_W,DIALOG_H);
+    mLanguageDialog->setGeometry(350,100,DIALOG_W,DIALOG_H);
+    mLanguageDialog->setWindowFlags(Qt::FramelessWindowHint);
+
+    QListWidget * mLanguageListWidget = new QListWidget(mLanguageDialog);
+    mLanguageListWidget->resize(DIALOG_W,DIALOG_H);
+
+    connect(mLanguageListWidget,SIGNAL(pressed(QModelIndex)),this,SLOT(onLanguageSelectPressed(QModelIndex)));
+
+    QStringList list;
+    list << "英语";
+    list << "汉语";
+    list << "葡萄牙语";
+    list << "西班牙语";
+    list << "俄语";
+    list << "法语";
+    list << "阿拉伯语";
+    list << "简体中文";
+    list << "泰语";
+
+    for (int i = 0; i < list.size(); ++i) {
+        QListWidgetItem*item = new QListWidgetItem();
+        item->setText(list.at(i));
+        //居中
+        //item->setTextAlignment(Qt::AlignCenter);
+        item->setFont(font);
+        item->setTextColor(Qt::black);
+
+        //分割线
+        QListWidgetItem*itemLine=new QListWidgetItem;
+        itemLine->setBackground(QBrush(QPixmap(":/img/setting/img_setting_list_line.png")));
+        itemLine->setSizeHint(QSize(20, 1.5));
+
+        mLanguageListWidget->addItem(item);
+        mLanguageListWidget->addItem(itemLine);
     }
 }
 
@@ -452,6 +517,41 @@ void SettingsPrivate::onSeatPointUp()
     isEventSeatPoint = false;
 }
 
+void SettingsPrivate::onLowSoundValuesChange(int values)
+{
+    qDebug()<< "Low" << values;
+}
+
+void SettingsPrivate::onCenSoundValuesChange(int values)
+{
+    qDebug()<< "Cen" << values;
+}
+
+void SettingsPrivate::onHeightSoundValuesChange(int values)
+{
+    qDebug()<< "Height" << values;
+}
+
+void SettingsPrivate::onBrightnessValuesChange(int values)
+{
+    qDebug()<< "Brightness" << values;
+}
+
+void SettingsPrivate::onSystemListLanguagePressed(QModelIndex  index)
+{
+    qDebug() << index.row();
+    switch(index.row()){
+    case 0:
+        mLanguageDialog->show();
+        break;
+    }
+}
+
+void SettingsPrivate::onLanguageSelectPressed(QModelIndex index)
+{
+    qDebug() << index.row();
+}
+
 //------------------------------------------------------------
 void SettingsPrivate::onBmpSoundWidgetMove(QMouseEvent *e)
 {
@@ -463,12 +563,6 @@ void SettingsPrivate::onBmpSoundWidgetMove(QMouseEvent *e)
         }
     }
 }
-
-void SettingsPrivate::onBmpBrightnessWidgetMove(QMouseEvent *e)
-{
-
-}
-
 
 //----------------------------------
 
