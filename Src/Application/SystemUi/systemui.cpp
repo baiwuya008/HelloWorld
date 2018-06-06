@@ -33,10 +33,6 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
     //start system time timer
     syTimer->start(1000);
 
-    this->initSoundLine(parent,16);
-    this->initSoundLine(parent,12);
-    this->initSoundLine(parent,30);
-    this->initSoundLine(parent,5);
     this->initSoundLine(parent,18);
 
 #if (STATEBAR_WITH_BACK == 1 && STATEBAR_WITH_HOME == 1)
