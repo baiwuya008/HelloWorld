@@ -99,11 +99,12 @@ HEADERS  += mainwindow.h \
 RESOURCES += \
     Res/test.qrc \
     Res/simulation.qrc \
-    Res/multimedia.qrc
-
-DISTFILES += \
+    Res/multimedia.qrc \
     Res/settingsrc.qrc \
     Res/commonsrc.qrc \
     Res/systemuisrc.qrc \
     Res/launchersrc.qrc
+
+#DISTFILES += \
+
 
