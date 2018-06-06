@@ -24,6 +24,7 @@ bool Application::setSimulation(Simulation *simu)
 {
     Q_D(Application);
     d->mSimulation = simu;
+    return true;
 }
 #endif
 
