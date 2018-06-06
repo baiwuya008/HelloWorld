@@ -13,7 +13,10 @@ private:
     MusicListItem* const q_ptr;
     void initializeBasicWidget(QWidget *parent);
     void initLabText(QLabel *text);
+    void initLabText(QLabel *text, int size);
     void refreshItemView(QString iconPath, QString title, QString linePath);
+    void initFileItem(QString iconPath, QString linePath, QString filePath);
+    void refreshFileItem(bool isFocus);
 
     inline QPixmap getPixmap(QString path) {
         QImage image;
@@ -31,6 +34,8 @@ private:
 
     int mWidth = 0;
     int mHeight = 0;
+    QString mFilePath;
+    QString mFileName;
 
     QVBoxLayout *mainLayout = NULL;
     QHBoxLayout *infoLayout = NULL;
@@ -63,6 +68,21 @@ void MusicListItem::setItemInfo(QString iconPath, QString title, QString linePat
     d->refreshItemView(iconPath, title, linePath);
 }
 
+void MusicListItem::setItemFile(QString iconPath, QString linePath, QString filePath)
+{
+    Q_D(MusicListItem);
+    d->initFileItem(iconPath, linePath, filePath);
+}
+
+void MusicListItem::setSize(int size)
+{
+    Q_D(MusicListItem);
+    d->initLabText(d->name, size);
+}
+
+
+
+
 void MusicListItemPrivate::refreshItemView(QString iconPath, QString title, QString linePath) {
     icon->setPixmap(getPixmap(iconPath));
     name->setText(title);
@@ -73,6 +93,8 @@ void MusicListItemPrivate::refreshItemView(QString iconPath, QString title, QStr
         line->setVisible(false);
     }
 }
+
+
 
 void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
     mainLayout = new QVBoxLayout;
@@ -86,22 +108,60 @@ void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
     name = new QLabel(parent);
     name->setContentsMargins(5, 0, 0, 0);
     initLabText(name);
-    line = new QLabel(parent);
-    line->setContentsMargins(0, 5, 0, 0);
     infoLayout->addWidget(icon, 0, Qt::AlignVCenter);
     infoLayout->addWidget(name,  0, Qt::AlignVCenter);
     infoLayout->addStretch();
+
+    line = new QLabel;
+    line->setContentsMargins(0, 0, 0, 0);
 
     mainLayout->addLayout(infoLayout);
     mainLayout->addWidget(line);
     mainLayout->addStretch();
 }
 
+void MusicListItem::refreshItemFile(bool isFocus)
+{
+    Q_D(MusicListItem);
+    d->refreshFileItem(isFocus);
+}
+
+QString MusicListItem::getPath()
+{
+    Q_D(MusicListItem);
+    return d->mFilePath;
+}
+
+void MusicListItemPrivate::initFileItem(QString iconPath, QString linePath, QString filePath)
+{
+    this->mFilePath = filePath;
+    this->mFileName = filePath;
+
+    refreshItemView(iconPath, mFileName, linePath);
+    initLabText(name, 18);
+    refreshFileItem(false);
+    infoLayout->setContentsMargins(51, 0, 0, 0);
+}
+
+void MusicListItemPrivate::refreshFileItem(bool isFocus)
+{
+    if (isFocus) {
+        name->setStyleSheet("color:#03d396;");
+    }else {
+        name->setStyleSheet("color:white;");
+    }
+}
+
 
 void MusicListItemPrivate::initLabText(QLabel *text) {
+    initLabText(text, 15);
+}
+
+void MusicListItemPrivate::initLabText(QLabel *text, int size)
+{
     //设置字号
-    QFont ft;
-    ft.setPointSize(15);
+    QFont ft("Microsoft YaHei");
+    ft.setPointSize(size);
     text->setFont(ft);
     //设置颜色
     QPalette pa;

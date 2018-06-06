@@ -36,6 +36,7 @@ private:
     QList<QString> mList;
     bool isList = false;
     int position = 0;
+    int aniTime = 100;
 };
 
 RotateWidget::RotateWidget(QWidget *parent)
@@ -137,6 +138,12 @@ void RotateWidget::stop() {
     update();
 }
 
+void RotateWidget::setAniTime(int time)
+{
+     Q_D(RotateWidget);
+    d->aniTime = time;
+}
+
 void RotateWidget::onTimeout()
 {
     Q_D(RotateWidget);
@@ -150,8 +157,11 @@ void RotateWidget::onTimeout()
 bool RotateWidgetPrivate::rotate() {
     if (isStart) {
         position += 1;
-        position = position % (mList.size()-1);
-        currentRotateAngle += 5;
+        if (mList.size() > 0) {
+             position = position % (mList.size());
+        }
+
+        currentRotateAngle += 3;
         currentRotateAngle = currentRotateAngle % 360;
     }else {
         currentRotateAngle = 0;
@@ -169,7 +179,7 @@ void RotateWidgetPrivate::onStart(QString path)
         mPath = path;
     }
 
-    mRotateTimer->start(100);
+    mRotateTimer->start(aniTime);
 }
 
 

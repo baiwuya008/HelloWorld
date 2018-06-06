@@ -41,6 +41,7 @@ public:
 
 private slots:
     void onClick();
+    void onSelectItem(QString filePath, int index);
 
 private:
     Q_DECLARE_PRIVATE(Music)

@@ -107,8 +107,16 @@ void MusicPrivate::initializePlayView(QWidget *parent) {
 void MusicPrivate::initializeListView(QWidget *parent) {
     mMusicListWidget = new MusicListWidget(parent);
     mStackedWidget->insertWidget(1, mMusicListWidget);
+
+    Q_Q(Music);
+    Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
+    QObject::connect(mMusicListWidget, SIGNAL(selectItem(QString,int)), q, SLOT(onSelectItem(QString,int)), type);
 }
 
+void Music::onSelectItem(QString filePath, int index) {
+    qDebug() << "onSelectItem filePath = " << filePath
+             << "; index = " << index;
+}
 
 void MusicPrivate::setWidgetBackground(QWidget *widget, QString path) {
     //设置背景图片
@@ -133,7 +141,7 @@ Music::Music(QObject *parent):
     Activity(parent),
     d_ptr(new MusicPrivate(this))
 {
-//    setFixedSize(QSize(800, 435));
+    //    setFixedSize(QSize(800, 435));
 }
 
 void Music::onCreate(QWidget *parent)

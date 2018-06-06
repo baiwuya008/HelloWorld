@@ -3,7 +3,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QDebug>
-#include "Src\CommonUserWidget\BmpButton.h"
+#include "Src/CommonUserWidget\BmpButton.h"
 
 
 class MusicProgressWidgetPrivate {
@@ -71,7 +71,6 @@ void MusicProgressWidgetPrivate::initializeBasicWidget(QWidget *parent) {
     initLabText(endTimeLabel);
     mainLayout->addWidget(endTimeLabel, Qt::AlignVCenter);
     endTimeLabel->setContentsMargins(5, 0, 0, 0);
-    //    mainLayout->addStretch();
 
 
     modeBtn = new BmpButton(parent);
@@ -156,7 +155,8 @@ void MusicProgressWidgetPrivate::switchSliderMode() {
         startTimeLabel->setVisible(true);
         break;
     case SLIDER_MODE::BT_MUSIC:
-
+        modeBtn->setVisible(false);
+        startTimeLabel->setVisible(false);
         break;
     }
 
@@ -164,7 +164,7 @@ void MusicProgressWidgetPrivate::switchSliderMode() {
 
 void MusicProgressWidgetPrivate::initLabText(QLabel *text) {
     //设置字号
-    QFont ft;
+    QFont ft("Microsoft YaHei");
     ft.setPointSize(15);
     text->setFont(ft);
     //设置颜色

@@ -29,6 +29,7 @@ public slots:
    void start(QString path);
    void start();
    void stop();
+   void setAniTime(int time);
 private slots:
    void onTimeout();
 private:

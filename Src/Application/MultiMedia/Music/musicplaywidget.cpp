@@ -6,7 +6,7 @@
 #include "musiclistitem.h"
 #include "musicprogresswidget.h"
 #include "musicclickwidget.h"
-#include "Src\CommonUserWidget\rotatewidget.h"
+#include "Src/CommonUserWidget\rotatewidget.h"
 #include <QDebug>
 #include <QList>
 
@@ -16,6 +16,12 @@ class MusicPlayWidgetPrivate {
 public:
     explicit MusicPlayWidgetPrivate(MusicPlayWidget *parent);
     ~MusicPlayWidgetPrivate();
+
+private slots:
+    void setCurrentPlayMode(int mode);
+    void onPlay();
+    void onPause();
+
 private:
     Q_DECLARE_PUBLIC(MusicPlayWidget)
     MusicPlayWidget* const q_ptr;
@@ -32,12 +38,9 @@ private:
     RotateWidget *mMusicPlayIcon =NULL;
     RotateWidget *mMusicPlayAni = NULL;
 
-
     PLAY_MODE mCurrentPlayMode = LOOP;
-    void setCurrentPlayMode(int mode);
 
-    void onPlay();
-    void onPause();
+
 };
 
 
@@ -91,6 +94,7 @@ void MusicPlayWidgetPrivate::initializeRightView(QWidget *parent) {
     mMusicPlayIcon->setFixedSize(QSize(219, 219));
     mMusicPlayIcon->setGeometry(528, 48, 0, 0);
     mMusicPlayIcon->init(":/Res/drawable/multimedia/music_play_icon.png");
+
 
     mMusicPlayAni = new RotateWidget(parent);
     mMusicPlayAni->setFixedSize(QSize(110, 95));
