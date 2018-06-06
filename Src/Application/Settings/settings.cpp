@@ -143,15 +143,19 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mLowSoundRight->setGeometry(710,110,30,30);
 
     //低 面
-    mLowSoundBg= new BmpWidget(mBmpSound);
-    mLowSoundBg->setBackgroundBmpPath(":/img/setting/img_sound_progress_bg.png");
-    mLowSoundBg->setGeometry(440,110,280,30);
+    //mLowSoundBg= new BmpWidget(mBmpSound);
+    //mLowSoundBg->setBackgroundBmpPath(":/img/setting/img_sound_progress_bg.png");
+    //mLowSoundBg->setGeometry(440,110,280,30);
 
     //低 点
-    mLowSoundPoint= new BmpButton(mBmpSound);
-    mLowSoundPoint->setNormalBmpPath(":/img/setting/img_sound_progress_point.png");
-    mLowSoundPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
-    mLowSoundPoint->setGeometry(460,110,30,30);
+    //mLowSoundPoint= new BmpButton(mBmpSound);
+    //mLowSoundPoint->setNormalBmpPath(":/img/setting/img_sound_progress_point.png");
+    //mLowSoundPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
+    //mLowSoundPoint->setGeometry(460,110,30,30);
+
+    QSlider* mLowSoundSlider = new QSlider(mBmpSound);
+    mLowSoundSlider->setGeometry(450,110,260,30);
+    mLowSoundSlider->setOrientation(Qt::Horizontal);
 
     //低 字
     mLabelLowSound = new QLabel(mBmpSound);
@@ -173,15 +177,19 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mCenSoundRight->setGeometry(710,210,30,30);
 
     //中 面
-    mCenSoundBg= new BmpWidget(mBmpSound);
-    mCenSoundBg->setBackgroundBmpPath(":/img/setting/img_sound_progress_bg.png");
-    mCenSoundBg->setGeometry(440,210,280,30);
+    //mCenSoundBg= new BmpWidget(mBmpSound);
+    //mCenSoundBg->setBackgroundBmpPath(":/img/setting/img_sound_progress_bg.png");
+    //mCenSoundBg->setGeometry(440,210,260,30);
 
     //中 点
-    mCenSoundPoint= new BmpButton(mBmpSound);
-    mCenSoundPoint->setNormalBmpPath(":/img/setting/img_sound_progress_point.png");
-    mCenSoundPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
-    mCenSoundPoint->setGeometry(550,210,30,30);
+    //mCenSoundPoint= new BmpButton(mBmpSound);
+    //mCenSoundPoint->setNormalBmpPath(":/img/setting/img_sound_progress_point.png");
+    //mCenSoundPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
+    //mCenSoundPoint->setGeometry(550,210,30,30);
+
+    QSlider* mCenSoundSlider = new QSlider(mBmpSound);
+    mCenSoundSlider->setGeometry(450,210,260,30);
+    mCenSoundSlider->setOrientation(Qt::Horizontal);
 
     //中 字
     mLabelCenSound = new QLabel(mBmpSound);
@@ -203,15 +211,19 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mHeightSoundRight->setGeometry(710,310,30,30);
 
     //高 面
-    mHeightSoundBg= new BmpWidget(mBmpSound);
-    mHeightSoundBg->setBackgroundBmpPath(":/img/setting/img_sound_progress_bg.png");
-    mHeightSoundBg->setGeometry(440,310,280,30);
+    //mHeightSoundBg= new BmpWidget(mBmpSound);
+    //mHeightSoundBg->setBackgroundBmpPath(":/img/setting/img_sound_progress_bg.png");
+    //mHeightSoundBg->setGeometry(440,310,280,30);
 
     //高 点
-    mHeightSoundPoint= new BmpButton(mBmpSound);
-    mHeightSoundPoint->setNormalBmpPath(":/img/setting/img_sound_progress_point.png");
-    mHeightSoundPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
-    mHeightSoundPoint->setGeometry(600,310,30,30);
+    //mHeightSoundPoint= new BmpButton(mBmpSound);
+    //mHeightSoundPoint->setNormalBmpPath(":/img/setting/img_sound_progress_point.png");
+    //mHeightSoundPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
+    //mHeightSoundPoint->setGeometry(600,310,30,30);
+
+    QSlider* mHeightSoundSlider = new QSlider(mBmpSound);
+    mHeightSoundSlider->setGeometry(450,310,260,30);
+    mHeightSoundSlider->setOrientation(Qt::Horizontal);
 
     //高 字
     mLabelHeightSound = new QLabel(mBmpSound);
@@ -244,15 +256,27 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mDisplayRight->setGeometry(566,300,30,30);
 
     //亮度 面
-    mDisplayBg= new BmpWidget(mBmpBrightness);
-    mDisplayBg->setBackgroundBmpPath(":/img/setting/img_sound_progress_bg.png");
-    mDisplayBg->setGeometry(260,300,280,30);
+    //mDisplayBg= new BmpWidget(mBmpBrightness);
+    //mDisplayBg->setBackgroundBmpPath(":/img/setting/img_sound_progress_bg.png");
+    //mDisplayBg->setGeometry(260,300,280,30);
 
     //亮度 点
-    mDisplayPoint= new BmpButton(mBmpBrightness);
-    mDisplayPoint->setNormalBmpPath(":/img/setting/img_sound_progress_point.png");
-    mDisplayPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
-    mDisplayPoint->setGeometry(500,300,30,30);
+    //mDisplayPoint= new BmpButton(mBmpBrightness);
+    //mDisplayPoint->setNormalBmpPath(":/img/setting/img_sound_progress_point.png");
+    //mDisplayPoint->setPressBmpPath(":/img/setting/img_sound_progress_point.png");
+    //mDisplayPoint->setGeometry(500,300,30,30);
+
+    //面 点 以面的坐标
+    QSlider* mDisplaySlider = new QSlider(mBmpBrightness);
+    mDisplaySlider->setGeometry(280,300,280,30);
+    mDisplaySlider->setOrientation(Qt::Horizontal);
+
+    mDisplaySlider->setStyleSheet(
+                "QSlider::handle:horizontal { "
+                "background-image:url(:/img/setting/img_sound_progress_point.png);"
+                "}"
+                );
+
 
     //亮度 字
     mLabelmDisplay = new QLabel(mBmpBrightness);
