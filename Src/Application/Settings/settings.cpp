@@ -326,37 +326,8 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     //按下事件
     connect(mListWidget,SIGNAL(pressed(QModelIndex)),this,SLOT(onSystemListLanguagePressed(QModelIndex)));
 
+    this->initSystemList("ENGLIST");
 
-    QStringList mList;
-    mList << "Change Language ENGLISH";
-    mList << "SW Version (MI)";
-    mList << "BT Version";
-    mList << "Time Format 12 Hours";
-    mList << "Time Setting";
-    mList << "Reset Bluetooth settings";
-
-    for (int i = 0; i < mList.size(); ++i) {
-        QListWidgetItem*item=new QListWidgetItem;
-        //分割线
-        QListWidgetItem*itemLine=new QListWidgetItem;
-        itemLine->setBackground(QBrush(QPixmap(":/img/setting/img_setting_list_line.png")));
-        itemLine->setSizeHint(QSize(20, 1.5));
-        //居中
-        item->setTextAlignment(Qt::AlignCenter);
-        //对齐
-
-        //行高
-        item->setSizeHint(QSize(60, 40));
-        //去除选中效果
-        item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
-        item->setFont(font);
-        item->setTextColor(Qt::white);
-        item->setText(mList.at(i));
-        mListWidget->addItem(item);
-        mListWidget->addItem(itemLine);
-    }
-
-    //init
     this->initLanguageDialog();
     //def widget
     selectTab(0);
@@ -416,20 +387,19 @@ void SettingsPrivate::initLanguageDialog()
 
     connect(mLanguageListWidget,SIGNAL(pressed(QModelIndex)),this,SLOT(onLanguageSelectPressed(QModelIndex)));
 
-    QStringList list;
-    list << "英语";
-    list << "汉语";
-    list << "葡萄牙语";
-    list << "西班牙语";
-    list << "俄语";
-    list << "法语";
-    list << "阿拉伯语";
-    list << "简体中文";
-    list << "泰语";
+    listLanguage << "英语";
+    listLanguage << "汉语";
+    listLanguage << "葡萄牙语";
+    listLanguage << "西班牙语";
+    listLanguage << "俄语";
+    listLanguage << "法语";
+    listLanguage << "阿拉伯语";
+    listLanguage << "简体中文";
+    listLanguage << "泰语";
 
-    for (int i = 0; i < list.size(); ++i) {
+    for (int i = 0; i < listLanguage.size(); ++i) {
         QListWidgetItem*item = new QListWidgetItem();
-        item->setText(list.at(i));
+        item->setText(listLanguage.at(i));
         //居中
         //item->setTextAlignment(Qt::AlignCenter);
         item->setFont(font);
@@ -442,6 +412,48 @@ void SettingsPrivate::initLanguageDialog()
 
         mLanguageListWidget->addItem(item);
         mLanguageListWidget->addItem(itemLine);
+    }
+}
+
+//init list
+void SettingsPrivate::initSystemList(QString language)
+{
+    qDebug() << "language:" <<language;
+    QFont font("Microsoft YaHei");
+    font.setPointSize(18);
+
+    if(mListSystem.size() > 0){
+        mListSystem.clear();
+    }
+
+    mListWidget->clear();
+
+    mListSystem << "Change Language " + language;
+    mListSystem << "SW Version (MI)";
+    mListSystem << "BT Version";
+    mListSystem << "Time Format 12 Hours";
+    mListSystem << "Time Setting";
+    mListSystem << "Reset Bluetooth settings";
+
+    for (int i = 0; i < mListSystem.size(); ++i) {
+        QListWidgetItem * itemSystemList = new QListWidgetItem;
+        //分割线
+        QListWidgetItem * itemLine = new QListWidgetItem;
+        itemLine->setBackground(QBrush(QPixmap(":/img/setting/img_setting_list_line.png")));
+        itemLine->setSizeHint(QSize(20, 1.5));
+        //居中
+        itemSystemList->setTextAlignment(Qt::AlignCenter);
+        //对齐
+
+        //行高
+        itemSystemList->setSizeHint(QSize(60, 40));
+        //去除选中效果
+        itemSystemList->setFlags(itemSystemList->flags() & ~Qt::ItemIsSelectable);
+        itemSystemList->setFont(font);
+        itemSystemList->setTextColor(Qt::white);
+        itemSystemList->setText(mListSystem.at(i));
+        mListWidget->addItem(itemSystemList);
+        mListWidget->addItem(itemLine);
     }
 }
 
@@ -550,6 +562,11 @@ void SettingsPrivate::onSystemListLanguagePressed(QModelIndex  index)
 void SettingsPrivate::onLanguageSelectPressed(QModelIndex index)
 {
     qDebug() << index.row();
+    // 0 2 4 6 8 10 12 14 16
+    // 0 1 2 3 4  5  6  7  8
+    qDebug() << listLanguage.at(index.row()/2);
+    initSystemList(listLanguage.at(index.row()/2));
+    mLanguageDialog->hide();
 }
 
 //------------------------------------------------------------

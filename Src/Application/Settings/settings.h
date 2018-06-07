@@ -51,6 +51,7 @@ public:
 private:
     void selectTab(int index);
     void initLanguageDialog();
+    void initSystemList(QString language);
 
 private:
     Q_DECLARE_PUBLIC(Settings)
@@ -123,7 +124,10 @@ private:
     QSlider* mHeightSoundSlider;
     QSlider* mDisplaySlider;
 
+    QStringList mListSystem;
+
     QDialog* mLanguageDialog;
+    QStringList listLanguage;
 
 private slots:
     void onBtnTestRelease();
