@@ -117,8 +117,6 @@ void MusicListWidgetPrivate::initializeClickView(QWidget *parent) {
     nextBtn->setPressBmpPath(":/Res/drawable/multimedia/music_list_next_focus.png");
     nextBtn->setGeometry(601, 0, 0, 0);
 
-
-
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
     QObject::connect(prevBtn, SIGNAL(released()), parent, SLOT(prevFile()), type);
     QObject::connect(nextBtn, SIGNAL(released()), parent, SLOT(nextFile()), type);

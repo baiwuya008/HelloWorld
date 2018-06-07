@@ -11,6 +11,14 @@ void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
 {
     Q_Q(Systemui);
 
+    //读取时间格式
+    QSettings settings;
+    int format = settings.value("time").toInt();
+    qDebug() << "init format" << format;
+    if(format == 0){
+        settings.setValue("time",24);
+    }
+
     mBackground = new BmpWidget(parent); //设置背景图片
     mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/topbar_bg.png"));
     mBackground->setGeometry(0,0,800,45);
@@ -121,7 +129,13 @@ void SystemuiPrivate::getSyTime()
 {
     currentTime = QTime::currentTime();
     mLo = QLocale::English;
-    time = mLo.toString(currentTime,"HH:mm AP");
+    int format = settings.value("time").toInt();
+    //qDebug() << "getSyTime" << format;
+    if(format == 24){
+        time = mLo.toString(currentTime,"HH:mm AP");
+    }else{
+        time = mLo.toString(currentTime,"hh:mm AP");
+    }
     mSyTime->setText(time);
 }
 

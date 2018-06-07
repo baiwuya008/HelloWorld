@@ -418,6 +418,7 @@ void SettingsPrivate::initLanguageDialog()
 //init list
 void SettingsPrivate::initSystemList(QString language)
 {
+    currentLanguage = language;
     qDebug() << "language:" <<language;
     QFont font("Microsoft YaHei");
     font.setPointSize(18);
@@ -431,7 +432,16 @@ void SettingsPrivate::initSystemList(QString language)
     mListSystem << "Change Language " + language;
     mListSystem << "SW Version (MI)";
     mListSystem << "BT Version";
-    mListSystem << "Time Format 12 Hours";
+
+    int format = settings.value("time").toInt();
+    qDebug()<<"initSystemList"<<format;
+    if(format == 0){
+        mListSystem << "Time Format 24 Hours";
+    }else if(format == 24){
+        mListSystem << "Time Format 24 Hours";
+    }else{
+        mListSystem << "Time Format 12 Hours";
+    }
     mListSystem << "Time Setting";
     mListSystem << "Reset Bluetooth settings";
 
@@ -555,6 +565,22 @@ void SettingsPrivate::onSystemListLanguagePressed(QModelIndex  index)
     switch(index.row()){
     case 0:
         mLanguageDialog->show();
+        break;
+    case 6:
+        int format = settings.value("time").toInt();
+        qDebug() << "onSystemListLanguagePressed" << format;
+        if(format == 24){
+            format = 12;
+        }else{
+            format = 24;
+        }
+        //记录
+        settings.setValue("time", format);
+        //更新条目
+        initSystemList(currentLanguage);
+        //发送
+        //Q_Q(Settings);
+        //q->sendBroadcast(AppType::Settings,);
         break;
     }
 }

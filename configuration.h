@@ -5,6 +5,4 @@
 #define STATEBAR_WITH_BACK  1  // 0   // 1 mean have back button then 0 is not
 #define STATEBAR_WITH_HOME  1  // 0   // 1 mean have home button then 0 is not
 
-static int TIME_FORMAT = 24; // 12 24 system time format
-
 #endif // CONFIGURATION_H

@@ -1,6 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 #include "Src/Framework/Base/Core/activity.h"
+#include "configuration.h"
 
 #include <QMouseEvent>
 #include <QLabel>
@@ -9,6 +10,8 @@
 #include <QModelIndex>
 #include <QDialog>
 #include <QMenu>
+#include <QSettings>
+#include <QCoreApplication>
 
 class SettingsPrivate;
 class Settings : public Activity
@@ -129,6 +132,11 @@ private:
     QDialog* mLanguageDialog;
     QStringList listLanguage;
 
+    //当前语言
+    QString currentLanguage;
+
+    QSettings settings;
+
 private slots:
     void onBtnTestRelease();
 
@@ -159,7 +167,6 @@ private slots:
 
     //------------
     void onBmpSoundWidgetMove(QMouseEvent*e);
-
 };
 
 #endif // SETTINGS_H

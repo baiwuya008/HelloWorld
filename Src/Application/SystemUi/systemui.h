@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QFont>
 #include <QList>
+#include <QSettings>
 
 class SystemuiPrivate;
 class Systemui : public Activity
@@ -69,6 +70,7 @@ private:
     BmpWidget * mBmpSoundIcon ;
 
     QList<BmpWidget *>mList;
+    QSettings settings;
 
 private:
     void initSoundLine(QWidget *parent,int index);
