@@ -188,7 +188,6 @@ void MusicPlayWidgetPrivate::initializeBasicWidget(QWidget *parent) {
     initializeClickView(parent);
 }
 
-
 void MusicPlayWidget::resizeEvent(QResizeEvent *event) {
 }
 

@@ -65,6 +65,8 @@ private:
     Q_DECLARE_PUBLIC(Music)
     Music* const q_ptr;
 
+     void setWidgetBackground(QWidget *widget, QString path);
+
     void initializeToolsWidget(QWidget *parent);
     void initializePlayView(QWidget *parent);
     void initializeListView(QWidget *parent);

@@ -60,6 +60,7 @@ private:
     Q_DECLARE_PUBLIC(Video)
     Video* const q_ptr;
 
+    void setWidgetBackground(QWidget *widget, QString path);
 
     void initializeToolsWidget(QWidget *parent);
     void initializeVideoPlay(QWidget *parent);
