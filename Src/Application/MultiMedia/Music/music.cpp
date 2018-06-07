@@ -24,75 +24,31 @@ void MusicPrivate::initializeBasicWidget(QWidget *parent)
     //   q->connect(mBtnTest,SIGNAL(released()),this,SLOT(onBtnTestRelease()));
 
 
-    initializeToolsWidget(parent);
+
 
 
     mStackedWidget = new QStackedWidget(parent);
     mStackedWidget->setFixedSize(QSize(800, 435));
     mStackedWidget->setGeometry(0, 50, 0, 0);
 
+    initializeToolsWidget(parent);
     initializePlayView(parent);
     initializeListView(parent);
 
     setCurrentPageView(0);
-
 }
 
 
 void MusicPrivate::initializeToolsWidget(QWidget *parent) {
-    Q_Q(Music);
-
-    QWidget *toolsWidget = new QWidget(parent);
-    QHBoxLayout *toolsLayout = new QHBoxLayout;
-    toolsWidget->setFixedSize(QSize(800, 50));
-    toolsWidget->setLayout(toolsLayout);
-    setWidgetBackground(toolsWidget, ":/Res/drawable/multimedia/main_second_line.png");
-
-
-    QPushButton *musicBtn = new QPushButton;
-    musicBtn->setFixedSize(QSize(100, 40));
-    musicBtn->setText("音乐");
-    musicBtn->setObjectName("music_play");
-    toolsLayout->addWidget(musicBtn, 0, Qt::AlignVCenter);
-    Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
-    QObject::connect(musicBtn, SIGNAL(clicked(bool)), q, SLOT(onClick()), type);
-    btnList.append(musicBtn);
-
-    QPushButton *listBtn = new QPushButton;
-    listBtn->setObjectName("music_list");
-    listBtn->setFixedSize(QSize(100, 40));
-    listBtn->setText("列表");
-    toolsLayout->addWidget(listBtn, 0, Qt::AlignVCenter);
-    QObject::connect(listBtn, SIGNAL(clicked(bool)), q, SLOT(onClick()), type);
-    btnList.append(listBtn);
-}
-
-void MusicPrivate::onClick(QString objectName) {
-    if (!objectName.compare("music_play")) {
-        mStackedWidget->setCurrentIndex(0);
-        setCurrentPageView(0);
-    }else if (!objectName.compare("music_list")) {
-        mStackedWidget->setCurrentIndex(1);
-        setCurrentPageView(1);
-    }
-}
-
-void Music::onClick() {
-    QPushButton* btn= qobject_cast<QPushButton*>(sender());
-    qDebug() << "onClick---objectName = "+btn->objectName();
-    Q_D(Music);
-    d->onClick(btn->objectName());
+    QList<QString> list;
+    list.append("音乐");
+    list.append("列表");
+    mMediaToolsWidget = new MediaToolsWidget(parent, list);
+    connect(mMediaToolsWidget, SIGNAL(onItemClick(int)), this, SLOT(setCurrentPageView(int)));
 }
 
 void MusicPrivate::setCurrentPageView(int tabIndex) {
-    for (int i = 0; i < btnList.size(); i++) {
-        if (tabIndex == i) {
-            btnList.at(i)->setStyleSheet("color: red");
-        }else {
-            btnList.at(i)->setStyleSheet("color: black");
-        }
-    }
-
+    mStackedWidget->setCurrentIndex(tabIndex);
 }
 
 
@@ -107,27 +63,14 @@ void MusicPrivate::initializePlayView(QWidget *parent) {
 void MusicPrivate::initializeListView(QWidget *parent) {
     mMusicListWidget = new MusicListWidget(parent);
     mStackedWidget->insertWidget(1, mMusicListWidget);
-
-    Q_Q(Music);
-    Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
-    QObject::connect(mMusicListWidget, SIGNAL(selectItem(QString,int)), q, SLOT(onSelectItem(QString,int)), type);
+    connect(mMusicListWidget, SIGNAL(selectItem(QString,int)), this, SLOT(onSelectItem(QString,int)));
 }
 
-void Music::onSelectItem(QString filePath, int index) {
+void MusicPrivate::onSelectItem(QString filePath, int index) {
     qDebug() << "onSelectItem filePath = " << filePath
              << "; index = " << index;
 }
 
-void MusicPrivate::setWidgetBackground(QWidget *widget, QString path) {
-    //设置背景图片
-    widget->setAutoFillBackground(true); // 这句要加上, 否则可能显示不出背景图.
-    QPalette palette = widget->palette();
-    palette.setBrush(QPalette::Window,
-                     QBrush(QPixmap(path).scaled(widget->size(),
-                                                 Qt::IgnoreAspectRatio,
-                                                 Qt::SmoothTransformation)));
-    widget->setPalette(palette);
-}
 
 void MusicPrivate::onBtnTestRelease()
 {

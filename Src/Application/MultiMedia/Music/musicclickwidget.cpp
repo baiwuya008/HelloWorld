@@ -53,13 +53,13 @@ void MusicClickWidgetPrivate::initializeBasicWidget(QWidget *parent)
     playBtn->setFixedSize(QSize(268, 60));
     playBtn->setNormalBmpPath(":/Res/drawable/multimedia/music_play_normal.png");
     playBtn->setPressBmpPath(":/Res/drawable/multimedia/music_play_focus.png");
-    playBtn->setGeometry(268, 0, 0, 0);
+    playBtn->setGeometry(267, 0, 0, 0);
 
     nextBtn = new BmpButton(parent);
     nextBtn->setFixedSize(QSize(266, 60));
     nextBtn->setNormalBmpPath(":/Res/drawable/multimedia/music_next_normal.png");
     nextBtn->setPressBmpPath(":/Res/drawable/multimedia/music_next_focus .png");
-    nextBtn->setGeometry(538, 0, 0, 0);
+    nextBtn->setGeometry(536, 0, 0, 0);
 
 
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);

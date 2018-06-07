@@ -151,6 +151,7 @@ void MusicProgressWidgetPrivate::switchSliderMode() {
         modeBtn->setGeometry(680, 8, 0, 0);
         break;
     case SLIDER_MODE::VIDEO:
+        endTimeLabel->setText("60:00");
         modeBtn->setVisible(false);
         startTimeLabel->setVisible(true);
         break;

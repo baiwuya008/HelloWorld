@@ -16,6 +16,7 @@
 #include "musiclistwidget.h"
 #include "musicplaywidget.h"
 #include "musicprogresswidget.h"
+#include "Src/Application/MultiMedia/Tools/mediatoolswidget.h"
 
 
 class MusicPrivate;
@@ -40,8 +41,7 @@ public:
     void onReceiveCmd(AppType appType,OMessage &msg);
 
 private slots:
-    void onClick();
-    void onSelectItem(QString filePath, int index);
+
 
 private:
     Q_DECLARE_PRIVATE(Music)
@@ -58,23 +58,21 @@ public:
     ~MusicPrivate(){delete q_ptr;}
     void initializeBasicWidget(QWidget *parent);
 private slots:
-    void onClick(QString objectName);
+    void setCurrentPageView(int tabIndex);
+    void onSelectItem(QString filePath, int index);
 
 private:
     Q_DECLARE_PUBLIC(Music)
     Music* const q_ptr;
 
+    void initializeToolsWidget(QWidget *parent);
     void initializePlayView(QWidget *parent);
     void initializeListView(QWidget *parent);
+    MediaToolsWidget *mMediaToolsWidget = NULL;
     MusicPlayWidget *mMusicPlayWidget = NULL;
     MusicListWidget *mMusicListWidget = NULL;
     QStackedWidget *mStackedWidget = NULL;
 
-
-    void initializeToolsWidget(QWidget *parent);
-    void setWidgetBackground(QWidget *widget, QString path);
-    void setCurrentPageView(int tabIndex);
-    QList<QPushButton*> btnList;
 
     //----------
     BmpWidget *mBackground;
