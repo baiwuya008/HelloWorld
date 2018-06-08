@@ -329,6 +329,8 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     this->initSystemList("ENGLIST");
 
     this->initLanguageDialog();
+    this->initTimeSetDialog();
+    this->initResetBtDialog();
     //def widget
     selectTab(0);
 }
@@ -337,6 +339,12 @@ void SettingsPrivate::selectTab(int index)
 {
     if(mLanguageDialog->isEnabled()){
         mLanguageDialog->hide();
+    }
+    if(mReSetBtDialog->isEnabled()){
+        mReSetBtDialog->hide();
+    }
+    if(mTimeSetDialog->isEnabled()){
+        mTimeSetDialog->hide();
     }
     if(index == 0){
         mBmpSound->setVisible(true);
@@ -413,6 +421,29 @@ void SettingsPrivate::initLanguageDialog()
         mLanguageListWidget->addItem(item);
         mLanguageListWidget->addItem(itemLine);
     }
+}
+
+void SettingsPrivate::initTimeSetDialog()
+{
+    const int DIALOG_W = 350;
+    const int DIALOG_H = 150;
+    mTimeSetDialog = new QDialog(mBmpSystem);
+    mTimeSetDialog->resize(350,80);
+    mTimeSetDialog->setFixedSize(DIALOG_W,DIALOG_H);
+    mTimeSetDialog->setGeometry(350,100,DIALOG_W,DIALOG_H);
+    //mTimeSetDialog->setWindowFlags(Qt::FramelessWindowHint);
+
+}
+
+void SettingsPrivate::initResetBtDialog()
+{
+    const int DIALOG_W = 350;
+    const int DIALOG_H = 150;
+    mReSetBtDialog = new QDialog(mBmpSystem);
+    mReSetBtDialog->resize(350,80);
+    mReSetBtDialog->setFixedSize(DIALOG_W,DIALOG_H);
+    mReSetBtDialog->setGeometry(350,100,DIALOG_W,DIALOG_H);
+    //mReSetBtDialog->setWindowFlags(Qt::FramelessWindowHint);
 }
 
 //init list
@@ -566,16 +597,22 @@ void SettingsPrivate::onSystemListLanguagePressed(QModelIndex  index)
     case 0:
         mLanguageDialog->show();
         break;
+    case 8:
+        mTimeSetDialog->show();
+        break;
+    case 10:
+        mReSetBtDialog->show();
+        break;
     case 6:
-        int format = settings.value("time").toInt();
-        qDebug() << "onSystemListLanguagePressed" << format;
-        if(format == 24){
-            format = 12;
+        int formats = settings.value("time").toInt();
+        qDebug() << "onSystemListLanguagePressed" << formats;
+        if(formats == 24){
+            formats = 12;
         }else{
-            format = 24;
+            formats = 24;
         }
         //记录
-        settings.setValue("time", format);
+        settings.setValue("time", formats);
         //更新条目
         initSystemList(currentLanguage);
         //发送

@@ -54,6 +54,8 @@ public:
 private:
     void selectTab(int index);
     void initLanguageDialog();
+    void initTimeSetDialog();
+    void initResetBtDialog();
     void initSystemList(QString language);
 
 private:
@@ -131,6 +133,9 @@ private:
 
     QDialog* mLanguageDialog;
     QStringList listLanguage;
+
+    QDialog* mTimeSetDialog;
+    QDialog* mReSetBtDialog;
 
     //当前语言
     QString currentLanguage;
