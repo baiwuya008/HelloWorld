@@ -54,7 +54,6 @@ SOURCES += main.cpp\
     Src/CommonUserWidget/flowview.cpp \
     Src/CommonUserWidget/flowadapter.cpp \
     Src/Application/MultiMedia/Video/videoplaywidget.cpp \
-    Src/Application/MultiMedia/Video/videolistwidget.cpp \
     Src/Application/MultiMedia/Tools/mediatoolswidget.cpp
 
 HEADERS  += mainwindow.h \
@@ -101,7 +100,6 @@ HEADERS  += mainwindow.h \
     Src/CommonUserWidget/flowview.h \
     Src/CommonUserWidget/flowadapter.h \
     Src/Application/MultiMedia/Video/videoplaywidget.h \
-    Src/Application/MultiMedia/Video/videolistwidget.h \
     Src/Application/MultiMedia/Tools/mediatoolswidget.h
 
 
@@ -113,7 +111,8 @@ RESOURCES += \
     Res/settingsrc.qrc \
     Res/commonsrc.qrc \
     Res/systemuisrc.qrc \
-    Res/launchersrc.qrc
+    Res/launchersrc.qrc \
+    Res/rediosrc.qrc
 
 #DISTFILES += \
 

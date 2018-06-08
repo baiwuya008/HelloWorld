@@ -3,6 +3,10 @@
 
 #include "Src/Framework/Base/Core/activity.h"
 
+#include "Src/Application/MultiMedia/Tools/mediatoolswidget.h"
+
+#include <QStackedWidget>
+#include <QHBoxLayout>
 
 class RadioPrivate;
 class Radio : public Activity
@@ -48,9 +52,17 @@ private:
     BmpWidget *mBackground;
     BmpButton *mBtnTest;
     //----------
+
+    MediaToolsWidget* mMediaToolsWidget;
+    QStackedWidget *mStackedWidget = NULL;
+
+    BmpWidget * mBmpFM;
+    BmpWidget * mBmpDef;
+    BmpWidget * mBmpFMList;
+
 private slots:
     void onBtnTestRelease();
-
+    void setCurrentPageView(int);
 };
 
 #endif // RADIO_H

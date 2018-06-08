@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>Radio/img_fm_text_bg.png</file>
+        <file>Radio/img_fm_k_bg.png</file>
+        <file>Radio/img_fm_k_red_line.png.png</file>
+        <file>Radio/img_left_one_a.png</file>
+        <file>Radio/img_left_one_b.png</file>
+        <file>Radio/img_left_two_a.png</file>
+        <file>Radio/img_left_two_b.png</file>
+        <file>Radio/img_right_one_a.png</file>
+        <file>Radio/img_right_one_b.png</file>
+        <file>Radio/img_right_two_a.png</file>
+        <file>Radio/img_right_two_b.png</file>
+        <file>Radio/img_button_bg.png</file>
+        <file>Radio/img_k_bg.png</file>
+    </qresource>
+</RCC>
