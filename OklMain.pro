@@ -54,7 +54,6 @@ SOURCES += main.cpp\
     Src/CommonUserWidget/flowview.cpp \
     Src/CommonUserWidget/flowadapter.cpp \
     Src/Application/MultiMedia/Video/videoplaywidget.cpp \
-    Src/Application/MultiMedia/Tools/mediatoolswidget.cpp
     Src/Application/MultiMedia/Tools/mediatoolswidget.cpp \
     Src/Application/MultiMedia/Tools/mediautils.cpp
 
@@ -102,7 +101,6 @@ HEADERS  += mainwindow.h \
     Src/CommonUserWidget/flowview.h \
     Src/CommonUserWidget/flowadapter.h \
     Src/Application/MultiMedia/Video/videoplaywidget.h \
-    Src/Application/MultiMedia/Tools/mediatoolswidget.h
     Src/Application/MultiMedia/Tools/mediatoolswidget.h \
     Src/Application/MultiMedia/Tools/mediautils.h
 
