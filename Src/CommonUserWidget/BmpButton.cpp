@@ -131,6 +131,8 @@ bool BmpButton::event(QEvent *event)
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     case QEvent::MouseMove: {
+        //发出按下事件
+        emit OnPressed();
         event->ignore();
         break;
     }

@@ -14,6 +14,10 @@
 #include <QAbstractItemModel>
 #include <QPixmap>
 
+#include "Src/Application/MultiMedia/Tools/mediatoolswidget.h"
+
+#include <QStackedWidget>
+#include <QHBoxLayout>
 
 class RadioPrivate;
 class Radio : public Activity
@@ -186,6 +190,14 @@ public slots:
     void doReFreshPresetFreqs(const QList<double> &presetFreqs);
     void doReFreshListFreqs(const QList<double> &listFreqs);
     //----------
+
+    MediaToolsWidget* mMediaToolsWidget;
+    QStackedWidget *mStackedWidget = NULL;
+
+    BmpWidget * mBmpFM;
+    BmpWidget * mBmpDef;
+    BmpWidget * mBmpFMList;
+
 private slots:
     void onBtnTabFm();
     void onBtnTabPreset();

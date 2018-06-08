@@ -3,6 +3,17 @@
 
 #include "Src/Framework/Base/Core/activity.h"
 
+#include <QStackedWidget>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QString>
+#include <QDebug>
+#include <QPushButton>
+
+#include "Src/Application/MultiMedia/Tools/mediatoolswidget.h"
+#include "videoplaywidget.h"
+#include "Src/Application/MultiMedia/Music/musiclistwidget.h"
 
 class VideoPrivate;
 class Video : public Activity
@@ -40,9 +51,26 @@ public:
     ~VideoPrivate(){delete q_ptr;}
     void initializeBasicWidget(QWidget *parent);
 
+
+private slots:
+    void onSelectItem(QString filePath, int index);
+    void setCurrentPageView(int tabIndex);
+
 private:
     Q_DECLARE_PUBLIC(Video)
     Video* const q_ptr;
+
+    void setWidgetBackground(QWidget *widget, QString path);
+
+    void initializeToolsWidget(QWidget *parent);
+    void initializeVideoPlay(QWidget *parent);
+    void initializeVideoList(QWidget *parent);
+
+    QStackedWidget *mStackedWidget = NULL;
+    MediaToolsWidget *mMediaToolsWidget = NULL;
+    MusicListWidget *mVideoListWidget = NULL;
+    VideoPlayWidget *mVideoPlayWidget = NULL;
+
 
     //----------
     BmpWidget *mBackground;

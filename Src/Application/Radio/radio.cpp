@@ -64,6 +64,7 @@ RadioPrivate::RadioPrivate(Radio *parent)
 
 void RadioPrivate::initializeBasicWidget(QWidget *parent)
 {
+
   //Q_Q(Radio);
 
     //***** add top bar ********
@@ -806,6 +807,7 @@ void RadioListFreqDelegate::paint(QPainter* painter,
                                2);
 
     painter->drawPixmap(spaceLineRect.x(), spaceLineRect.y(), *m_Interval_Line);
+
 }
 
 void RadioListFreqDelegate::onPressIndexChanged(const QModelIndex &index)
@@ -813,12 +815,11 @@ void RadioListFreqDelegate::onPressIndexChanged(const QModelIndex &index)
   m_PressIndex = index;
 }
 
-
 //----------------------------------
 
 Radio::Radio(QObject *parent):
- Activity(parent),
- d_ptr(new RadioPrivate(this))
+    Activity(parent),
+    d_ptr(new RadioPrivate(this))
 {
 
 }
@@ -858,7 +859,7 @@ void Radio::onDestroy()
 bool Radio::onBackPressed()
 {
 
-return false;
+    return false;
 }
 
 void Radio::onLanguageChanged()

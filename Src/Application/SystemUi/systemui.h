@@ -4,6 +4,15 @@
 #include "Src/Framework/Base/Core/activity.h"
 #include "configuration.h"
 
+#include <QLabel>
+#include <QTime>
+#include <QDebug>
+#include <QString>
+#include <QTimer>
+#include <QFont>
+#include <QList>
+#include <QSettings>
+
 class SystemuiPrivate;
 class Systemui : public Activity
 {
@@ -50,10 +59,26 @@ private:
     BmpButton *mBtnHome;
 #endif
 
+    BmpButton * mSyTime;
+
+    QTime currentTime;
+    QLocale mLo ;
+    QString time ;
+
     //----------
+    BmpButton *mLabelTitle;
+    BmpWidget * mBmpSoundIcon ;
+
+    QList<BmpWidget *>mList;
+    QSettings settings;
+
+private:
+    void initSoundLine(QWidget *parent,int index);
+
 private slots:
     void onBtnBackRelease();
     void onBtnHomeRelease();
+    void getSyTime();
 
 };
 
