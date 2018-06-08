@@ -19,11 +19,11 @@ SOURCES += main.cpp\
     Src/CommonUserWidget/BmpWidget.cpp \
     Src/CommonUserWidget/CustomItemDelegate.cpp \
     Src/CommonUserWidget/CustomScrollBar.cpp \
-	Src/CommonUserWidget/CustomListView.cpp \
     Src/CommonUserWidget/MessageBox.cpp \
     Src/CommonUserWidget/Slider.cpp \
     Src/CommonUserWidget/TextWidget.cpp \
     Src/CommonUserWidget/UserInterfaceUtility.cpp \
+    Src/CommonUserWidget/CustomListView.cpp \
     Src/Framework/Base/Core/application.cpp \
     Src/Framework/Base/Audio/audiomanager.cpp \
     Src/Framework/Base/Video/videomanager.cpp \
@@ -58,7 +58,6 @@ SOURCES += main.cpp\
     Src/Application/MultiMedia/Video/videoplaywidget.cpp \
     Src/Application/MultiMedia/Tools/mediatoolswidget.cpp \
     Src/Application/MultiMedia/Tools/mediautils.cpp \
-	Src/Application/Radio/radio_am.cpp \
     Src/Application/Radio/radio_unit.cpp \
     Src/Application/Radio/radio_data.cpp \
     Src/Application/Radio/radio_process.cpp
@@ -69,11 +68,11 @@ HEADERS  += mainwindow.h \
     Src/CommonUserWidget/BmpWidget.h \
     Src/CommonUserWidget/CustomItemDelegate.h \
     Src/CommonUserWidget/CustomScrollBar.h \
-	Src/CommonUserWidget/CustomListView.h \
     Src/CommonUserWidget/MessageBox.h \
     Src/CommonUserWidget/Slider.h \
     Src/CommonUserWidget/TextWidget.h \
     Src/CommonUserWidget/UserInterfaceUtility.h \
+    Src/CommonUserWidget/CustomListView.h \
     Src/Framework/Base/Core/application.h \
     Src/Framework/Base/Audio/audiomanager.h \
     Src/Framework/Base/Video/videomanager.h \
@@ -110,7 +109,6 @@ HEADERS  += mainwindow.h \
     Src/Application/MultiMedia/Video/videoplaywidget.h \
     Src/Application/MultiMedia/Tools/mediatoolswidget.h \
     Src/Application/MultiMedia/Tools/mediautils.h \
-	Src/Application/Radio/radio_am.h \
     Src/Application/Radio/radio_unit.h \
     Src/Application/Radio/radio_data.h \
     Src/Application/Radio/radio_process.h

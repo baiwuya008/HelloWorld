@@ -1,4 +1,4 @@
-﻿#include "musiclistwidget.h"
+#include "musiclistwidget.h"
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
