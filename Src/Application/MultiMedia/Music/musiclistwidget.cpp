@@ -16,14 +16,14 @@
 class MusicListWidgetPrivate {
     Q_DISABLE_COPY(MusicListWidgetPrivate)
 public:
-    explicit MusicListWidgetPrivate(MusicListWidget *parent);
+    explicit MusicListWidgetPrivate(MusicListWidget *parent, MediaUtils::MEDIA_TYPE type);
     ~MusicListWidgetPrivate();
 private slots:
     void onitemClick(QModelIndex index);
 private:
     Q_DECLARE_PUBLIC(MusicListWidget)
     MusicListWidget* const q_ptr;
-    void initializeBasicWidget(QWidget *parent);
+    void initializeBasicWidget(QWidget *parent, MediaUtils::MEDIA_TYPE type);
     void initializeDirView(QWidget *parent);
     void initializeClickView(QWidget *parent);
     void initializeListView(QWidget *parent);
@@ -33,25 +33,27 @@ private:
     QListWidget *mListView = NULL;
     QList<MusicListItem*> mListItem;
     int mSelectItemIndex = 0;
+    MediaUtils::MEDIA_TYPE mType;
 };
 
 
-MusicListWidgetPrivate::MusicListWidgetPrivate(MusicListWidget *parent)
+MusicListWidgetPrivate::MusicListWidgetPrivate(MusicListWidget *parent,  MediaUtils::MEDIA_TYPE type)
     : q_ptr(parent)
 {
-    initializeBasicWidget(parent);
+    initializeBasicWidget(parent, type);
 }
 
 
-MusicListWidget::MusicListWidget(QWidget *parent)
+MusicListWidget::MusicListWidget(QWidget *parent, MediaUtils::MEDIA_TYPE type)
     : QWidget(parent)
-    , d_ptr(new MusicListWidgetPrivate(this))
+    , d_ptr(new MusicListWidgetPrivate(this, type))
 {
     setFixedSize(QSize(800, 435));
 }
 
 
-void MusicListWidgetPrivate::initializeBasicWidget(QWidget *parent) {
+void MusicListWidgetPrivate::initializeBasicWidget(QWidget *parent, MediaUtils::MEDIA_TYPE type) {
+    this->mType = type;
     initializeDirView(parent);
     initializeClickView(parent);
     initializeListView(parent);
@@ -62,7 +64,7 @@ void MusicListWidgetPrivate::initializeDirView(QWidget *parent)
     MusicListItem *mFileItem = new MusicListItem(parent);
     mFileItem->setSize(18);
     mFileItem->setFixedSize(QSize(600, 30));
-    mFileItem->setItemInfo(":/Res/drawable/multimedia/music_file_icon.png", "RK007-box");
+    mFileItem->initItem("RK007-box", ":/Res/drawable/multimedia/music_file_icon.png");
     mFileItem->setGeometry(93, 30, 0, 0);
 }
 
@@ -106,7 +108,7 @@ void MusicListWidgetPrivate::initializeClickView(QWidget *parent) {
     BmpButton *upDirBtn = new BmpButton(mClickListWidget);
     upDirBtn->setFixedSize(QSize(200, 60));
     setTextSize(upDirBtn);
-    upDirBtn->setText(QString::fromLocal8Bit("上一文件目录"));
+    upDirBtn->setText(QString::fromLocal8Bit("上一文件夹"));
     upDirBtn->setNormalBmpPath(":/Res/drawable/multimedia/music_list_click_normal.png");
     upDirBtn->setPressBmpPath(":/Res/drawable/multimedia/music_list_click_focus.png");
     upDirBtn->setGeometry(399, 0, 0, 0);
@@ -246,14 +248,12 @@ void MusicListWidgetPrivate::addItemList()
         item = new QListWidgetItem;
         item->setSizeHint(QSize(600, 46));
 
-        infoItem = new MusicListItem;
+        infoItem = new MusicListItem(nullptr, mType);
         infoItem->setFixedSize(QSize(600, 46));
+        infoItem->initItem("fileName_" + QString::number(i));
 
-        infoItem->setItemFile(":/Res/drawable/multimedia/music_list_icon_normal.png",
-                              ":/Res/drawable/multimedia/music_line.png",
-                              "fileName_" + QString::number(i));
         if (i == mSelectItemIndex) {
-            infoItem->refreshItemFile(true);
+            infoItem->refreshItem(true);
         }
 
         mListView->addItem(item);
@@ -277,9 +277,9 @@ void MusicListWidgetPrivate::onitemClick(QModelIndex index) {
         return;
     }
 
-    mListItem.at(mSelectItemIndex)->refreshItemFile(false);
+    mListItem.at(mSelectItemIndex)->refreshItem(false);
     mSelectItemIndex = index.row();
-    mListItem.at(mSelectItemIndex)->refreshItemFile(true);
+    mListItem.at(mSelectItemIndex)->refreshItem(true);
 }
 
 void MusicListWidgetPrivate::setTextSize(QWidget *text) {

@@ -26,7 +26,6 @@ class Music : public Activity
     Q_DISABLE_COPY(Music)
 
 public:
-
     Music(QObject *parent = 0);
 
     void onCreate(QWidget *parent=0);

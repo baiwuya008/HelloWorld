@@ -4,12 +4,14 @@
 #include <QLabel>
 #include <QDebug>
 #include "Src/CommonUserWidget\BmpButton.h"
+#include "Src/Application/MultiMedia/Tools/mediautils.h"
 
 
 class MusicProgressWidgetPrivate {
     Q_DISABLE_COPY(MusicProgressWidgetPrivate)
 public:
-    explicit MusicProgressWidgetPrivate(MusicProgressWidget *parent, SLIDER_MODE mode);
+    explicit MusicProgressWidgetPrivate(MusicProgressWidget *parent,
+                                        MediaUtils::MEDIA_TYPE type = MediaUtils::MEDIA_TYPE::MUSIC);
     ~MusicProgressWidgetPrivate();
 
 private slots:
@@ -31,21 +33,21 @@ private:
     QLabel *startTimeLabel = NULL;
     QLabel *endTimeLabel = NULL;
     BmpButton *modeBtn = NULL;
-    SLIDER_MODE mSliderMode = SLIDER_MODE::MUSIC;
+    MediaUtils::MEDIA_TYPE mSliderType;
     PLAY_MODE mPlayMode = LOOP;
 };
 
 
-MusicProgressWidgetPrivate::MusicProgressWidgetPrivate(MusicProgressWidget *parent, SLIDER_MODE mode)
+MusicProgressWidgetPrivate::MusicProgressWidgetPrivate(MusicProgressWidget *parent, MediaUtils::MEDIA_TYPE type)
     : q_ptr(parent)
 {
-    this->mSliderMode = mode;
+    this->mSliderType = type;
     initializeBasicWidget(parent);
 }
 
-MusicProgressWidget::MusicProgressWidget(QWidget *parent, SLIDER_MODE mode)
+MusicProgressWidget::MusicProgressWidget(QWidget *parent, MediaUtils::MEDIA_TYPE type)
     : QWidget(parent)
-    , d_ptr(new MusicProgressWidgetPrivate(this, mode))
+    , d_ptr(new MusicProgressWidgetPrivate(this, type))
 {
 
 }
@@ -144,18 +146,18 @@ void MusicProgressWidgetPrivate::switchPlayModeView() {
 }
 
 void MusicProgressWidgetPrivate::switchSliderMode() {
-    switch (mSliderMode) {
-    case SLIDER_MODE::MUSIC:
+    switch (mSliderType) {
+    case MediaUtils::MEDIA_TYPE::MUSIC:
         startTimeLabel->setVisible(false);
         modeBtn->setVisible(true);
         modeBtn->setGeometry(680, 8, 0, 0);
         break;
-    case SLIDER_MODE::VIDEO:
+    case MediaUtils::MEDIA_TYPE::VIDEO:
         endTimeLabel->setText("60:00");
         modeBtn->setVisible(false);
         startTimeLabel->setVisible(true);
         break;
-    case SLIDER_MODE::BT_MUSIC:
+    case MediaUtils::MEDIA_TYPE::BT_MUSIC:
         modeBtn->setVisible(false);
         startTimeLabel->setVisible(false);
         break;

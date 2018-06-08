@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia multimediawidgets sql axcontainer
 
 TARGET = OklMain
 TEMPLATE = app
@@ -55,6 +55,8 @@ SOURCES += main.cpp\
     Src/CommonUserWidget/flowadapter.cpp \
     Src/Application/MultiMedia/Video/videoplaywidget.cpp \
     Src/Application/MultiMedia/Tools/mediatoolswidget.cpp
+    Src/Application/MultiMedia/Tools/mediatoolswidget.cpp \
+    Src/Application/MultiMedia/Tools/mediautils.cpp
 
 HEADERS  += mainwindow.h \
     configuration.h \
@@ -101,6 +103,8 @@ HEADERS  += mainwindow.h \
     Src/CommonUserWidget/flowadapter.h \
     Src/Application/MultiMedia/Video/videoplaywidget.h \
     Src/Application/MultiMedia/Tools/mediatoolswidget.h
+    Src/Application/MultiMedia/Tools/mediatoolswidget.h \
+    Src/Application/MultiMedia/Tools/mediautils.h
 
 
 

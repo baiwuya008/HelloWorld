@@ -62,7 +62,7 @@ void VideoPrivate::initializeToolsWidget(QWidget *parent) {
 
 void VideoPrivate::initializeVideoList(QWidget *parent)
 {
-    mVideoListWidget = new MusicListWidget(parent);
+    mVideoListWidget = new MusicListWidget(parent, MediaUtils::VIDEO_LIST);
     connect(mVideoListWidget, SIGNAL(selectItem(QString,int)), this, SLOT(onSelectItem(QString,int)));
     mStackedWidget->insertWidget(1, mVideoListWidget);
 }

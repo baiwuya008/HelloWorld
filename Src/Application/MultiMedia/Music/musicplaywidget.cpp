@@ -63,27 +63,27 @@ void MusicPlayWidgetPrivate::initializeListView(QWidget *parent) {
     int top = 59;
     mFileItem = new MusicListItem(parent);
     mFileItem->setFixedSize(QSize(300, 30));
-    mFileItem->setItemInfo(":/Res/drawable/multimedia/music_file_icon.png", "Happier.MP3");
+    mFileItem->initItem("Happier.MP3", ":/Res/drawable/multimedia/music_file_icon.png");
     mFileItem->setGeometry(41, top, 0, 0);
     top += 30 + 20;
 
     mAlbumItem = new MusicListItem(parent);
     mAlbumItem->setFixedSize(QSize(300, 30));
-    mAlbumItem->setItemInfo(":/Res/drawable/multimedia/music_album_icon.png", "<<music_album>>");
+    mAlbumItem->initItem("<<music_album>>", ":/Res/drawable/multimedia/music_album_icon.png");
     mAlbumItem->setGeometry(41, top, 0, 0);
     top += 30 + 20;
 
 
     mSingerItem = new MusicListItem(parent);
     mSingerItem->setFixedSize(QSize(300, 30));
-    mSingerItem->setItemInfo(":/Res/drawable/multimedia/music_singer_icon.png", "music_singer");
+     mSingerItem->initItem("music_singer", ":/Res/drawable/multimedia/music_singer_icon.png");
     mSingerItem->setGeometry(41, top, 0, 0);
     top += 30 + 20;
 
 
     mSongItem = new MusicListItem(parent);
     mSongItem->setFixedSize(QSize(300, 30));
-    mSongItem->setItemInfo(":/Res/drawable/multimedia/music_song_icon.png", "music_song_normal");
+    mSongItem->initItem("music_song_normal", ":/Res/drawable/multimedia/music_song_icon.png");
     mSongItem->setGeometry(41, top, 0, 0);
 
 }
@@ -123,7 +123,7 @@ void MusicPlayWidgetPrivate::initializeRightView(QWidget *parent) {
 }
 
 void MusicPlayWidgetPrivate::initializeProgressView(QWidget *parent) {
-    MusicProgressWidget *mMusicProgressWidget = new MusicProgressWidget(parent, SLIDER_MODE::MUSIC);
+    MusicProgressWidget *mMusicProgressWidget = new MusicProgressWidget(parent);
     mMusicProgressWidget->setFixedSize(QSize(730, 36));
     mMusicProgressWidget->setGeometry(40, 283, 0, 0);
 

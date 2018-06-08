@@ -2,13 +2,7 @@
 #define MUSICPROGRESSWIDGET_H
 
 #include <QWidget>
-
-
-enum SLIDER_MODE {
-    MUSIC = 1, //播放音乐的进度条显示
-    VIDEO = 2, //播放视频的进度条显示
-    BT_MUSIC = 3 //播放蓝牙音乐进度条显示
-};
+#include "Src/Application/MultiMedia/Tools/mediautils.h"
 
 typedef enum {
     ORDER = 1, //顺序播放模式
@@ -24,7 +18,8 @@ class MusicProgressWidget : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY(MusicProgressWidget)
 public:
-    explicit MusicProgressWidget(QWidget *parent, SLIDER_MODE mode);
+    explicit MusicProgressWidget(QWidget *parent,
+                                 MediaUtils::MEDIA_TYPE type = MediaUtils::MEDIA_TYPE::MUSIC);
     ~MusicProgressWidget();
 
 signals:
