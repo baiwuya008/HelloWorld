@@ -32,7 +32,7 @@ void LauncherPrivate::initializeBasicWidget(QWidget *parent)
 
     mBmpMultimedia = new BmpButton(parent);
     mBmpMultimedia->setText(tr("多媒体"));
-    mBmpMultimedia->setNormalBmpPath(":/img/setting/img_btn_tab_a.png");
+    mBmpMultimedia->setNormalBmpPath(":/img/setting/img_btn_tab_b.png");
     mBmpMultimedia->setPressBmpPath(":/img/setting/img_btn_tab_b.png");
     mBmpMultimedia->setGeometry(0,0,126,50);
     mBmpMultimedia->setVisible(true);

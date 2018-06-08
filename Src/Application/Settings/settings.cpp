@@ -385,12 +385,80 @@ void SettingsPrivate::initLanguageDialog()
     const int DIALOG_W = 120;
     const int DIALOG_H = 240;
     mLanguageDialog = new QDialog(mBmpSystem);
+    mLanguageDialog->setStyleSheet("background-color: rgb(0, 85, 255);");
     mLanguageDialog->resize(350,80);
     mLanguageDialog->setFixedSize(DIALOG_W,DIALOG_H);
     mLanguageDialog->setGeometry(350,100,DIALOG_W,DIALOG_H);
     mLanguageDialog->setWindowFlags(Qt::FramelessWindowHint);
 
     QListWidget * mLanguageListWidget = new QListWidget(mLanguageDialog);
+
+    mLanguageListWidget->verticalScrollBar()->setStyleSheet(
+                //进度条背景样式
+                "QScrollBar:vertical"
+                "{"
+                "background:#383838;"
+                "width:8px;"
+                "margin:0px,0px,0px,0px;"
+                "padding-top:0px; padding-bottom:0px;"
+                "border-radius:4px;"
+                "}"
+
+                //进度条滑动时的背景样式
+                "QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical"
+                "{"
+                "background:#383838;"
+                "width:8px;"
+                "margin:0px,0px,0px,0px;"
+                "padding-top:0px; padding-bottom:0px;"
+                "border-radius:4px;"
+                "}"
+
+                "QScrollBar::handle:vertical" //滑动条
+                "{"
+                "background:#2997fc;"
+                "width:8px;"
+                "min-height:121;"
+                "border-radius:4px;"
+                "}"
+
+                "QScrollBar::handle:vertical:hover" //滑动条有焦点的时候hover
+                "{"
+                "background:#2997fc;"
+                "width:8px;"
+                "min-height:121;"
+                "border-radius:4px;"
+                "}"
+
+                "QScrollBar::add-line:vertical"
+                "{"
+                "height:0px;"
+                "width:0px;"
+                "subcontrol-position:bottom;"//这个是设置下箭头的
+                "}"
+
+                "QScrollBar::add-line:vertical:hover"
+                "{"
+                "height:0px;"
+                "width:0px;"
+                "subcontrol-position:bottom;"
+                "}"
+
+                "QScrollBar::sub-line:vertical"
+                "{"
+                "height:0px;"
+                "width:0px;"
+                "subcontrol-position:top;" //顶部的往上图标
+                "}"
+
+                "QScrollBar::sub-line:vertical:hover"
+                "{"
+                "height:0px;"
+                "width:0px;"
+                "subcontrol-position:top;"
+                "}"
+                );
+
     mLanguageListWidget->resize(DIALOG_W,DIALOG_H);
 
     connect(mLanguageListWidget,SIGNAL(pressed(QModelIndex)),this,SLOT(onLanguageSelectPressed(QModelIndex)));
@@ -411,7 +479,7 @@ void SettingsPrivate::initLanguageDialog()
         //居中
         //item->setTextAlignment(Qt::AlignCenter);
         item->setFont(font);
-        item->setTextColor(Qt::black);
+        item->setTextColor(Qt::white);
 
         //分割线
         QListWidgetItem*itemLine=new QListWidgetItem;
