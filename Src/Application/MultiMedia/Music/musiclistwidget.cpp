@@ -19,7 +19,12 @@ public:
     explicit MusicListWidgetPrivate(MusicListWidget *parent, MediaUtils::MEDIA_TYPE type);
     ~MusicListWidgetPrivate();
 private slots:
-    void onitemClick(QModelIndex index);
+    void onitemClick(int index);
+    void onPrev();
+    void onNext();
+    void onMainDir();
+    void onUpDir();
+
 private:
     Q_DECLARE_PUBLIC(MusicListWidget)
     MusicListWidget* const q_ptr;
@@ -29,11 +34,15 @@ private:
     void initializeListView(QWidget *parent);
     void setTextSize(QWidget *text);
     void addItemList();
+    void flipOver(bool isNext);
 
     QListWidget *mListView = NULL;
     QList<MusicListItem*> mListItem;
     int mSelectItemIndex = 0;
     MediaUtils::MEDIA_TYPE mType;
+    const int PAGE_MAX_SIZE = 5;
+    const int ITEM_WIDTH = 600;
+    const int ITEM_HEIGHT = 46;
 };
 
 
@@ -130,22 +139,70 @@ void MusicListWidgetPrivate::initializeClickView(QWidget *parent) {
 
 void MusicListWidget::prevFile()
 {
-    qDebug() << "prevFile----------";
+    Q_D(MusicListWidget);
+    d->onPrev();
 }
 
 void MusicListWidget::nextFile()
 {
-    qDebug() << "nextFile----------";
+    Q_D(MusicListWidget);
+    d->onNext();
 }
 
 void MusicListWidget::mainDir()
 {
-    qDebug() << "mainDir----------";
+    Q_D(MusicListWidget);
+    d->onMainDir();
 }
 
 void MusicListWidget::upDir()
 {
-    qDebug() << "upDir----------";
+    Q_D(MusicListWidget);
+    d->onUpDir();
+}
+
+
+void MusicListWidgetPrivate::onPrev()
+{
+    flipOver(false);
+}
+
+void MusicListWidgetPrivate::onNext()
+{
+    flipOver(true);
+}
+
+void MusicListWidgetPrivate::flipOver(bool isNext)
+{
+    //QPoint(300, 25)这个给一个item大小的范围内就可以了，最好给item的中心点位置，用于计算获取当前显示的最前面的位置
+    int currentFirstIndex = mListView->indexAt(QPoint(ITEM_WIDTH/2, ITEM_HEIGHT/2)).row();
+    //这个获取当前滑动的距离用来计算滑动了几个item，ITEM_HEIGHT是item的高度
+    //    int verticalOffset = mListView->verticalScrollBar()->value();
+    //    int slideIndex = verticalOffset/ITEM_HEIGHT;
+
+    int currentLastIndex = currentFirstIndex + PAGE_MAX_SIZE;
+    int moveIndex = 0;
+    if (isNext) {
+        moveIndex = currentLastIndex + PAGE_MAX_SIZE - 1;
+    }else {
+        moveIndex = currentFirstIndex - PAGE_MAX_SIZE;
+    }
+
+    moveIndex = moveIndex >= (mListView->count()-1) ?
+                (mListView->count()-1) : moveIndex;
+    moveIndex = moveIndex < 0 ? 0 : moveIndex;
+
+    mListView->setCurrentRow(moveIndex, QItemSelectionModel::Select);
+}
+
+void MusicListWidgetPrivate::onMainDir()
+{
+
+}
+
+void MusicListWidgetPrivate::onUpDir()
+{
+
 }
 
 
@@ -244,12 +301,12 @@ void MusicListWidgetPrivate::addItemList()
     QListWidgetItem *item = NULL;
     MusicListItem *infoItem = NULL;
     mSelectItemIndex = 1;
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < 30; i++) {
         item = new QListWidgetItem;
-        item->setSizeHint(QSize(600, 46));
+        item->setSizeHint(QSize(ITEM_WIDTH, ITEM_HEIGHT));
 
         infoItem = new MusicListItem(nullptr, mType);
-        infoItem->setFixedSize(QSize(600, 46));
+        infoItem->setFixedSize(QSize(ITEM_WIDTH, ITEM_HEIGHT));
         infoItem->initItem("fileName_" + QString::number(i));
 
         if (i == mSelectItemIndex) {
@@ -262,25 +319,34 @@ void MusicListWidgetPrivate::addItemList()
     }
 }
 
+
+
 void MusicListWidget::itemClick(QModelIndex index)
 {
     Q_D(MusicListWidget);
-    d->onitemClick(index);
+    d->onitemClick(index.row());
     emit selectItem(d->mListItem.at(index.row())->getPath(), index.row());
 }
 
 
 
-void MusicListWidgetPrivate::onitemClick(QModelIndex index) {
+void MusicListWidgetPrivate::onitemClick(int index) {
     //    qDebug() << "onitemClick column = " << index.row();
-    if (mSelectItemIndex < 0 || mSelectItemIndex >= mListItem.size()) {
+    if (mSelectItemIndex < 0 || mSelectItemIndex >= mListItem.size()
+            || index == mSelectItemIndex) {
+        return;
+    }
+
+    if (index < 0 || index >= mListItem.size()) {
         return;
     }
 
     mListItem.at(mSelectItemIndex)->refreshItem(false);
-    mSelectItemIndex = index.row();
+    mSelectItemIndex = index;
     mListItem.at(mSelectItemIndex)->refreshItem(true);
 }
+
+
 
 void MusicListWidgetPrivate::setTextSize(QWidget *text) {
     //设置字号
