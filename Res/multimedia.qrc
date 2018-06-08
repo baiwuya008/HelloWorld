@@ -42,12 +42,14 @@
         <file>multimedia/music_list_click_bg.png</file>
         <file>multimedia/music_list_click_focus.png</file>
         <file>multimedia/music_list_click_normal.png</file>
-        <file>multimedia/music_list_icon_focus.png</file>
-        <file>multimedia/music_list_icon_normal.png</file>
         <file>multimedia/music_list_next_focus.png</file>
         <file>multimedia/music_list_next_normal.png</file>
         <file>multimedia/music_list_prev_focus.png</file>
         <file>multimedia/music_list_prev_normal.png</file>
+        <file>multimedia/music_list_music_icon_focus.png</file>
+        <file>multimedia/music_list_music_icon_normal.png</file>
+        <file>multimedia/music_list_video_icon_focus.png</file>
+        <file>multimedia/music_list_video_icon_normal.png</file>
     </qresource>
     <qresource prefix="/">
         <file>picture_test/music_1.jpeg</file>

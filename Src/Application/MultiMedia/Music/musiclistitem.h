@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QResizeEvent>
 #include <QListWidgetItem>
+#include "Src/Application/MultiMedia/Tools/mediautils.h"
 
 
 class MusicListItemPrivate;
@@ -12,16 +13,14 @@ class MusicListItem : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MusicListItem(QWidget *parent = nullptr);
+    explicit MusicListItem(QWidget *parent = nullptr,
+                           MediaUtils::MEDIA_TYPE type = MediaUtils::MEDIA_TYPE::MUSIC);
     ~MusicListItem();
-    void setItemInfo(QString iconPath, QString title);
-    void setItemInfo(QString iconPath, QString title, QString linePath);
-    void setItemFile(QString iconPath, QString linePath, QString filePath);
-    void refreshItemFile(bool isFocus);
+    void initItem(QString title, QString iconPath = "", bool isFocus = false);
+    void refreshItem(bool isFocus);
 
     void setSize(int size);
     QString getPath();
-
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 

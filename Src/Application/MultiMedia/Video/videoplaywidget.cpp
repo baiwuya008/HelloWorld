@@ -42,7 +42,7 @@ void VideoPlayWidgetPrivate::initializeBasicWidget(QWidget *parent)
 
 
 void VideoPlayWidgetPrivate::initializeProgressView(QWidget *parent) {
-    MusicProgressWidget *mMusicProgressWidget = new MusicProgressWidget(parent, SLIDER_MODE::VIDEO);
+    MusicProgressWidget *mMusicProgressWidget = new MusicProgressWidget(parent, MediaUtils::MEDIA_TYPE::VIDEO_LIST);
     mMusicProgressWidget->setFixedSize(QSize(730, 36));
     mMusicProgressWidget->setGeometry(75, 283, 0, 0);
 }

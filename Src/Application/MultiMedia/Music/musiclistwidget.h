@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QModelIndex>
 #include <QDebug>
+#include "Src/Application/MultiMedia/Tools/mediautils.h"
 
 class MusicListWidgetPrivate;
 class MusicListWidget : public QWidget
@@ -11,7 +12,8 @@ class MusicListWidget : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY(MusicListWidget)
 public:
-    explicit MusicListWidget(QWidget *parent = nullptr);
+    explicit MusicListWidget(QWidget *parent,
+                             MediaUtils::MEDIA_TYPE type = MediaUtils::MEDIA_TYPE::MUSIC_LIST);
     ~MusicListWidget();
 
 signals:

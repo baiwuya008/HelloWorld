@@ -4,19 +4,22 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
+
 class MusicListItemPrivate {
 public:
-    explicit MusicListItemPrivate(MusicListItem *parent);
+    explicit MusicListItemPrivate(MusicListItem *parent, MediaUtils::MEDIA_TYPE type);
     ~MusicListItemPrivate();
 private:
     Q_DECLARE_PUBLIC(MusicListItem)
     MusicListItem* const q_ptr;
     void initializeBasicWidget(QWidget *parent);
-    void initLabText(QLabel *text);
     void initLabText(QLabel *text, int size);
-    void refreshItemView(QString iconPath, QString title, QString linePath);
-    void initFileItem(QString iconPath, QString linePath, QString filePath);
-    void refreshFileItem(bool isFocus);
+    void initItemView(QString title, QString iconPath = "", bool isFocus = false);
+    void refreshItemView(bool isFocus);
+    void setFilePath(QString path);
+    void setNameFocus(bool isFocus);
+    void setIconFocus(bool isFocus);
+
 
     inline QPixmap getPixmap(QString path) {
         QImage image;
@@ -43,57 +46,31 @@ private:
     QLabel *name = NULL;
     QLabel *line = NULL;
 
+    MediaUtils::MEDIA_TYPE mMediaType;
+
 };
 
-MusicListItem::MusicListItem(QWidget *parent)
+MusicListItem::MusicListItem(QWidget *parent, MediaUtils::MEDIA_TYPE type)
     : QWidget(parent)
-    , d_ptr(new MusicListItemPrivate(this))
+    , d_ptr(new MusicListItemPrivate(this, type))
 {
 
 }
 
 
-MusicListItemPrivate::MusicListItemPrivate(MusicListItem *parent)
+MusicListItemPrivate::MusicListItemPrivate(MusicListItem *parent, MediaUtils::MEDIA_TYPE type)
     : q_ptr(parent)
 {
+    this->mMediaType = type;
     initializeBasicWidget(parent);
 }
 
-void MusicListItem::setItemInfo(QString iconPath, QString title) {
-    setItemInfo(iconPath, title, "");
-}
-
-void MusicListItem::setItemInfo(QString iconPath, QString title, QString linePath) {
-    Q_D(MusicListItem);
-    d->refreshItemView(iconPath, title, linePath);
-}
-
-void MusicListItem::setItemFile(QString iconPath, QString linePath, QString filePath)
-{
-    Q_D(MusicListItem);
-    d->initFileItem(iconPath, linePath, filePath);
-}
 
 void MusicListItem::setSize(int size)
 {
     Q_D(MusicListItem);
     d->initLabText(d->name, size);
 }
-
-
-
-
-void MusicListItemPrivate::refreshItemView(QString iconPath, QString title, QString linePath) {
-    icon->setPixmap(getPixmap(iconPath));
-    name->setText(title);
-    if (linePath.size() > 1) {
-        line->setPixmap(getPixmap(linePath));
-        line->setVisible(true);
-    }else {
-        line->setVisible(false);
-    }
-}
-
 
 
 void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
@@ -107,7 +84,7 @@ void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
     icon = new QLabel(parent);
     name = new QLabel(parent);
     name->setContentsMargins(5, 0, 0, 0);
-    initLabText(name);
+
     infoLayout->addWidget(icon, 0, Qt::AlignVCenter);
     infoLayout->addWidget(name,  0, Qt::AlignVCenter);
     infoLayout->addStretch();
@@ -118,32 +95,67 @@ void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
     mainLayout->addLayout(infoLayout);
     mainLayout->addWidget(line);
     mainLayout->addStretch();
+
+
+
+    if (mMediaType == MediaUtils::MEDIA_TYPE::MUSIC) {
+        initLabText(name, 15);
+        line->setVisible(false);
+    }else {
+        infoLayout->setContentsMargins(51, 0, 0, 0);
+        initLabText(name, 18);
+        line->setPixmap(getPixmap(":/Res/drawable/multimedia/music_line.png"));
+    }
 }
 
-void MusicListItem::refreshItemFile(bool isFocus)
+void MusicListItemPrivate::initItemView(QString title, QString iconPath, bool isFocus)
 {
-    Q_D(MusicListItem);
-    d->refreshFileItem(isFocus);
+    switch (mMediaType) {
+    case MediaUtils::MUSIC_LIST:
+    case MediaUtils::VIDEO_LIST:
+        name->setText(title);
+        setFilePath(title);
+        setIconFocus(isFocus);
+        setNameFocus(isFocus);
+        break;
+    case MediaUtils::MUSIC:
+        name->setText(title);
+        icon->setPixmap(getPixmap(iconPath));
+        break;
+    }
 }
 
-QString MusicListItem::getPath()
+void MusicListItemPrivate::setFilePath(QString path)
 {
-    Q_D(MusicListItem);
-    return d->mFilePath;
+    this->mFilePath = path;
+    this->mFileName = path;
 }
 
-void MusicListItemPrivate::initFileItem(QString iconPath, QString linePath, QString filePath)
+void MusicListItemPrivate::setIconFocus(bool isFocus)
 {
-    this->mFilePath = filePath;
-    this->mFileName = filePath;
+    if (MediaUtils::MUSIC_LIST == mMediaType) {
+        if (isFocus) {
+            icon->setPixmap(getPixmap(":/Res/drawable/multimedia/music_list_music_icon_focus.png"));
+        }else {
+            icon->setPixmap(getPixmap(":/Res/drawable/multimedia/music_list_music_icon_normal.png"));
+        }
+    }else if (MediaUtils::VIDEO_LIST == mMediaType) {
+        if (isFocus) {
+            icon->setPixmap(getPixmap(":/Res/drawable/multimedia/music_list_video_icon_focus.png"));
+        }else {
+            icon->setPixmap(getPixmap(":/Res/drawable/multimedia/music_list_video_icon_normal.png"));
+        }
+    }
 
-    refreshItemView(iconPath, mFileName, linePath);
-    initLabText(name, 18);
-    refreshFileItem(false);
-    infoLayout->setContentsMargins(51, 0, 0, 0);
 }
 
-void MusicListItemPrivate::refreshFileItem(bool isFocus)
+void MusicListItemPrivate::refreshItemView(bool isFocus)
+{
+    setIconFocus(isFocus);
+    setNameFocus(isFocus);
+}
+
+void MusicListItemPrivate::setNameFocus(bool isFocus)
 {
     if (isFocus) {
         name->setStyleSheet("color:#03d396;");
@@ -153,8 +165,11 @@ void MusicListItemPrivate::refreshFileItem(bool isFocus)
 }
 
 
-void MusicListItemPrivate::initLabText(QLabel *text) {
-    initLabText(text, 15);
+
+QString MusicListItem::getPath()
+{
+    Q_D(MusicListItem);
+    return d->mFilePath;
 }
 
 void MusicListItemPrivate::initLabText(QLabel *text, int size)
@@ -170,6 +185,10 @@ void MusicListItemPrivate::initLabText(QLabel *text, int size)
 }
 
 
+
+
+
+
 void MusicListItem::resizeEvent(QResizeEvent *event) {
     Q_D(MusicListItem);
     d->mWidth = event->size().width();
@@ -178,6 +197,19 @@ void MusicListItem::resizeEvent(QResizeEvent *event) {
 
 MusicListItem::~MusicListItem() {
 
+}
+
+void MusicListItem::initItem(QString title, QString iconPath, bool isFocus)
+{
+    Q_D(MusicListItem);
+    d->initItemView(title, iconPath, isFocus);
+
+}
+
+void MusicListItem::refreshItem(bool isFocus)
+{
+    Q_D(MusicListItem);
+    d->refreshItemView(isFocus);
 }
 
 MusicListItemPrivate::~MusicListItemPrivate() {
