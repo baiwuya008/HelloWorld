@@ -2,6 +2,9 @@
 #include "Src/Application/MultiMedia/Music/musicclickwidget.h"
 #include "Src/Application/MultiMedia/Music/musicprogresswidget.h"
 #include <QDebug>
+#include <QVideoWidget>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
 
 class VideoPlayWidgetPrivate {
     Q_DISABLE_COPY(VideoPlayWidgetPrivate)
@@ -17,6 +20,13 @@ private:
     void initializeBasicWidget(QWidget *parent);
     void initializeClickView(QWidget *parent);
     void initializeProgressView(QWidget *parent);
+    void initializeVideoView(QWidget *parent);
+    void playVideo();
+
+
+    QMediaPlayer *player = NULL;
+    QMediaPlaylist *playlist = NULL;
+    QVideoWidget *videoWidget = NULL;
 };
 
 
@@ -36,15 +46,35 @@ VideoPlayWidgetPrivate::VideoPlayWidgetPrivate(VideoPlayWidget *parent)
 
 void VideoPlayWidgetPrivate::initializeBasicWidget(QWidget *parent)
 {
+    initializeVideoView(parent);
     initializeClickView(parent);
     initializeProgressView(parent);
 }
 
 
 void VideoPlayWidgetPrivate::initializeProgressView(QWidget *parent) {
-    MusicProgressWidget *mMusicProgressWidget = new MusicProgressWidget(parent, MediaUtils::MEDIA_TYPE::VIDEO_LIST);
+    MusicProgressWidget *mMusicProgressWidget = new MusicProgressWidget(parent, MediaUtils::VIDEO);
     mMusicProgressWidget->setFixedSize(QSize(730, 36));
     mMusicProgressWidget->setGeometry(75, 283, 0, 0);
+}
+
+void VideoPlayWidgetPrivate::initializeVideoView(QWidget *parent)
+{
+//    player = new QMediaPlayer;
+////    player->setMedia(QUrl::fromLocalFile(QStringLiteral("D:\\QT\\media\\video_2.avi")));
+//     player->setMedia(QUrl::fromLocalFile(QStringLiteral("D:\\QT\\media\\video_4.mp4")));
+
+
+
+//    videoWidget = new QVideoWidget(parent);
+//    videoWidget->setFixedSize(QSize(800, 285));
+//    videoWidget->setGeometry(50, 0, 0, 0);
+//    player->setVideoOutput(videoWidget);
+}
+
+void VideoPlayWidgetPrivate::playVideo()
+{
+//    player->play();
 }
 
 
@@ -79,7 +109,7 @@ void VideoPlayWidget::onSwitchStatus(bool isPlay)
 
 void VideoPlayWidgetPrivate::onPlay()
 {
-
+    playVideo();
 }
 
 void VideoPlayWidgetPrivate::onPause()
