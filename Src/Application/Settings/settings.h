@@ -142,6 +142,9 @@ private:
 
     QSettings settings;
 
+    const int LINE_MIN = 5;
+    const int LINE_MAX = 95;
+
 private slots:
     void onBtnTestRelease();
 

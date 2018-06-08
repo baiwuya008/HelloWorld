@@ -30,6 +30,16 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
 
     //QStackedLayout* mStackedLayout = new QStackedLayout(parent);
 
+    QString Linestyle = "QSlider::groove:horizontal"
+                        "{"
+                        "   border-image:url(:/img/setting/img_sound_progress_bg.png);"
+                        "}"
+                        "QSlider::handle:horizontal"
+                        "{"
+                        "   border-image:url(:/img/setting/img_sound_progress_point.png);"
+                        "   margin: -1px -5px -5px -5px;"
+                        "}";
+
     QFont font("Microsoft YaHei");
     font.setPointSize(18);
     //font.setBold(true);
@@ -156,14 +166,10 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mLowSoundSlider = new QSlider(mBmpSound);
     mLowSoundSlider->setGeometry(450,110,260,30);
     mLowSoundSlider->setOrientation(Qt::Horizontal);
+    mLowSoundSlider->setValue(LINE_MIN);
+    mLowSoundSlider->setStyleSheet(Linestyle);
 
     connect(mLowSoundSlider,SIGNAL(valueChanged(int)),this,SLOT(onLowSoundValuesChange(int)));
-
-    mLowSoundSlider->setStyleSheet(
-                "QSlider::handle:horizontal { "
-                "background-image:url(:/img/setting/img_sound_progress_point.png);"
-                "}"
-                );
 
     //低 字
     mLabelLowSound = new QLabel(mBmpSound);
@@ -198,14 +204,10 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mCenSoundSlider = new QSlider(mBmpSound);
     mCenSoundSlider->setGeometry(450,210,260,30);
     mCenSoundSlider->setOrientation(Qt::Horizontal);
+    mCenSoundSlider->setValue(LINE_MIN);
+    mCenSoundSlider->setStyleSheet(Linestyle);
 
     connect(mCenSoundSlider,SIGNAL(valueChanged(int)),this,SLOT(onCenSoundValuesChange(int)));
-
-    mCenSoundSlider->setStyleSheet(
-                "QSlider::handle:horizontal { "
-                "background-image:url(:/img/setting/img_sound_progress_point.png);"
-                "}"
-                );
 
     //中 字
     mLabelCenSound = new QLabel(mBmpSound);
@@ -240,14 +242,10 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mHeightSoundSlider = new QSlider(mBmpSound);
     mHeightSoundSlider->setGeometry(450,310,260,30);
     mHeightSoundSlider->setOrientation(Qt::Horizontal);
+    mHeightSoundSlider->setValue(LINE_MIN);
+    mHeightSoundSlider->setStyleSheet(Linestyle);
 
     connect(mHeightSoundSlider,SIGNAL(valueChanged(int)),this,SLOT(onHeightSoundValuesChange(int)));
-
-    mHeightSoundSlider->setStyleSheet(
-                "QSlider::handle:horizontal { "
-                "background-image:url(:/img/setting/img_sound_progress_point.png);"
-                "}"
-                );
 
     //高 字
     mLabelHeightSound = new QLabel(mBmpSound);
@@ -294,14 +292,11 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mDisplaySlider = new QSlider(mBmpBrightness);
     mDisplaySlider->setGeometry(275,300,280,30);
     mDisplaySlider->setOrientation(Qt::Horizontal);
+    mDisplaySlider->setValue(LINE_MIN);
+    mDisplaySlider->setStyleSheet(Linestyle);
 
     connect(mDisplaySlider,SIGNAL(valueChanged(int)),this,SLOT(onBrightnessValuesChange(int)));
 
-    mDisplaySlider->setStyleSheet(
-                "QSlider::handle:horizontal { "
-                "background-image:url(:/img/setting/img_sound_progress_point.png);"
-                "}"
-                );
     //亮度 字
     mLabelmDisplay = new QLabel(mBmpBrightness);
     mLabelmDisplay->setFont(font);
@@ -656,6 +651,11 @@ void SettingsPrivate::onHeightSoundValuesChange(int values)
 void SettingsPrivate::onBrightnessValuesChange(int values)
 {
     qDebug()<< "Brightness" << values;
+    if(values <= LINE_MIN){
+        mDisplaySlider->setValue(LINE_MIN);
+    }else if(values >= LINE_MAX){
+        mDisplaySlider->setValue(LINE_MAX);
+    }
 }
 
 void SettingsPrivate::onSystemListLanguagePressed(QModelIndex  index)
