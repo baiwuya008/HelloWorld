@@ -10,8 +10,6 @@ VideoPrivate::VideoPrivate(Video *parent)
 
 void VideoPrivate::initializeBasicWidget(QWidget *parent)
 {
-    Q_Q(Video);
-
     //    mBackground = new BmpWidget(parent); //设置背景图片
     //    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/video.png"));
     //    mBackground->setFixedSize(QSize(800, 435));
@@ -24,6 +22,7 @@ void VideoPrivate::initializeBasicWidget(QWidget *parent)
     //   q->connect(mBtnTest,SIGNAL(released()),this,SLOT(onBtnTestRelease()));
 
 
+    setWidgetBackground(parent, ":/img/Common/img_wap_bg.png");
     mStackedWidget = new QStackedWidget(parent);
     mStackedWidget->setFixedSize(QSize(800, 435));
     mStackedWidget->setGeometry(0, 50, 0, 0);
@@ -34,6 +33,19 @@ void VideoPrivate::initializeBasicWidget(QWidget *parent)
 
     setCurrentPageView(0);
 }
+
+
+void VideoPrivate::setWidgetBackground(QWidget *widget, QString path) {
+    //设置背景图片
+    widget->setAutoFillBackground(true); // 这句要加上, 否则可能显示不出背景图.
+    QPalette palette = widget->palette();
+    palette.setBrush(QPalette::Window,
+                     QBrush(QPixmap(path).scaled(widget->size(),
+                                                 Qt::IgnoreAspectRatio,
+                                                 Qt::SmoothTransformation)));
+    widget->setPalette(palette);
+}
+
 
 void VideoPrivate::setCurrentPageView(int tabIndex) {
     mStackedWidget->setCurrentIndex(tabIndex);

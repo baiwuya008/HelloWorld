@@ -24,7 +24,7 @@ void ImagePrivate::initializeBasicWidget(QWidget *parent)
     //   q->connect(mBtnTest,SIGNAL(released()),this,SLOT(onBtnTestRelease()));
 
 
-    setWidgetBackground(parent, ":/picture_test/main_bg.png");
+    setWidgetBackground(parent, ":/img/Common/img_wap_bg.png");
     initializeToolsWidget(parent);
     initializeBottomView(parent);
     initializeFlowView(parent);

@@ -94,7 +94,7 @@ void MediaToolsWidgetPrivate::setBtnStyleSheet(QPushButton *btn, bool isFocus)
 {
     if (isFocus) {
         btn->setStyleSheet(
-                    "QPushButton{background-image:url(:/picture_test/media_tools_focus.png); "
+                    "QPushButton{background-image:url(:/img/setting/img_btn_tab_b.png); "
                     "border: 0px groove transparent;"
                     "color: white;}"
                     "QPushButton:hover{background-color:transparent;}"
