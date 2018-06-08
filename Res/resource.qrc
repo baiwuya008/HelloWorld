@@ -44,5 +44,6 @@
         <file>drawable/bottom_bar_btn_pressed.png</file>
         <file>drawable/radio_freq_bg.png</file>
         <file>drawable/radio_scale_pointer.png</file>
+        <file>drawable/list_item_space_line.png</file>
     </qresource>
 </RCC>

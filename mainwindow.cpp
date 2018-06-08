@@ -8,6 +8,11 @@ MainWindow::MainWindow(QWidget *parent)
 // mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/logo01.png"));
 // mBackground->setFixedSize(QSize(800, 480));
 
+    //此次使用微软雅黑字体
+    QFont myfont = font();
+    myfont.setFamily("Microsoft YaHei");
+    setFont(myfont);
+
 #if (APP_WITH_SIMULATION == 1)
     setFixedSize(1088,498); //固定窗口大小
     move(300,240); //设置窗口起始顶点位置

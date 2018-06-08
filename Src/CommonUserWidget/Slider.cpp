@@ -1,11 +1,12 @@
 #include "Slider.h"
 #include <QDebug>
 #include <QMouseEvent>
-#include <QCommonStyle>
+
 
 Slider::Slider(QWidget *parent)
     : QSlider(Qt::Horizontal, parent)
 {
+    mStyle;
 }
 
 Slider::~Slider()
@@ -36,8 +37,7 @@ bool Slider::event(QEvent *event)
 
 void Slider::mousePressEvent(QMouseEvent *event)
 {
-    QCommonStyle style;
-    int value = style.sliderValueFromPosition(minimum(), maximum(), event->pos().x(), width());
+    int value = mStyle.sliderValueFromPosition(minimum(), maximum(), event->pos().x(), width());
     setValue(value);
     setSliderDown(true);
     emit sliderPressed(value);
@@ -45,16 +45,14 @@ void Slider::mousePressEvent(QMouseEvent *event)
 
 void Slider::mouseMoveEvent(QMouseEvent *event)
 {
-    QCommonStyle style;
-    int value = style.sliderValueFromPosition(minimum(), maximum(), event->pos().x(), width());
+    int value = mStyle.sliderValueFromPosition(minimum(), maximum(), event->pos().x(), width());
     setValue(value);
     emit sliderMoved(value);
 }
 
 void Slider::mouseReleaseEvent(QMouseEvent *event)
 {
-    QCommonStyle style;
-    int value = style.sliderValueFromPosition(minimum(), maximum(), event->pos().x(), width());
+    int value = mStyle.sliderValueFromPosition(minimum(), maximum(), event->pos().x(), width());
     setValue(value);
     setSliderDown(false);
     emit sliderReleased(value);

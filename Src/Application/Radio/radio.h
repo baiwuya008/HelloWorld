@@ -2,7 +2,18 @@
 #define RADIO_H
 
 #include "Src/Framework/Base/Core/activity.h"
-#include<QStackedLayout>
+#include <QStackedLayout>
+#include <QList>
+#include <QStandardItemModel>
+#include <QMouseEvent>
+#include <QRect>
+#include <QScopedPointer>
+#include <QPainter>
+#include <QStyleOptionViewItem>
+#include <QModelIndex>
+#include <QAbstractItemModel>
+#include <QPixmap>
+
 
 class RadioPrivate;
 class Radio : public Activity
@@ -25,12 +36,76 @@ public:
     void onReceiveBroadcast(AppType appType,OMessage &msg);
     void onReceiveCmd(AppType appType,OMessage &msg);
 
+
 private:
     Q_DECLARE_PRIVATE(Radio)
     RadioPrivate* const d_ptr;
 
 };
 
+//----------
+class RadioPresetFreqDelegate : public CustomItemDelegate
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(RadioPresetFreqDelegate)
+public:
+    explicit RadioPresetFreqDelegate(QObject* parent = NULL);
+    ~RadioPresetFreqDelegate();
+
+protected:
+
+    void paint(QPainter* painter,
+               const QStyleOptionViewItem &option,
+               const QModelIndex &index) const;
+private:
+    void mousePressEvent(QMouseEvent* event,
+                                 QAbstractItemModel *model,
+                                 const QStyleOptionViewItem &option,
+                                 const QModelIndex &index);
+    void mouseMoveEvent(QMouseEvent* event,
+                                QAbstractItemModel *model,
+                                const QStyleOptionViewItem &option,
+                                const QModelIndex &index);
+    void mouseReleaseEvent(QMouseEvent* event,
+                                   QAbstractItemModel *model,
+                                   const QStyleOptionViewItem &option,
+                                   const QModelIndex &index);
+
+protected slots:
+    void onPressIndexChanged(const QModelIndex &index);
+private:
+    QModelIndex m_PressIndex;
+    QScopedPointer<QPixmap> m_Interval_Line;
+    QScopedPointer<QPixmap> m_SaveIconNormal;
+    QScopedPointer<QPixmap> m_SaveIconPressed;
+    QScopedPointer<QPixmap> m_RemoveIconNormal;
+    QScopedPointer<QPixmap> m_RemoveIconPressed;
+    const QRect mFunIconRect;
+
+};
+
+//----------
+class RadioListFreqDelegate : public CustomItemDelegate
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(RadioListFreqDelegate)
+public:
+    explicit RadioListFreqDelegate(QObject* parent = NULL);
+    ~RadioListFreqDelegate();
+protected:
+    void paint(QPainter* painter,
+               const QStyleOptionViewItem &option,
+               const QModelIndex &index) const;
+protected slots:
+    void onPressIndexChanged(const QModelIndex &index);
+private:
+    QModelIndex m_PressIndex;
+    QScopedPointer<QPixmap> m_Interval_Line;
+};
+
+
+//----------
+class RadioProcess;
 class RadioPrivate :public QObject
 {
     Q_OBJECT
@@ -50,6 +125,7 @@ private:
     Q_DECLARE_PUBLIC(Radio)
     Radio* const q_ptr;
 
+    RadioProcess *mProcess;
     //----------
     BmpWidget *mTabBar;
     BmpButton *mStateBarTab_FM;
@@ -64,8 +140,7 @@ private:
 
     BmpWidget *mFmFragment_FreqBg;
     TextWidget *mFmFragment_FreqText;
-    BmpWidget *mFmFragment_ScaleBarBg;
-    BmpWidget *mFmFragment_ScalePointer;
+    Slider    *mFmFreqBarSlider;
 
     QStackedLayout *mBottomBarLayout;
     QWidget *mBottomBar;
@@ -86,16 +161,52 @@ private:
     BmpButton *mBottom_List_Search;
     BmpButton *mBottom_List_PageDown;
 
+    CustomListView *mRadioPresetFragmentListView;
+    CustomScrollBar *mRadioPresetFragmentListViewScrollBar;
+    RadioPresetFreqDelegate *mRadioPresetDelegate;
+    QStandardItemModel *mRadioPresetStandardItemModel;
 
+    CustomListView *mRadioListFragmentListView;
+    CustomScrollBar *mRadioListFragmentListViewScrollBar;
+    RadioListFreqDelegate *mRadioListDelegate;
+    QStandardItemModel *mRadioListStandardItemModel;
 
     Tab mTab;
 
     void tabSwitch(const Tab mytab);
+    void initRadioFmFragment();
+    void initRadioPresetFragment();
+    void initRadioPresetData();
+    void initRadioListFragment();
+    void initRadioListData();
+
+public slots:
+    //----------
+    void doReFreshCurFreq(const double &curFreq);
+    void doReFreshPresetFreqs(const QList<double> &presetFreqs);
+    void doReFreshListFreqs(const QList<double> &listFreqs);
     //----------
 private slots:
     void onBtnTabFm();
     void onBtnTabPreset();
     void onBtnTabList();
+
+    void onBtnBottomFmPrev();
+    void onBtnBottomFmSeekPrev();
+    void onBtnBottomFmSeekNext();
+    void onBtnBottomFmNext();
+
+    void onBtnBottomPresetPageUp();
+    void onBtnBottomPresetAutoSearch();
+    void onBtnBottomPresetPageDown();
+
+    void onBtnBottomListPageUp();
+    void onBtnBottomListSearch();
+    void onBtnBottomListPageDown();
+
+    void doSliderPressed(const int value);
+    void doSliderMoved(const int value);
+    void doSliderReleased(const int value);
 
 };
 

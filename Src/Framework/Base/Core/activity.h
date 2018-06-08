@@ -4,6 +4,7 @@
 #include<QWidget>
 #include "Src/CommonUserWidget/BmpWidget.h"
 #include "Src/CommonUserWidget/BmpButton.h"
+#include "Src/CommonUserWidget/CustomListView.h"
 #include "Src/CommonUserWidget/CustomItemDelegate.h"
 #include "Src/CommonUserWidget/CustomScrollBar.h"
 #include "Src/CommonUserWidget/MessageBox.h"

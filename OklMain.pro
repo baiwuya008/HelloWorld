@@ -44,7 +44,10 @@ SOURCES += main.cpp\
     Src/Application/Avin/avin.cpp \
     Src/Framework/Base/Core/simulation.cpp \
     Src/Simulation/simulationda.cpp \
-    Src/Application/Radio/radio_am.cpp
+    Src/Application/Radio/radio_am.cpp \
+    Src/Application/Radio/radio_unit.cpp \
+    Src/Application/Radio/radio_data.cpp \
+    Src/Application/Radio/radio_process.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -81,7 +84,10 @@ HEADERS  += mainwindow.h \
     Src/Application/Avin/avin.h \
     Src/Framework/Base/Core/simulation.h \
     Src/Simulation/simulationda.h \
-    Src/Application/Radio/radio_am.h
+    Src/Application/Radio/radio_am.h \
+    Src/Application/Radio/radio_unit.h \
+    Src/Application/Radio/radio_data.h \
+    Src/Application/Radio/radio_process.h
 
 
 

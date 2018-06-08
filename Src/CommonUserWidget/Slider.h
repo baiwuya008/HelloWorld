@@ -2,6 +2,7 @@
 #define SLIDER_H
 
 #include <QSlider>
+#include <QCommonStyle>
 
 class Slider : public QSlider
 {
@@ -19,6 +20,8 @@ signals:
     void sliderPressed(const int value);
     void sliderMoved(const int value);
     void sliderReleased(const int value);
+private:
+    QCommonStyle mStyle;
 };
 
 #endif // SLIDER_H
