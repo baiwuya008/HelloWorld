@@ -154,6 +154,8 @@ private:
     //当前日期
     QDate date;
 
+    BmpButton* mBmpSetSyTime;
+
 private slots:
     void onBtnTestRelease();
 
@@ -184,6 +186,11 @@ private slots:
 
     //------------
     void onBmpSoundWidgetMove(QMouseEvent*e);
+
+    void onBmpTimeSetPressed();
+
+    void onResetDialogOkPressed();
+    void onResetDialogNoPressed();
 };
 
 #endif // SETTINGS_H

@@ -1,5 +1,12 @@
 <RCC>
     <qresource prefix="/img">
         <file>Common/img_wap_bg.png</file>
+        <file>Common/img_on_button_bg_a.png</file>
+        <file>Common/img_on_button_bg_b.png</file>
+        <file>Common/img_dialog_bg.png</file>
+        <file>Common/img_dialog_no_bg_a.png</file>
+        <file>Common/img_dialog_no_bg_b.png</file>
+        <file>Common/img_dialog_ok_bg_a.png</file>
+        <file>Common/img_dialog_ok_bg_b.png</file>
     </qresource>
 </RCC>

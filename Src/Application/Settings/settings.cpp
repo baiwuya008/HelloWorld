@@ -491,26 +491,64 @@ void SettingsPrivate::initTimeSetDialog()
     const int DIALOG_W = 300;
     const int DIALOG_H = 180;
     mTimeSetDialog = new QDialog(mBmpSystem);
-    mTimeSetDialog->resize(DIALOG_W,80);
-    mTimeSetDialog->setFixedSize(DIALOG_W,DIALOG_H);
-    mTimeSetDialog->setGeometry(250,100,DIALOG_W,DIALOG_H);
+    mTimeSetDialog->setGeometry(0,0,800,435);
     mTimeSetDialog->setWindowFlags(Qt::FramelessWindowHint);
 
     //时间选择器
     mWheelView = new WheelView(mTimeSetDialog);
+    mWheelView->setGeometry(250,100,DIALOG_W,DIALOG_H);
     //mWheelView->setStyleSheet("border-image: url(:/img/setting/img_setting_time_setting_bg.png);");
     mWheelView->setFixedSize(DIALOG_W,DIALOG_H);
+
+    //设置按钮
+    mBmpSetSyTime = new BmpButton(mTimeSetDialog);
+    mBmpSetSyTime->setText(tr("存储"));
+    mBmpSetSyTime->setGeometry(650,20,100,50);
+    mBmpSetSyTime->setNormalBmpPath(":/img/Common/img_on_button_bg_a.png");
+    mBmpSetSyTime->setPressBmpPath(":/img/Common/img_on_button_bg_b.png");
+    connect(mBmpSetSyTime,SIGNAL(released()),this,SLOT(onBmpTimeSetPressed()));
 }
 
 void SettingsPrivate::initResetBtDialog()
 {
+    QPalette pl;
+    pl.setColor(QPalette::WindowText,Qt::white);
+    QFont font("Microsoft YaHei");
+    font.setPointSize(16);
+
     const int DIALOG_W = 300;
     const int DIALOG_H = 180;
     mReSetBtDialog = new QDialog(mBmpSystem);
-    mReSetBtDialog->resize(DIALOG_W,80);
-    mReSetBtDialog->setFixedSize(DIALOG_W,DIALOG_H);
     mReSetBtDialog->setGeometry(250,100,DIALOG_W,DIALOG_H);
+    mReSetBtDialog->setStyleSheet("border-image: url(:/img/Common/img_dialog_bg.png);");
     mReSetBtDialog->setWindowFlags(Qt::FramelessWindowHint);
+
+    //文字
+    QLabel * mLabel = new QLabel(mReSetBtDialog);
+    mLabel->setText(tr("是否重置？"));
+    mLabel->setPalette(pl);
+    mLabel->setGeometry(100,30,200,100);
+    mLabel->setFont(font);
+
+    //确定
+    BmpButton * mBmpDialogOk = new BmpButton(mReSetBtDialog);
+    mBmpDialogOk->setNormalBmpPath(":/img/Common/img_dialog_ok_bg_a.png");
+    mBmpDialogOk->setPressBmpPath(":/img/Common/img_dialog_ok_bg_b.png");
+    mBmpDialogOk->setText(tr("确定"));
+    mBmpDialogOk->setFont(font);
+    mBmpDialogOk->setGeometry(0,120,150,80);
+    mBmpDialogOk->setTextColor(Qt::white);
+    connect(mBmpDialogOk,SIGNAL(released()),this,SLOT(onResetDialogOkPressed()));
+
+    //取消
+    BmpButton * mBmpDialogNo = new BmpButton(mReSetBtDialog);
+    mBmpDialogNo->setNormalBmpPath(":/img/Common/img_dialog_no_bg_a.png");
+    mBmpDialogNo->setPressBmpPath(":/img/Common/img_dialog_no_bg_b.png");
+    mBmpDialogNo->setText(tr("取消"));
+    mBmpDialogNo->setFont(font);
+    mBmpDialogNo->setTextColor(Qt::white);
+    mBmpDialogNo->setGeometry(152,120,150,80);
+    connect(mBmpDialogNo,SIGNAL(released()),this,SLOT(onResetDialogNoPressed()));
 }
 
 //init list
@@ -722,6 +760,33 @@ void SettingsPrivate::onBmpSoundWidgetMove(QMouseEvent *e)
             mSeatPoint->move(e->x(),e->y());
         }
     }
+}
+
+void SettingsPrivate::onBmpTimeSetPressed()
+{
+    if(mTimeSetDialog->isEnabled()){
+        mTimeSetDialog->hide();
+    }
+    int year = mWheelView->getYear();
+    int month = mWheelView->getMonth();
+    int day = mWheelView->getDay();
+    qDebug() << year << "-" << month << "-" << day;
+}
+
+void SettingsPrivate::onResetDialogOkPressed()
+{
+    if(mReSetBtDialog->isEnabled()){
+        mReSetBtDialog->hide();
+    }
+    qDebug() << "Yes";
+}
+
+void SettingsPrivate::onResetDialogNoPressed()
+{
+    if(mReSetBtDialog->isEnabled()){
+        mReSetBtDialog->hide();
+    }
+    qDebug() << "No";
 }
 
 //----------------------------------
