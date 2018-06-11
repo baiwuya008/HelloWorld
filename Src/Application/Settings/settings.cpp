@@ -488,25 +488,29 @@ void SettingsPrivate::initLanguageDialog()
 
 void SettingsPrivate::initTimeSetDialog()
 {
-    const int DIALOG_W = 350;
-    const int DIALOG_H = 150;
+    const int DIALOG_W = 300;
+    const int DIALOG_H = 180;
     mTimeSetDialog = new QDialog(mBmpSystem);
-    mTimeSetDialog->resize(350,80);
+    mTimeSetDialog->resize(DIALOG_W,80);
     mTimeSetDialog->setFixedSize(DIALOG_W,DIALOG_H);
-    mTimeSetDialog->setGeometry(350,100,DIALOG_W,DIALOG_H);
-    //mTimeSetDialog->setWindowFlags(Qt::FramelessWindowHint);
+    mTimeSetDialog->setGeometry(250,100,DIALOG_W,DIALOG_H);
+    mTimeSetDialog->setWindowFlags(Qt::FramelessWindowHint);
 
+    //时间选择器
+    mWheelView = new WheelView(mTimeSetDialog);
+    //mWheelView->setStyleSheet("border-image: url(:/img/setting/img_setting_time_setting_bg.png);");
+    mWheelView->setFixedSize(DIALOG_W,DIALOG_H);
 }
 
 void SettingsPrivate::initResetBtDialog()
 {
-    const int DIALOG_W = 350;
-    const int DIALOG_H = 150;
+    const int DIALOG_W = 300;
+    const int DIALOG_H = 180;
     mReSetBtDialog = new QDialog(mBmpSystem);
-    mReSetBtDialog->resize(350,80);
+    mReSetBtDialog->resize(DIALOG_W,80);
     mReSetBtDialog->setFixedSize(DIALOG_W,DIALOG_H);
-    mReSetBtDialog->setGeometry(350,100,DIALOG_W,DIALOG_H);
-    //mReSetBtDialog->setWindowFlags(Qt::FramelessWindowHint);
+    mReSetBtDialog->setGeometry(250,100,DIALOG_W,DIALOG_H);
+    mReSetBtDialog->setWindowFlags(Qt::FramelessWindowHint);
 }
 
 //init list
@@ -661,18 +665,12 @@ void SettingsPrivate::onBrightnessValuesChange(int values)
 void SettingsPrivate::onSystemListLanguagePressed(QModelIndex  index)
 {
     qDebug() << index.row();
-    switch(index.row()){
+    switch(index.row() / 2){
     case 0:
         mLanguageDialog->show();
         break;
-    case 8:
-        mTimeSetDialog->show();
-        break;
-    case 10:
-        mReSetBtDialog->show();
-        break;
-    case 6:
-        int formats = settings.value("time").toInt();
+    case 3:
+        formats = settings.value("time").toInt();
         qDebug() << "onSystemListLanguagePressed" << formats;
         if(formats == 24){
             formats = 12;
@@ -686,6 +684,20 @@ void SettingsPrivate::onSystemListLanguagePressed(QModelIndex  index)
         //发送
         //Q_Q(Settings);
         //q->sendBroadcast(AppType::Settings,);
+        break;
+    case 4:
+        //每次显示之前获取当前时间
+        date = QDate::currentDate();
+        mWheelView->setYear(date.year());
+        mWheelView->setMonth(date.month());
+        qDebug() << date.month();
+        mWheelView->setDay(date.day());
+        mTimeSetDialog->show();
+        break;
+    case 5:
+        mReSetBtDialog->show();
+        break;
+    default:
         break;
     }
 }

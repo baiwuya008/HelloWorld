@@ -60,7 +60,9 @@ SOURCES += main.cpp\
     Src/Application/MultiMedia/Tools/mediautils.cpp \
     Src/Application/Radio/radio_unit.cpp \
     Src/Application/Radio/radio_data.cpp \
-    Src/Application/Radio/radio_process.cpp
+    Src/Application/Radio/radio_process.cpp \
+    Src/Application/Settings/wheelview.cpp \
+    Src/Application/Settings/tumbler.cpp
 
 HEADERS  += mainwindow.h \
     configuration.h \
@@ -111,7 +113,9 @@ HEADERS  += mainwindow.h \
     Src/Application/MultiMedia/Tools/mediautils.h \
     Src/Application/Radio/radio_unit.h \
     Src/Application/Radio/radio_data.h \
-    Src/Application/Radio/radio_process.h
+    Src/Application/Radio/radio_process.h \
+    Src/Application/Settings/wheelview.h \
+    Src/Application/Settings/tumbler.h
 
 
 

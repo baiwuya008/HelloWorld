@@ -12,6 +12,8 @@
 #include <QMenu>
 #include <QSettings>
 #include <QCoreApplication>
+#include "wheelview.h"
+#include <QDate>
 
 class SettingsPrivate;
 class Settings : public Activity
@@ -144,6 +146,13 @@ private:
 
     const int LINE_MIN = 5;
     const int LINE_MAX = 95;
+
+    //当前时间格式
+    int formats;
+
+    WheelView * mWheelView;
+    //当前日期
+    QDate date;
 
 private slots:
     void onBtnTestRelease();
