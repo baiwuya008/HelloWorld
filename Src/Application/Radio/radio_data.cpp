@@ -32,36 +32,35 @@ void RadioSharedData::initWholeData()
     //for test
     //---init fm data ASIA[87.5-108];
 
-    mFmPresetFreqs.append(87.5);
-    mFmPresetFreqs.append(88.5);
-    mFmPresetFreqs.append(90.0);
-    mFmPresetFreqs.append(92.0);
-    mFmPresetFreqs.append(95.5);
-    mFmPresetFreqs.append(98.0);
-    mFmPresetFreqs.append(102.5);
-    mFmPresetFreqs.append(104.5);
-    mFmPresetFreqs.append(106.5);
-    mFmPresetFreqs.append(107);
-    mFmPresetFreqs.append(108);
+    mFmPresetFreqs.append(87.50);
+    mFmPresetFreqs.append(88.50);
+    mFmPresetFreqs.append(90.00);
+    mFmPresetFreqs.append(92.00);
+    mFmPresetFreqs.append(95.50);
+    mFmPresetFreqs.append(98.00);
+    mFmPresetFreqs.append(102.50);
+    mFmPresetFreqs.append(104.50);
+    mFmPresetFreqs.append(106.50);
+    mFmPresetFreqs.append(107.00);
+    mFmPresetFreqs.append(108.00);
 
     mFmListFreqs.append(87.5);
     mFmListFreqs.append(88.0);
-    mFmListFreqs.append(91.0);
-    mFmListFreqs.append(92.5);
-    mFmListFreqs.append(93.5);
-    mFmListFreqs.append(97.8);
-    mFmListFreqs.append(101.5);
-    mFmListFreqs.append(102.0);
-    mFmListFreqs.append(103.5);
-    mFmListFreqs.append(105.5);
-    mFmListFreqs.append(107.5);
-    mFmListFreqs.append(108);
+    mFmListFreqs.append(91.00);
+    mFmListFreqs.append(92.50);
+    mFmListFreqs.append(93.50);
+    mFmListFreqs.append(97.80);
+    mFmListFreqs.append(101.50);
+    mFmListFreqs.append(102.00);
+    mFmListFreqs.append(103.50);
+    mFmListFreqs.append(105.50);
+    mFmListFreqs.append(107.50);
+    mFmListFreqs.append(108.00);
 
     //mCurFmFreq = 97.8;
     mCurFmBand = 1;  //1~3
     mCurFmChannel = 6; //1~5//1~24
     mCurFmFreq = mFmListFreqs.at(mCurFmChannel-1);
-
 
     //---init am data ASIA[531-1602];EURPO[522-1620];USA[530-1710]:LATIN AMERICA[520-1620]
 

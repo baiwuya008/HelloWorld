@@ -41,14 +41,14 @@ RadioProcess::~RadioProcess()
 
 void RadioProcess::linkRadio(RadioPrivate *radio)
 {
-  connect(this,SIGNAL(callReFreshFmCurFreq(const double &)),radio,SLOT(doReFreshCurFreq(const double &)));
+  connect(this,SIGNAL(callReFreshFmCurFreq(const double &,bool,bool)),radio,SLOT(doReFreshCurFreq(const double &,bool,bool)));
   connect(this,SIGNAL(callReFreshFmPresetFreqs(const QList<double> &)),radio,SLOT(doReFreshPresetFreqs(const QList<double> &)));
   connect(this,SIGNAL(callReFreshFmListFreqs(const QList<double> &)),radio,SLOT(doReFreshListFreqs(const QList<double> &)));
   mIsRadioLink = true;
 }
 void RadioProcess::linkRadioAm(RadioAmPrivate *radio_am)
 {
-  connect(this,SIGNAL(callReFreshAmCurFreq(const int &)),radio_am,SLOT(doReFreshCurFreq(const int &)));
+  connect(this,SIGNAL(callReFreshAmCurFreq(const int &,bool,bool)),radio_am,SLOT(doReFreshCurFreq(const int &,bool,bool)));
   connect(this,SIGNAL(callReFreshAmPresetFreqs(const QList<int> &)),radio_am,SLOT(doReFreshPresetFreqs(const QList<int> &)));
   connect(this,SIGNAL(callReFreshAmListFreqs(const QList<int> &)),radio_am,SLOT(doReFreshListFreqs(const QList<int> &)));
   mIsRadioAmLink = true;
@@ -56,8 +56,11 @@ void RadioProcess::linkRadioAm(RadioAmPrivate *radio_am)
 
 
 //-------- this func call by the gui change
-void RadioProcess::setFmCurFreq(const double &curFreq){
+void RadioProcess::setFmCurFreq(const double &curFreq,bool updateMain,bool updatePreset,bool updateList){
   gRadioData->getData().setFmCurFreq(curFreq);
+  if(updateMain){
+      emit callReFreshFmCurFreq(curFreq,updatePreset,updateList);
+  }
 }
 void RadioProcess::setFmPresetFreqs(const QList<double> &presetFreqs){
   gRadioData->getData().setFmPresetFreqs(presetFreqs);
@@ -65,8 +68,11 @@ void RadioProcess::setFmPresetFreqs(const QList<double> &presetFreqs){
 void RadioProcess::setFmListFreqs(const QList<double> &listFreqs){
   gRadioData->getData().setFmListFreqs(listFreqs);
 }
-void RadioProcess::setAmCurFreq(const int &curFreq){
+void RadioProcess::setAmCurFreq(const int &curFreq,bool updateMain,bool updatePreset,bool updateList){
   gRadioData->getData().setAmCurFreq(curFreq);
+  if(updateMain){
+      emit callReFreshAmCurFreq(curFreq,updatePreset,updateList);
+  }
 }
 void RadioProcess::setAmPresetFreqs(const QList<int> &presetFreqs){
   gRadioData->getData().setAmPresetFreqs(presetFreqs);
@@ -89,7 +95,7 @@ void RadioProcess::requestFmPrevChannel(){
          gRadioData->getData().setFmCurFreq(reqFreq);
          gRadioData->getData().setFmCurChannel(1);
          if(mIsRadioLink){
-             emit callReFreshFmCurFreq(reqFreq);
+             emit callReFreshFmCurFreq(reqFreq,true,true);
          }
          return;
      }
@@ -104,7 +110,7 @@ void RadioProcess::requestFmPrevChannel(){
      gRadioData->getData().setFmCurFreq(reqFreq);
      gRadioData->getData().setFmCurChannel(chan);
      if(mIsRadioLink){
-         emit callReFreshFmCurFreq(reqFreq);
+         emit callReFreshFmCurFreq(reqFreq,true,true);
      }
 
 }
@@ -114,7 +120,7 @@ void RadioProcess::requestFmSeekPrev(){
      if(freq<FM_MIN){freq = FM_MAX;}
      gRadioData->getData().setFmCurFreq(freq);
      if(mIsRadioLink){
-         emit callReFreshFmCurFreq(freq);
+         emit callReFreshFmCurFreq(freq,true,true);
      }
 }
 void RadioProcess::requestFmSeekNext(){
@@ -123,7 +129,7 @@ void RadioProcess::requestFmSeekNext(){
      if(freq>FM_MAX){freq = FM_MIN;}
      gRadioData->getData().setFmCurFreq(freq);
      if(mIsRadioLink){
-         emit callReFreshFmCurFreq(freq);
+         emit callReFreshFmCurFreq(freq,true,true);
      }
 }
 void RadioProcess::requestFmNextChannel(){
@@ -139,7 +145,7 @@ void RadioProcess::requestFmNextChannel(){
         gRadioData->getData().setFmCurFreq(reqFreq);
         gRadioData->getData().setFmCurChannel(1);
         if(mIsRadioLink){
-            emit callReFreshFmCurFreq(reqFreq);
+            emit callReFreshFmCurFreq(reqFreq,true,true);
         }
         return;
     }
@@ -154,7 +160,7 @@ void RadioProcess::requestFmNextChannel(){
     gRadioData->getData().setFmCurFreq(reqFreq);
     gRadioData->getData().setFmCurChannel(chan);
     if(mIsRadioLink){
-        emit callReFreshFmCurFreq(reqFreq);
+        emit callReFreshFmCurFreq(reqFreq,true,true);
     }
 }
 
@@ -171,7 +177,7 @@ void RadioProcess::requestAmPrevChannel(){
         gRadioData->getData().setAmCurFreq(reqFreq);
         gRadioData->getData().setAmCurChannel(1);
         if(mIsRadioAmLink){
-            emit callReFreshAmCurFreq(reqFreq);
+            emit callReFreshAmCurFreq(reqFreq,true,true);
         }
         return;
     }
@@ -186,7 +192,7 @@ void RadioProcess::requestAmPrevChannel(){
     gRadioData->getData().setAmCurFreq(reqFreq);
     gRadioData->getData().setAmCurChannel(chan);
     if(mIsRadioAmLink){
-        emit callReFreshAmCurFreq(reqFreq);
+        emit callReFreshAmCurFreq(reqFreq,true,true);
     }
 }
 void RadioProcess::requestAmSeekPrev(){
@@ -195,7 +201,7 @@ void RadioProcess::requestAmSeekPrev(){
      if(freq<AM_MIN){freq = AM_MAX;}
      gRadioData->getData().setAmCurFreq(freq);
      if(mIsRadioAmLink){
-         emit callReFreshAmCurFreq(freq);
+         emit callReFreshAmCurFreq(freq,true,true);
      }
 }
 void RadioProcess::requestAmSeekNext(){
@@ -204,7 +210,7 @@ void RadioProcess::requestAmSeekNext(){
      if(freq>AM_MAX){freq = AM_MIN;}
      gRadioData->getData().setAmCurFreq(freq);
      if(mIsRadioAmLink){
-         emit callReFreshAmCurFreq(freq);
+         emit callReFreshAmCurFreq(freq,true,true);
      }
 }
 void RadioProcess::requestAmNextChannel(){
@@ -220,7 +226,7 @@ void RadioProcess::requestAmNextChannel(){
         gRadioData->getData().setAmCurFreq(reqFreq);
         gRadioData->getData().setAmCurChannel(1);
         if(mIsRadioAmLink){
-            emit callReFreshAmCurFreq(reqFreq);
+            emit callReFreshAmCurFreq(reqFreq,true,true);
         }
         return;
     }
@@ -235,28 +241,9 @@ void RadioProcess::requestAmNextChannel(){
     gRadioData->getData().setAmCurFreq(reqFreq);
     gRadioData->getData().setAmCurChannel(chan);
     if(mIsRadioAmLink){
-        emit callReFreshAmCurFreq(reqFreq);
+        emit callReFreshAmCurFreq(reqFreq,true,true);
     }
 }
 
 
-//-------- this from the radio ic module state sync//need call ReFreshXXX
-void RadioProcess::syncFmCurFreq(const double &curFreq){
-
-}
-void RadioProcess::syncFmPresetFreqs(const QList<double> &presetFreqs){
-
-}
-void RadioProcess::syncFmListFreqs(const QList<double> &listFreqs){
-
-}
-void RadioProcess::syncAmCurFreq(const int &curAmFreq){
-
-}
-void RadioProcess::syncAmPresetFreqs(const QList<int> &presetFreqs){
-
-}
-void RadioProcess::syncAmListFreqs(const QList<int> &listFreqs){
-
-}
 

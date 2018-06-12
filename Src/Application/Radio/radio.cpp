@@ -244,12 +244,16 @@ void RadioPrivate::tabSwitch(const Tab mytab)
         mStateBarTab_Preset->setStatus(BmpButton::B_Check);
         mStateBarTab_List->setStatus(BmpButton::B_Normal);
         initRadioPresetFragment();
+        //-------
+        doReFreshCurFreq(gRadioData->getData().getCurFmFreq(),true,false);
         break;
     case LIST:
         mStateBarTab_FM->setStatus(BmpButton::B_Normal);
         mStateBarTab_Preset->setStatus(BmpButton::B_Normal);
         mStateBarTab_List->setStatus(BmpButton::B_Check);
         initRadioListFragment();
+        //-------
+        doReFreshCurFreq(gRadioData->getData().getCurFmFreq(),false,true);
         break;
     default:
         break;
@@ -345,7 +349,7 @@ void RadioPrivate::initRadioPresetFragment()
                 }
 
             if (NULL == mRadioPresetDelegate) {
-                    mRadioPresetDelegate = new RadioPresetFreqDelegate(mRadioPresetFragmentListView);
+                    mRadioPresetDelegate = new RadioPresetFreqDelegate(this,mRadioPresetFragmentListView);
                 }
 
             if (NULL == mRadioPresetFragmentListViewScrollBar) {
@@ -435,7 +439,7 @@ void RadioPrivate::initRadioListFragment()
                 }
 
             if (NULL == mRadioListDelegate) {
-                    mRadioListDelegate = new RadioListFreqDelegate(mRadioListFragmentListView);
+                    mRadioListDelegate = new RadioListFreqDelegate(this,mRadioListFragmentListView);
                 }
 
             if (NULL == mRadioListFragmentListViewScrollBar) {
@@ -511,13 +515,63 @@ void RadioPrivate::initRadioListData(){
 
 }
 
-void RadioPrivate::doReFreshCurFreq(const double &curFreq){
+void RadioPrivate::doReFreshCurFreq(const double &curFreq,bool updatePreset,bool updateList){
+    qDebug()<<"doReFreshCurFreq curFreq:"<<curFreq<<endl;
+
     if(mFmFragment_FreqText != NULL){
       mFmFragment_FreqText->setText(QString("%1").arg(curFreq,1,'f',1));
     }
     if(mFmFreqBarSlider != NULL){
        int slider_val = (curFreq-FREQ_MIN)*SLIDER_BAR_MAX/(FREQ_MAX-FREQ_MIN);
        mFmFreqBarSlider->setValue(slider_val);
+    }
+
+    if(updatePreset){
+       QList<double> presetFreqs =gRadioData->getData().getFmPresetFreqs();
+       int curfreq_in_preset_idx = -1;
+       for (int i = 0; i < presetFreqs.size(); ++i) {
+           qDebug()<<"doReFreshCurFreq presetFreqs["<<i<<"]="<<presetFreqs.at(i)<<endl;
+           if(curFreq == presetFreqs.at(i)){
+               curfreq_in_preset_idx = i;
+               break;
+           }else if((float)curFreq == (float)presetFreqs.at(i)){
+               curfreq_in_preset_idx = i;
+               break;
+           }
+       }
+       qDebug()<<"doReFreshCurFreq curfreq_in_preset_idx:"<<curfreq_in_preset_idx<<endl;
+       if(curfreq_in_preset_idx != -1){
+           if(mRadioPresetDelegate != NULL &&mRadioPresetStandardItemModel !=NULL){
+               mRadioPresetDelegate->m_CurIndex =  mRadioPresetStandardItemModel->index(curfreq_in_preset_idx,0);
+           }
+       }else{
+           if(mRadioPresetDelegate != NULL){
+               mRadioPresetDelegate->m_CurIndex =  QModelIndex(); //use a new instance to clean the orig one
+           }
+
+       }
+    }
+    if(updateList){
+        QList<double> listFreqs =gRadioData->getData().getFmListFreqs();
+        int curfreq_in_list_idx = -1;
+        for (int i = 0; i < listFreqs.size(); ++i) {
+            if(curFreq == listFreqs.at(i)){
+                curfreq_in_list_idx = i;
+                break;
+            }else if((float)curFreq == (float)listFreqs.at(i)){
+                curfreq_in_list_idx = i;
+                break;
+            }
+        }
+        if(curfreq_in_list_idx != -1){
+            if(mRadioListDelegate != NULL &&mRadioListStandardItemModel !=NULL){
+                mRadioListDelegate->m_CurIndex =  mRadioListStandardItemModel->index(curfreq_in_list_idx,0);
+            }
+        }else{
+            if(mRadioListDelegate != NULL){
+               mRadioListDelegate->m_CurIndex =  QModelIndex(); //use a new instance to clean the orig one
+            }
+        }
     }
 }
 void RadioPrivate::doReFreshPresetFreqs(const QList<double> &presetFreqs){
@@ -603,26 +657,32 @@ void RadioPrivate::doSliderPressed(const int value){
    if(mFmFragment_FreqText != NULL){
      mFmFragment_FreqText->setText(QString("%1").arg(freq,1,'f',1));
    }
-   mProcess->setFmCurFreq(freq);
+   int fixfreq =  (int)(freq*10+5);
+   mProcess->setFmCurFreq(fixfreq/10,true,true);
+   qDebug()<<"doSliderPressed fixfreq:"<<fixfreq/10<<endl;
 }
 void RadioPrivate::doSliderMoved(const int value){
     double freq = (FREQ_MAX-FREQ_MIN)*value/SLIDER_BAR_MAX+FREQ_MIN;
     if(mFmFragment_FreqText != NULL){
        mFmFragment_FreqText->setText(QString("%1").arg(freq,1,'f',1));
     }
-    mProcess->setFmCurFreq(freq);
+    int fixfreq =  (int)(freq*10+5);
+    mProcess->setFmCurFreq(fixfreq/10,true,true);
+    qDebug()<<"doSliderMoved fixfreq:"<<fixfreq/10<<endl;
 }
 void RadioPrivate::doSliderReleased(const int value){
     double freq = (FREQ_MAX-FREQ_MIN)*value/SLIDER_BAR_MAX+FREQ_MIN;
     if(mFmFragment_FreqText != NULL){
        mFmFragment_FreqText->setText(QString("%1").arg(freq,1,'f',1));
     }
-    mProcess->setFmCurFreq(freq);
+    int fixfreq =  (int)(freq*10+5);
+    mProcess->setFmCurFreq(fixfreq/10,true,true);
+    qDebug()<<"doSliderReleased fixfreq:"<<fixfreq/10<<endl;
 }
 
 //---------------------------
-RadioPresetFreqDelegate::RadioPresetFreqDelegate(QObject* parent)
-    : CustomItemDelegate(parent),mFunIconRect(500,10,24,29)
+RadioPresetFreqDelegate::RadioPresetFreqDelegate(RadioPrivate *radioPri,QObject* parent)
+    : mRadioPri(radioPri),CustomItemDelegate(parent),mFunIconRect(500,10,24,29)
 {
   m_Interval_Line.reset(new QPixmap(QString(":/res/drawable/list_item_space_line.png")));
   m_SaveIconNormal.reset(new QPixmap(QString(":/res/drawable/edit_save.png")));
@@ -633,13 +693,24 @@ RadioPresetFreqDelegate::RadioPresetFreqDelegate(QObject* parent)
 
 RadioPresetFreqDelegate::~RadioPresetFreqDelegate()
 {
+  delete mRadioPri;
 
 }
 
 void RadioPresetFreqDelegate::paint(QPainter* painter,
                                     const QStyleOptionViewItem &option,
                                     const QModelIndex &index) const {
-    painter->setPen(Qt::white);
+
+    if(m_CurIndex == index){
+        painter->setPen(Qt::green);
+    }else{
+        painter->setPen(Qt::white);
+    }
+
+    if(m_PressIndex == index){
+        painter->setPen(Qt::green);
+    }
+
     QFont myfont;
     myfont.setPointSize(13);
     painter->setFont(myfont);
@@ -768,26 +839,49 @@ void RadioPresetFreqDelegate::mouseReleaseEvent(QMouseEvent* event,
 void RadioPresetFreqDelegate::onPressIndexChanged(const QModelIndex &index)
 {
   m_PressIndex = index;
+  PresetVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<PresetVariant>();
+  if(variant.mFrequency>0){
+      if(mRadioPri->mRadioPresetFragmentListView != NULL){
+          mRadioPri->mRadioPresetFragmentListView->setCurrentIndex(index);
+      }
+  }
+  qDebug()<<variant.mFrequency<<endl;
 }
 
+void RadioPresetFreqDelegate::onCurrentIndexChange(const QModelIndex &index)
+{
+    m_CurIndex = index;
+    PresetVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<PresetVariant>();
+    mRadioPri->mProcess->setFmCurFreq(variant.mFrequency,true,false,true);
+}
 
 //---------------------------
-RadioListFreqDelegate::RadioListFreqDelegate(QObject* parent)
-    : CustomItemDelegate(parent)
+RadioListFreqDelegate::RadioListFreqDelegate(RadioPrivate *radioPri,QObject* parent)
+    :mRadioPri(radioPri),CustomItemDelegate(parent)
 {
    m_Interval_Line.reset(new QPixmap(QString(":/res/drawable/list_item_space_line.png")));
 }
 
 RadioListFreqDelegate::~RadioListFreqDelegate()
 {
-
+  delete mRadioPri;
 }
 
 void RadioListFreqDelegate::paint(QPainter* painter,
                                const QStyleOptionViewItem &option,
                                const QModelIndex &index) const
 {
-    painter->setPen(Qt::white);
+
+    if(m_CurIndex == index){
+        painter->setPen(Qt::green);
+    }else{
+        painter->setPen(Qt::white);
+    }
+
+    if(m_PressIndex == index){
+        painter->setPen(Qt::green);
+    }
+
     QFont myfont;
     myfont.setPointSize(13);
     painter->setFont(myfont);
@@ -813,6 +907,20 @@ void RadioListFreqDelegate::paint(QPainter* painter,
 void RadioListFreqDelegate::onPressIndexChanged(const QModelIndex &index)
 {
   m_PressIndex = index;
+  ListVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<ListVariant>();
+  if(variant.mFrequency>0){
+      if(mRadioPri->mRadioListFragmentListView != NULL){
+          mRadioPri->mRadioListFragmentListView->setCurrentIndex(index);
+      }
+  }
+  qDebug()<<variant.mFrequency<<endl;
+}
+
+void RadioListFreqDelegate::onCurrentIndexChange(const QModelIndex &index)
+{
+    m_CurIndex = index;
+    ListVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<ListVariant>();
+    mRadioPri->mProcess->setFmCurFreq(variant.mFrequency,true,true,false);
 }
 
 //----------------------------------

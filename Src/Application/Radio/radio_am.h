@@ -47,7 +47,7 @@ class RadioAmPresetFreqDelegate : public CustomItemDelegate
     Q_OBJECT
     Q_DISABLE_COPY(RadioAmPresetFreqDelegate)
 public:
-    explicit RadioAmPresetFreqDelegate(QObject* parent = NULL);
+    explicit RadioAmPresetFreqDelegate(RadioAmPrivate *radioPri,QObject* parent = NULL);
     ~RadioAmPresetFreqDelegate();
 
 protected:
@@ -70,15 +70,19 @@ private:
                                    const QModelIndex &index);
 
 protected slots:
+    void onCurrentIndexChange(const QModelIndex &index);
     void onPressIndexChanged(const QModelIndex &index);
 private:
+    const RadioAmPrivate *mRadioPri;
     QModelIndex m_PressIndex;
+    QModelIndex m_CurIndex;
     QScopedPointer<QPixmap> m_Interval_Line;
     QScopedPointer<QPixmap> m_SaveIconNormal;
     QScopedPointer<QPixmap> m_SaveIconPressed;
     QScopedPointer<QPixmap> m_RemoveIconNormal;
     QScopedPointer<QPixmap> m_RemoveIconPressed;
     const QRect mFunIconRect;
+    friend class RadioAmPrivate;
 
 };
 
@@ -88,17 +92,21 @@ class RadioAmListFreqDelegate : public CustomItemDelegate
     Q_OBJECT
     Q_DISABLE_COPY(RadioAmListFreqDelegate)
 public:
-    explicit RadioAmListFreqDelegate(QObject* parent = NULL);
+    explicit RadioAmListFreqDelegate(RadioAmPrivate *radioPri,QObject* parent = NULL);
     ~RadioAmListFreqDelegate();
 protected:
     void paint(QPainter* painter,
                const QStyleOptionViewItem &option,
                const QModelIndex &index) const;
 protected slots:
+    void onCurrentIndexChange(const QModelIndex &index);
     void onPressIndexChanged(const QModelIndex &index);
 private:
+    const RadioAmPrivate *mRadioPri;
     QModelIndex m_PressIndex;
+    QModelIndex m_CurIndex;
     QScopedPointer<QPixmap> m_Interval_Line;
+    friend class RadioAmPrivate;
 };
 
 
@@ -120,6 +128,10 @@ public:
 private:
     Q_DECLARE_PUBLIC(RadioAm)
     RadioAm* const q_ptr;
+
+    friend class RadioAmPresetFreqDelegate;
+    friend class RadioAmListFreqDelegate;
+
     RadioProcess *mProcess;
 
     //----------
@@ -179,7 +191,7 @@ private:
 
 public slots:
     //----------
-    void doReFreshCurFreq(const int &curFreq);
+    void doReFreshCurFreq(const int &curFreq,bool updatePreset=false,bool updateList=false);
     void doReFreshPresetFreqs(const QList<int> &presetFreqs);
     void doReFreshListFreqs(const QList<int> &listFreqs);
     //----------

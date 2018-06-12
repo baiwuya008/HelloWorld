@@ -48,7 +48,7 @@ CustomListView::~CustomListView()
 void CustomListView::setCurrentIndex(const QModelIndex &index)
 {
     QListView::setCurrentIndex(index);
-    onCurrentIndexChange(index);
+    emit onCurrentIndexChange(index);
     if (isVisible()) {
         update();
     }

@@ -49,7 +49,7 @@ class RadioPresetFreqDelegate : public CustomItemDelegate
     Q_OBJECT
     Q_DISABLE_COPY(RadioPresetFreqDelegate)
 public:
-    explicit RadioPresetFreqDelegate(QObject* parent = NULL);
+    explicit RadioPresetFreqDelegate(RadioPrivate *radioPri,QObject* parent = NULL);
     ~RadioPresetFreqDelegate();
 
 protected:
@@ -72,15 +72,19 @@ private:
                                    const QModelIndex &index);
 
 protected slots:
+    void onCurrentIndexChange(const QModelIndex &index);
     void onPressIndexChanged(const QModelIndex &index);
 private:
+    const RadioPrivate *mRadioPri;
     QModelIndex m_PressIndex;
+    QModelIndex m_CurIndex;
     QScopedPointer<QPixmap> m_Interval_Line;
     QScopedPointer<QPixmap> m_SaveIconNormal;
     QScopedPointer<QPixmap> m_SaveIconPressed;
     QScopedPointer<QPixmap> m_RemoveIconNormal;
     QScopedPointer<QPixmap> m_RemoveIconPressed;
     const QRect mFunIconRect;
+    friend class RadioPrivate;
 
 };
 
@@ -90,17 +94,22 @@ class RadioListFreqDelegate : public CustomItemDelegate
     Q_OBJECT
     Q_DISABLE_COPY(RadioListFreqDelegate)
 public:
-    explicit RadioListFreqDelegate(QObject* parent = NULL);
+    explicit RadioListFreqDelegate(RadioPrivate *radioPri,QObject* parent = NULL);
     ~RadioListFreqDelegate();
 protected:
     void paint(QPainter* painter,
                const QStyleOptionViewItem &option,
                const QModelIndex &index) const;
 protected slots:
+    void onCurrentIndexChange(const QModelIndex &index);
     void onPressIndexChanged(const QModelIndex &index);
 private:
+    const RadioPrivate *mRadioPri;
     QModelIndex m_PressIndex;
+    QModelIndex m_CurIndex;
     QScopedPointer<QPixmap> m_Interval_Line;
+    friend class RadioPrivate;
+
 };
 
 
@@ -124,6 +133,9 @@ public:
 private:
     Q_DECLARE_PUBLIC(Radio)
     Radio* const q_ptr;
+
+    friend class RadioPresetFreqDelegate;
+    friend class RadioListFreqDelegate;
 
     RadioProcess *mProcess;
     //----------
@@ -182,7 +194,7 @@ private:
 
 public slots:
     //----------
-    void doReFreshCurFreq(const double &curFreq);
+    void doReFreshCurFreq(const double &curFreq,bool updatePreset=false,bool updateList=false);
     void doReFreshPresetFreqs(const QList<double> &presetFreqs);
     void doReFreshListFreqs(const QList<double> &listFreqs);
     //----------
