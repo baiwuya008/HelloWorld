@@ -5,6 +5,8 @@ SystemuiPrivate::SystemuiPrivate(Systemui *parent)
     :QObject(), q_ptr(parent)
 {
     mBackground = NULL;
+    mBmpSoundIcon = NULL;
+    mLabelTitle = NULL;
 }
 
 void SystemuiPrivate::initializeBasicWidget(QWidget *parent)
