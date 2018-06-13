@@ -5,9 +5,10 @@
 
 #include <QDebug>
 
-#define SLIDER_BAR_MAX 10000
 #define FREQ_MAX  1602
 #define FREQ_MIN  531
+#define FREQ_STEP  9
+#define SLIDER_BAR_MAX ((FREQ_MAX-FREQ_MIN)/FREQ_STEP)
 
 
 RadioAmPrivate::RadioAmPrivate(RadioAm *parent)
@@ -512,7 +513,7 @@ void RadioAmPrivate::initRadioListData(){
 }
 
 void RadioAmPrivate::doReFreshCurFreq(const int &curFreq,bool updatePreset,bool updateList){
-    qDebug()<<"doReFreshCurFreq curFreq:"<<curFreq<<endl;
+    //qDebug()<<"doReFreshCurFreq curFreq:"<<curFreq<<endl;
     if(mAmFragment_FreqText != NULL){
       mAmFragment_FreqText->setText(QString("%1").arg(curFreq));
     }
@@ -525,13 +526,13 @@ void RadioAmPrivate::doReFreshCurFreq(const int &curFreq,bool updatePreset,bool 
        QList<int> presetFreqs =gRadioData->getData().getAmPresetFreqs();
        int curfreq_in_preset_idx = -1;
        for (int i = 0; i < presetFreqs.size(); ++i) {
-           qDebug()<<"doReFreshCurFreq presetFreqs["<<i<<"]="<<presetFreqs.at(i)<<endl;
+           //qDebug()<<"doReFreshCurFreq presetFreqs["<<i<<"]="<<presetFreqs.at(i)<<endl;
            if(curFreq == presetFreqs.at(i)){
                curfreq_in_preset_idx = i;
                break;
            }
        }
-       qDebug()<<"doReFreshCurFreq curfreq_in_preset_idx:"<<curfreq_in_preset_idx<<endl;
+       //qDebug()<<"doReFreshCurFreq curfreq_in_preset_idx:"<<curfreq_in_preset_idx<<endl;
        if(curfreq_in_preset_idx != -1){
            if(mRadioPresetDelegate != NULL &&mRadioPresetStandardItemModel !=NULL){
                mRadioPresetDelegate->m_CurIndex =  mRadioPresetStandardItemModel->index(curfreq_in_preset_idx,0);
@@ -827,7 +828,7 @@ void RadioAmPresetFreqDelegate::onPressIndexChanged(const QModelIndex &index)
           mRadioPri->mRadioPresetFragmentListView->setCurrentIndex(index);
       }
   }
-  qDebug()<<variant.mFrequency<<endl;
+  //qDebug()<<"RadioAmPresetFreqDelegate::onPressIndexChanged mFrequency="<<variant.mFrequency<<endl;
 }
 
 void RadioAmPresetFreqDelegate::onCurrentIndexChange(const QModelIndex &index)
@@ -893,7 +894,7 @@ void RadioAmListFreqDelegate::onPressIndexChanged(const QModelIndex &index)
           mRadioPri->mRadioListFragmentListView->setCurrentIndex(index);
       }
   }
-  qDebug()<<variant.mFrequency<<endl;
+  //qDebug()<<"RadioAmListFreqDelegate::onPressIndexChanged mFrequency="<<variant.mFrequency<<endl;
 }
 
 void RadioAmListFreqDelegate::onCurrentIndexChange(const QModelIndex &index)

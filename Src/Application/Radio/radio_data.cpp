@@ -65,29 +65,29 @@ void RadioSharedData::initWholeData()
     //---init am data ASIA[531-1602];EURPO[522-1620];USA[530-1710]:LATIN AMERICA[520-1620]
 
     mAmPresetFreqs.append(531);
-    mAmPresetFreqs.append(670);
-    mAmPresetFreqs.append(696);
-    mAmPresetFreqs.append(710);
-    mAmPresetFreqs.append(750);
-    mAmPresetFreqs.append(840);
-    mAmPresetFreqs.append(890);
-    mAmPresetFreqs.append(940);
+    mAmPresetFreqs.append(549);
+    mAmPresetFreqs.append(612);
+    mAmPresetFreqs.append(661);
+    mAmPresetFreqs.append(742);
+    mAmPresetFreqs.append(823);
+    mAmPresetFreqs.append(895);
+    mAmPresetFreqs.append(958);
     mAmPresetFreqs.append(990);
-    mAmPresetFreqs.append(1440);
+    mAmPresetFreqs.append(1057);
     mAmPresetFreqs.append(1602);
 
-    mAmListFreqs.append(534);
-    mAmListFreqs.append(670);
-    mAmListFreqs.append(690);
-    mAmListFreqs.append(730);
-    mAmListFreqs.append(750);
-    mAmListFreqs.append(890);
-    mAmListFreqs.append(930);
-    mAmListFreqs.append(1066);
-    mAmListFreqs.append(1290);
-    mAmListFreqs.append(1430);
-    mAmListFreqs.append(1530);
-    mAmListFreqs.append(1600);
+    mAmListFreqs.append(540);
+    mAmListFreqs.append(558);
+    mAmListFreqs.append(684);
+    mAmListFreqs.append(774);
+    mAmListFreqs.append(855);
+    mAmListFreqs.append(918);
+    mAmListFreqs.append(981);
+    mAmListFreqs.append(1080);
+    mAmListFreqs.append(1179);
+    mAmListFreqs.append(1269);
+    mAmListFreqs.append(1449);
+    mAmListFreqs.append(1557);
 
     //mCurAmFreq = 1066;
     mCurAmBand = 1;  //1~2

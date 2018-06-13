@@ -5,9 +5,11 @@
 
 #include <QDebug>
 
-#define SLIDER_BAR_MAX 10000
-#define FREQ_MAX  108
+
+#define FREQ_MAX  108.0
 #define FREQ_MIN  87.5
+#define FREQ_STEP  0.1
+#define SLIDER_BAR_MAX  ((FREQ_MAX-FREQ_MIN)/FREQ_STEP)
 
 
 RadioPrivate::RadioPrivate(Radio *parent)
@@ -516,7 +518,7 @@ void RadioPrivate::initRadioListData(){
 }
 
 void RadioPrivate::doReFreshCurFreq(const double &curFreq,bool updatePreset,bool updateList){
-    qDebug()<<"doReFreshCurFreq curFreq:"<<curFreq<<endl;
+    //qDebug()<<"doReFreshCurFreq curFreq:"<<curFreq<<endl;
 
     if(mFmFragment_FreqText != NULL){
       mFmFragment_FreqText->setText(QString("%1").arg(curFreq,1,'f',1));
@@ -530,7 +532,7 @@ void RadioPrivate::doReFreshCurFreq(const double &curFreq,bool updatePreset,bool
        QList<double> presetFreqs =gRadioData->getData().getFmPresetFreqs();
        int curfreq_in_preset_idx = -1;
        for (int i = 0; i < presetFreqs.size(); ++i) {
-           qDebug()<<"doReFreshCurFreq presetFreqs["<<i<<"]="<<presetFreqs.at(i)<<endl;
+           //qDebug()<<"doReFreshCurFreq presetFreqs["<<i<<"]="<<presetFreqs.at(i)<<endl;
            if(curFreq == presetFreqs.at(i)){
                curfreq_in_preset_idx = i;
                break;
@@ -539,7 +541,7 @@ void RadioPrivate::doReFreshCurFreq(const double &curFreq,bool updatePreset,bool
                break;
            }
        }
-       qDebug()<<"doReFreshCurFreq curfreq_in_preset_idx:"<<curfreq_in_preset_idx<<endl;
+       //qDebug()<<"doReFreshCurFreq curfreq_in_preset_idx:"<<curfreq_in_preset_idx<<endl;
        if(curfreq_in_preset_idx != -1){
            if(mRadioPresetDelegate != NULL &&mRadioPresetStandardItemModel !=NULL){
                mRadioPresetDelegate->m_CurIndex =  mRadioPresetStandardItemModel->index(curfreq_in_preset_idx,0);
@@ -657,27 +659,21 @@ void RadioPrivate::doSliderPressed(const int value){
    if(mFmFragment_FreqText != NULL){
      mFmFragment_FreqText->setText(QString("%1").arg(freq,1,'f',1));
    }
-   int fixfreq =  (int)(freq*10+5);
-   mProcess->setFmCurFreq(fixfreq/10,true,true);
-   qDebug()<<"doSliderPressed fixfreq:"<<fixfreq/10<<endl;
+   mProcess->setFmCurFreq(freq,true,true);
 }
 void RadioPrivate::doSliderMoved(const int value){
     double freq = (FREQ_MAX-FREQ_MIN)*value/SLIDER_BAR_MAX+FREQ_MIN;
     if(mFmFragment_FreqText != NULL){
        mFmFragment_FreqText->setText(QString("%1").arg(freq,1,'f',1));
     }
-    int fixfreq =  (int)(freq*10+5);
-    mProcess->setFmCurFreq(fixfreq/10,true,true);
-    qDebug()<<"doSliderMoved fixfreq:"<<fixfreq/10<<endl;
+    mProcess->setFmCurFreq(freq,true,true);
 }
 void RadioPrivate::doSliderReleased(const int value){
     double freq = (FREQ_MAX-FREQ_MIN)*value/SLIDER_BAR_MAX+FREQ_MIN;
     if(mFmFragment_FreqText != NULL){
        mFmFragment_FreqText->setText(QString("%1").arg(freq,1,'f',1));
     }
-    int fixfreq =  (int)(freq*10+5);
-    mProcess->setFmCurFreq(fixfreq/10,true,true);
-    qDebug()<<"doSliderReleased fixfreq:"<<fixfreq/10<<endl;
+    mProcess->setFmCurFreq(freq,true,true);
 }
 
 //---------------------------
@@ -845,7 +841,7 @@ void RadioPresetFreqDelegate::onPressIndexChanged(const QModelIndex &index)
           mRadioPri->mRadioPresetFragmentListView->setCurrentIndex(index);
       }
   }
-  qDebug()<<variant.mFrequency<<endl;
+  //qDebug()<<"RadioPresetFreqDelegate::onPressIndexChanged mFrequency="<<variant.mFrequency<<endl;
 }
 
 void RadioPresetFreqDelegate::onCurrentIndexChange(const QModelIndex &index)
@@ -913,7 +909,7 @@ void RadioListFreqDelegate::onPressIndexChanged(const QModelIndex &index)
           mRadioPri->mRadioListFragmentListView->setCurrentIndex(index);
       }
   }
-  qDebug()<<variant.mFrequency<<endl;
+  //qDebug()<<"RadioListFreqDelegate::onPressIndexChanged mFrequency="<<variant.mFrequency<<endl;
 }
 
 void RadioListFreqDelegate::onCurrentIndexChange(const QModelIndex &index)
