@@ -1,5 +1,7 @@
 #include "settings.h"
 
+#define LINE_MIN 5
+#define LINE_MAX 95
 
 SettingsPrivate::SettingsPrivate(Settings *parent)
     : QObject(),q_ptr(parent)

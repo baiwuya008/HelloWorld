@@ -3,7 +3,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include "musiclistitem.h"
-#include "Src\CommonUserWidget\BmpButton.h"
+#include "Src/CommonUserWidget/BmpButton.h"
 #include <QTextCodec>
 #include <QDebug>
 #include <QListWidget>
@@ -305,7 +305,7 @@ void MusicListWidgetPrivate::addItemList()
         item = new QListWidgetItem;
         item->setSizeHint(QSize(ITEM_WIDTH, ITEM_HEIGHT));
 
-        infoItem = new MusicListItem(nullptr, mType);
+        infoItem = new MusicListItem(NULL, mType);
         infoItem->setFixedSize(QSize(ITEM_WIDTH, ITEM_HEIGHT));
         infoItem->initItem("fileName_" + QString::number(i));
 

@@ -34,7 +34,7 @@ void Multimedia::initializePrivate()
 MultimediaPrivate::MultimediaPrivate(Multimedia *parent)
     : m_Parent(parent)
 {
-    mMultimediaService = new MultimediaService;
+    mMultimediaService = new MultimediaService();
     initializeProxy();
     connectAllSlots();
 }

@@ -144,8 +144,7 @@ private:
 
     QSettings settings;
 
-    const int LINE_MIN = 5;
-    const int LINE_MAX = 95;
+
 
     //当前时间格式
     int formats;

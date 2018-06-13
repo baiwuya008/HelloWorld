@@ -14,7 +14,7 @@ class RotateWidget : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY(RotateWidget)
 public:
-    explicit RotateWidget(QWidget *parent = nullptr);
+    explicit RotateWidget(QWidget *parent = 0);
     ~RotateWidget();
 
 protected:
