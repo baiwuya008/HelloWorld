@@ -9,6 +9,7 @@
 #include "Src/CommonUserWidget\rotatewidget.h"
 #include <QDebug>
 #include <QList>
+#include "Src/Application/MultiMedia/multimedia.h"
 
 
 class MusicPlayWidgetPrivate {
@@ -173,6 +174,9 @@ void MusicPlayWidget::onSwitchIndex(bool isNext) {
 
 void MusicPlayWidget::onSwitchStatus(bool isPlay) {
     qDebug() << "onSwitchStatus = " << isPlay;
+
+    g_Multimedia->setPlayToggle(MediaUtils::MUSIC);
+
     Q_D(MusicPlayWidget);
     if (isPlay) {
         d->onPlay();
@@ -196,5 +200,10 @@ MusicPlayWidgetPrivate::~MusicPlayWidgetPrivate(){
 }
 
 MusicPlayWidget::~MusicPlayWidget() {
+
+}
+
+void MusicPlayWidget::setPlay(const QString &fileName, const long endTime)
+{
 
 }
