@@ -17,6 +17,7 @@
 #include "musicplaywidget.h"
 #include "musicprogresswidget.h"
 #include "Src/Application/MultiMedia/Tools/mediatoolswidget.h"
+#include "Src/Application/MultiMedia/multimedia.h"
 
 
 class MusicPrivate;
@@ -59,6 +60,8 @@ public:
 private slots:
     void setCurrentPageView(int tabIndex);
     void onSelectItem(QString filePath, int index);
+    void setPlayMusic(const int mediaType, const int index,
+                      const QString &fileName, const long endTime);
 
 private:
     Q_DECLARE_PUBLIC(Music)
@@ -74,6 +77,8 @@ private:
     MusicListWidget *mMusicListWidget = NULL;
     QStackedWidget *mStackedWidget = NULL;
 
+
+    void connectMultimediaSlots();
 
     //----------
     BmpWidget *mBackground;

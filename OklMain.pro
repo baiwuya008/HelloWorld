@@ -58,9 +58,19 @@ SOURCES += main.cpp\
     Src/Application/MultiMedia/Video/videoplaywidget.cpp \
     Src/Application/MultiMedia/Tools/mediatoolswidget.cpp \
     Src/Application/MultiMedia/Tools/mediautils.cpp \
+    Src/Application/MultiMedia/multimedia.cpp \
+    Src/Framework/MultimediaService/multimediaservice.cpp \
+    Src/Framework/MultimediaService/multimediautils.cpp \
+    Src/Framework/MultimediaService/player.cpp \
+    Src/Framework/MultimediaService/DeviceWatcher/devicewatcher.cpp \
+    Src/Framework/MultimediaService/DeviceWatcher/DiskScanner/diskscanner.cpp \
+    Src/Framework/MultimediaService/CustomThread/customthread.cpp \
+    Src/Framework/MultimediaService/MusicPlayer/musicplayer.cpp \
     Src/Application/Radio/radio_unit.cpp \
     Src/Application/Radio/radio_data.cpp \
-    Src/Application/Radio/radio_process.cpp
+    Src/Application/Radio/radio_process.cpp \
+    Src/Application/Settings/wheelview.cpp \
+    Src/Application/Settings/tumbler.cpp
 
 HEADERS  += mainwindow.h \
     configuration.h \
@@ -109,9 +119,19 @@ HEADERS  += mainwindow.h \
     Src/Application/MultiMedia/Video/videoplaywidget.h \
     Src/Application/MultiMedia/Tools/mediatoolswidget.h \
     Src/Application/MultiMedia/Tools/mediautils.h \
+     Src/Application/MultiMedia/multimedia.h \
+    Src/Framework/MultimediaService/multimediaservice.h \
+    Src/Framework/MultimediaService/multimediautils.h \
+    Src/Framework/MultimediaService/player.h \
+    Src/Framework/MultimediaService/DeviceWatcher/devicewatcher.h \
+    Src/Framework/MultimediaService/DeviceWatcher/DiskScanner/diskscanner.h \
+    Src/Framework/MultimediaService/CustomThread/customthread.h \
+    Src/Framework/MultimediaService/MusicPlayer/musicplayer.h \
     Src/Application/Radio/radio_unit.h \
     Src/Application/Radio/radio_data.h \
-    Src/Application/Radio/radio_process.h
+    Src/Application/Radio/radio_process.h \
+    Src/Application/Settings/wheelview.h \
+    Src/Application/Settings/tumbler.h
 
 
 

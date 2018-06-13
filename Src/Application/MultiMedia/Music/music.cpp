@@ -33,6 +33,8 @@ void MusicPrivate::initializeBasicWidget(QWidget *parent)
     initializePlayView(parent);
     initializeListView(parent);
 
+    connectMultimediaSlots();
+
     setCurrentPageView(0);
 }
 
@@ -75,12 +77,31 @@ void MusicPrivate::initializeListView(QWidget *parent) {
     connect(mMusicListWidget, SIGNAL(selectItem(QString,int)), this, SLOT(onSelectItem(QString,int)));
 }
 
+void MusicPrivate::connectMultimediaSlots()
+{
+ connect(g_Multimedia, SIGNAL(onPlay(int, int, QString, long)), this, SLOT(setPlayMusic(int, int, QString, long)));
+}
+
+
+
+void MusicPrivate::setPlayMusic(const int mediaType, const int index, const QString &fileName, const long endTime)
+{
+    if (mediaType != MediaUtils::MUSIC) {
+        return;
+    }
+
+
+    qDebug() << " MusicPrivate::setPlayMusic fileName = " << fileName
+             << "; endTime = " << endTime
+             << "; index = " << index;
+    mMusicListWidget->setPlayIndex(index);
+    mMusicPlayWidget->setPlay(fileName, endTime);
+}
+
 void MusicPrivate::onSelectItem(QString filePath, int index) {
     qDebug() << "onSelectItem filePath = " << filePath
              << "; index = " << index;
 }
-
-
 void MusicPrivate::onBtnTestRelease()
 {
     Q_Q(Music);

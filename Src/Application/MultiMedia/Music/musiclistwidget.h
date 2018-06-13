@@ -15,6 +15,7 @@ public:
     explicit MusicListWidget(QWidget *parent,
                              MediaUtils::MEDIA_TYPE type = MediaUtils::MEDIA_TYPE::MUSIC_LIST);
     ~MusicListWidget();
+    void setPlayIndex(int index);
 
 signals:
     void selectItem(QString path, int index);

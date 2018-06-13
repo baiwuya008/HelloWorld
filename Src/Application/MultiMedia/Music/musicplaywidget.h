@@ -13,17 +13,18 @@ public:
     explicit MusicPlayWidget(QWidget *parent = nullptr);
     ~MusicPlayWidget();
 
+    void setPlay(const QString &fileName, const long endTime);
+
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 
 signals:
 
 public slots:
-
-private slots:
  void onSwitchPlayMode(int mode);
- void onSwitchIndex(bool isNext);
  void onSwitchStatus(bool isPlay);
+private slots:
+ void onSwitchIndex(bool isNext);
 private:
     Q_DECLARE_PRIVATE(MusicPlayWidget)
     MusicPlayWidgetPrivate* const d_ptr;

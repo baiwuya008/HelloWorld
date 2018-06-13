@@ -1,4 +1,4 @@
-#include "musiclistwidget.h"
+﻿#include "musiclistwidget.h"
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -347,6 +347,12 @@ void MusicListWidgetPrivate::onitemClick(int index) {
 }
 
 
+void MusicListWidget::setPlayIndex(int index)
+{
+    Q_D(MusicListWidget);
+    d->onitemClick(index);
+}
+
 
 void MusicListWidgetPrivate::setTextSize(QWidget *text) {
     //设置字号
@@ -370,5 +376,7 @@ MusicListWidgetPrivate::~MusicListWidgetPrivate(){
 MusicListWidget::~MusicListWidget() {
 
 }
+
+
 
 
