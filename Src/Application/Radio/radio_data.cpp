@@ -67,13 +67,13 @@ void RadioSharedData::initWholeData()
     mAmPresetFreqs.append(531);
     mAmPresetFreqs.append(549);
     mAmPresetFreqs.append(612);
-    mAmPresetFreqs.append(661);
-    mAmPresetFreqs.append(742);
-    mAmPresetFreqs.append(823);
-    mAmPresetFreqs.append(895);
-    mAmPresetFreqs.append(958);
-    mAmPresetFreqs.append(990);
-    mAmPresetFreqs.append(1057);
+    mAmPresetFreqs.append(675);
+    mAmPresetFreqs.append(711);
+    mAmPresetFreqs.append(828);
+    mAmPresetFreqs.append(891);
+    mAmPresetFreqs.append(1008);
+    mAmPresetFreqs.append(1062);
+    mAmPresetFreqs.append(1332);
     mAmPresetFreqs.append(1602);
 
     mAmListFreqs.append(540);

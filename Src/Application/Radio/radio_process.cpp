@@ -64,6 +64,7 @@ void RadioProcess::setFmCurFreq(const double &curFreq,bool updateMain,bool updat
 }
 void RadioProcess::setFmPresetFreqs(const QList<double> &presetFreqs){
   gRadioData->getData().setFmPresetFreqs(presetFreqs);
+  emit callReFreshFmPresetFreqs(presetFreqs);
 }
 void RadioProcess::setFmListFreqs(const QList<double> &listFreqs){
   gRadioData->getData().setFmListFreqs(listFreqs);
@@ -76,6 +77,7 @@ void RadioProcess::setAmCurFreq(const int &curFreq,bool updateMain,bool updatePr
 }
 void RadioProcess::setAmPresetFreqs(const QList<int> &presetFreqs){
   gRadioData->getData().setAmPresetFreqs(presetFreqs);
+  emit callReFreshAmPresetFreqs(presetFreqs);
 }
 void RadioProcess::setAmListFreqs(const QList<int> &listFreqs){
   gRadioData->getData().setAmListFreqs(listFreqs);

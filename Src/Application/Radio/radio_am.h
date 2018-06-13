@@ -70,6 +70,11 @@ private:
                                    const QStyleOptionViewItem &option,
                                    const QModelIndex &index);
 
+    bool editorEvent(QEvent* event,
+                     QAbstractItemModel *model,
+                     const QStyleOptionViewItem &option,
+                     const QModelIndex &index);
+
 protected slots:
     void onCurrentIndexChange(const QModelIndex &index);
     void onPressIndexChanged(const QModelIndex &index);
@@ -179,13 +184,13 @@ private:
     BmpButton *mBottom_Am_Seek_Next;
     BmpButton *mBottom_Am_Next;
 
-    BmpButton *mBottom_Preset_PageUp;
+    BmpButton *mBottom_Preset_Seek_Prev;
     BmpButton *mBottom_Preset_AutoSearch;
-    BmpButton *mBottom_Preset_PageDown;
+    BmpButton *mBottom_Preset_Seek_Next;
 
-    BmpButton *mBottom_List_PageUp;
+    BmpButton *mBottom_List_Seek_Prev;
     BmpButton *mBottom_List_Search;
-    BmpButton *mBottom_List_PageDown;
+    BmpButton *mBottom_List_Seek_Next;
 
     CustomListView *mRadioPresetFragmentListView;
     CustomScrollBar *mRadioPresetFragmentListViewScrollBar;
@@ -222,13 +227,13 @@ private slots:
     void onBtnBottomAmSeekNext();
     void onBtnBottomAmNext();
 
-    void onBtnBottomPresetPageUp();
+    void onBtnBottomPresetSeekPrev();
     void onBtnBottomPresetAutoSearch();
-    void onBtnBottomPresetPageDown();
+    void onBtnBottomPresetSeekNext();
 
-    void onBtnBottomListPageUp();
+    void onBtnBottomListSeekPrev();
     void onBtnBottomListSearch();
-    void onBtnBottomListPageDown();
+    void onBtnBottomListSeekNext();
 
     void doSliderPressed(const int value);
     void doSliderMoved(const int value);

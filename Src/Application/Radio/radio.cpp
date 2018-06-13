@@ -44,13 +44,13 @@ RadioPrivate::RadioPrivate(Radio *parent)
    mBottom_Fm_Seek_Next =NULL;
    mBottom_Fm_Next =NULL;
 
-   mBottom_Preset_PageUp =NULL;
+   mBottom_Preset_Seek_Prev =NULL;
    mBottom_Preset_AutoSearch =NULL;
-   mBottom_Preset_PageDown =NULL;
+   mBottom_Preset_Seek_Next =NULL;
 
-   mBottom_List_PageUp =NULL;
+   mBottom_List_Seek_Prev =NULL;
    mBottom_List_Search =NULL;
-   mBottom_List_PageDown =NULL;
+   mBottom_List_Seek_Next =NULL;
 
    mRadioPresetFragmentListView =NULL;
    mRadioPresetFragmentListViewScrollBar =NULL;
@@ -151,20 +151,20 @@ void RadioPrivate::initializeBasicWidget(QWidget *parent)
     mBottom_Preset = new BmpWidget(mBottomBar);
     mBottom_Preset->setBackgroundBmpPath(QString(":/res/drawable/app_bottombar_3btns_bg.png"));
     mBottom_Preset->setFixedSize(QSize(800, 60));
-    mBottom_Preset_PageUp= new BmpButton(mBottom_Preset);
-    mBottom_Preset_PageUp->setNormalBmpPath(QString(":/res/drawable/bottom_bar_page_up.png"));
-    mBottom_Preset_PageUp->setPressBmpPath(QString(":/res/drawable/bottom_bar_page_up_pressed.png"));
-    mBottom_Preset_PageUp->setGeometry(0,0,267,60);
+    mBottom_Preset_Seek_Prev= new BmpButton(mBottom_Preset);
+    mBottom_Preset_Seek_Prev->setNormalBmpPath(QString(":/res/drawable/bottom_bar_page_up.png"));
+    mBottom_Preset_Seek_Prev->setPressBmpPath(QString(":/res/drawable/bottom_bar_page_up_pressed.png"));
+    mBottom_Preset_Seek_Prev->setGeometry(0,0,267,60);
     mBottom_Preset_AutoSearch= new BmpButton(mBottom_Preset);
     mBottom_Preset_AutoSearch->setNormalBmpPath(QString(":/res/drawable/bottom_bar_btn_normal.png"));
     mBottom_Preset_AutoSearch->setPressBmpPath(QString(":/res/drawable/bottom_bar_btn_pressed.png"));
     mBottom_Preset_AutoSearch->setGeometry(267,0,267,60);
     mBottom_Preset_AutoSearch->setText(QString("自动选台"));
     mBottom_Preset_AutoSearch->setFontPointSize(16);
-    mBottom_Preset_PageDown= new BmpButton(mBottom_Preset);
-    mBottom_Preset_PageDown->setNormalBmpPath(QString(":/res/drawable/bottom_bar_page_down.png"));
-    mBottom_Preset_PageDown->setPressBmpPath(QString(":/res/drawable/bottom_bar_page_down_pressed.png"));
-    mBottom_Preset_PageDown->setGeometry(533,0,267,60);
+    mBottom_Preset_Seek_Next= new BmpButton(mBottom_Preset);
+    mBottom_Preset_Seek_Next->setNormalBmpPath(QString(":/res/drawable/bottom_bar_page_down.png"));
+    mBottom_Preset_Seek_Next->setPressBmpPath(QString(":/res/drawable/bottom_bar_page_down_pressed.png"));
+    mBottom_Preset_Seek_Next->setGeometry(533,0,267,60);
     mBottomBarLayout->addWidget(mBottom_Preset);
 
     //init buttom bar list
@@ -172,20 +172,20 @@ void RadioPrivate::initializeBasicWidget(QWidget *parent)
     mBottom_List->setBackgroundBmpPath(QString(":/res/drawable/app_bottombar_3btns_bg.png"));
     mBottom_List->setFixedSize(QSize(800, 60));
     mBottomBarLayout->addWidget(mBottom_List);
-    mBottom_List_PageUp= new BmpButton(mBottom_List);
-    mBottom_List_PageUp->setNormalBmpPath(QString(":/res/drawable/bottom_bar_page_up.png"));
-    mBottom_List_PageUp->setPressBmpPath(QString(":/res/drawable/bottom_bar_page_up_pressed.png"));
-    mBottom_List_PageUp->setGeometry(0,0,267,60);
+    mBottom_List_Seek_Prev= new BmpButton(mBottom_List);
+    mBottom_List_Seek_Prev->setNormalBmpPath(QString(":/res/drawable/bottom_bar_page_up.png"));
+    mBottom_List_Seek_Prev->setPressBmpPath(QString(":/res/drawable/bottom_bar_page_up_pressed.png"));
+    mBottom_List_Seek_Prev->setGeometry(0,0,267,60);
     mBottom_List_Search= new BmpButton(mBottom_List);
     mBottom_List_Search->setNormalBmpPath(QString(":/res/drawable/bottom_bar_btn_normal.png"));
     mBottom_List_Search->setPressBmpPath(QString(":/res/drawable/bottom_bar_btn_pressed.png"));
     mBottom_List_Search->setGeometry(267,0,267,60);
     mBottom_List_Search->setText(QString("搜索"));
     mBottom_List_Search->setFontPointSize(16);
-    mBottom_List_PageDown= new BmpButton(mBottom_List);
-    mBottom_List_PageDown->setNormalBmpPath(QString(":/res/drawable/bottom_bar_page_down.png"));
-    mBottom_List_PageDown->setPressBmpPath(QString(":/res/drawable/bottom_bar_page_down_pressed.png"));
-    mBottom_List_PageDown->setGeometry(533,0,267,60);
+    mBottom_List_Seek_Next= new BmpButton(mBottom_List);
+    mBottom_List_Seek_Next->setNormalBmpPath(QString(":/res/drawable/bottom_bar_page_down.png"));
+    mBottom_List_Seek_Next->setPressBmpPath(QString(":/res/drawable/bottom_bar_page_down_pressed.png"));
+    mBottom_List_Seek_Next->setGeometry(533,0,267,60);
     mBottomBarLayout->setCurrentIndex(mTab);
 
     tabSwitch(mTab);
@@ -199,13 +199,13 @@ void RadioPrivate::initializeBasicWidget(QWidget *parent)
     connect(mBottom_Fm_Seek_Next,SIGNAL(released()),this,SLOT(onBtnBottomFmSeekNext()));
     connect(mBottom_Fm_Next,SIGNAL(released()),this,SLOT(onBtnBottomFmNext()));
 
-    connect(mBottom_Preset_PageUp,SIGNAL(released()),this,SLOT(onBtnBottomPresetPageUp()));
+    connect(mBottom_Preset_Seek_Prev,SIGNAL(released()),this,SLOT(onBtnBottomPresetSeekPrev()));
     connect(mBottom_Preset_AutoSearch,SIGNAL(released()),this,SLOT(onBtnBottomPresetAutoSearch()));
-    connect(mBottom_Preset_PageDown,SIGNAL(released()),this,SLOT(onBtnBottomPresetPageDown()));
+    connect(mBottom_Preset_Seek_Next,SIGNAL(released()),this,SLOT(onBtnBottomPresetSeekNext()));
 
-    connect(mBottom_List_PageUp,SIGNAL(released()),this,SLOT(onBtnBottomListPageUp()));
+    connect(mBottom_List_Seek_Prev,SIGNAL(released()),this,SLOT(onBtnBottomListSeekPrev()));
     connect(mBottom_List_Search,SIGNAL(released()),this,SLOT(onBtnBottomListSearch()));
-    connect(mBottom_List_PageDown,SIGNAL(released()),this,SLOT(onBtnBottomListPageDown()));
+    connect(mBottom_List_Seek_Next,SIGNAL(released()),this,SLOT(onBtnBottomListSeekNext()));
 
     mProcess->linkRadio(this);
 }
@@ -424,6 +424,19 @@ void RadioPrivate::initRadioPresetData()
             QStandardItem* root = mRadioPresetStandardItemModel->invisibleRootItem();
             mRadioPresetStandardItemModel->setItem(root->rowCount(), 0, listItem);
         }
+        //add current freq in the last item
+        {
+            double cur_freq = gRadioData->getData().getCurFmFreq();
+            QStandardItem* listItem = new QStandardItem();
+            PresetVariant itemVariant;
+            itemVariant.mFrequency = cur_freq;
+            itemVariant.m_ActiveIcon = PresetVariant::SaveIcon;
+            listItem->setSizeHint(QSize(695 , 50));
+            listItem->setData(qVariantFromValue(itemVariant), Qt::UserRole);
+            QStandardItem* root = mRadioPresetStandardItemModel->invisibleRootItem();
+            mRadioPresetStandardItemModel->setItem(root->rowCount(), 0, listItem);
+        }
+        //----------------------------------------
 
     }
 }
@@ -543,18 +556,39 @@ void RadioPrivate::doReFreshCurFreq(const double &curFreq,bool updatePreset,bool
                break;
            }
        }
+
+       if(mRadioPresetDelegate != NULL&&mRadioPresetStandardItemModel !=NULL){
+           //update or new item in the list tails
+           QStandardItem* listItem = new QStandardItem();
+           PresetVariant itemVariant;
+           itemVariant.mFrequency = curFreq;
+           itemVariant.m_ActiveIcon = PresetVariant::SaveIcon;
+           listItem->setSizeHint(QSize(695 , 50));
+           listItem->setData(qVariantFromValue(itemVariant), Qt::UserRole);
+           mRadioPresetStandardItemModel->setItem(presetFreqs.size(), 0, listItem);
+       }
+
        //qDebug()<<"doReFreshCurFreq curfreq_in_preset_idx:"<<curfreq_in_preset_idx<<endl;
        if(curfreq_in_preset_idx != -1){
            if(mRadioPresetDelegate != NULL &&mRadioPresetStandardItemModel !=NULL){
                mRadioPresetDelegate->m_CurIndex =  mRadioPresetStandardItemModel->index(curfreq_in_preset_idx,0);
+               //delete the tails sava item here
+               ////mRadioPresetStandardItemModel->removeRow(presetFreqs.size());
+               if(mRadioPresetFragmentListView != NULL){
+                   mRadioPresetFragmentListView->scrollTo(mRadioPresetDelegate->m_CurIndex);
+               }
            }
        }else{
-           if(mRadioPresetDelegate != NULL){
+           if(mRadioPresetDelegate != NULL&&mRadioPresetStandardItemModel !=NULL){
                mRadioPresetDelegate->m_CurIndex =  QModelIndex(); //use a new instance to clean the orig one
+               if(mRadioPresetFragmentListView != NULL){
+                   mRadioPresetFragmentListView->scrollToBottom();
+               }
            }
-
        }
+
     }
+
     if(updateList){
         QList<double> listFreqs =gRadioData->getData().getFmListFreqs();
         int curfreq_in_list_idx = -1;
@@ -592,6 +626,43 @@ void RadioPrivate::doReFreshPresetFreqs(const QList<double> &presetFreqs){
             QStandardItem* root = mRadioPresetStandardItemModel->invisibleRootItem();
             mRadioPresetStandardItemModel->setItem(root->rowCount(), 0, listItem);
         }
+
+        //add current freq in the last item if not in the list here!!
+        //if in the qlist then set the item hight light
+        double cur_freq = gRadioData->getData().getCurFmFreq();
+        QStandardItem* listItem = new QStandardItem();
+        PresetVariant itemVariant;
+        itemVariant.mFrequency = cur_freq;
+        itemVariant.m_ActiveIcon = PresetVariant::SaveIcon;
+        listItem->setSizeHint(QSize(695 , 50));
+        listItem->setData(qVariantFromValue(itemVariant), Qt::UserRole);
+        QStandardItem* root = mRadioPresetStandardItemModel->invisibleRootItem();
+        mRadioPresetStandardItemModel->setItem(root->rowCount(), 0, listItem);
+
+        if(presetFreqs.contains(cur_freq))
+        {
+            int curfreq_in_preset_idx = -1;
+            for (int i = 0; i < presetFreqs.size(); ++i) {
+                if(cur_freq == presetFreqs.at(i)){
+                    curfreq_in_preset_idx = i;
+                    break;
+                }else if((float)cur_freq == (float)presetFreqs.at(i)){
+                    curfreq_in_preset_idx = i;
+                    break;
+                }
+            }
+
+            if(curfreq_in_preset_idx != -1){
+                if(mRadioPresetDelegate != NULL &&mRadioPresetStandardItemModel !=NULL){
+                    mRadioPresetDelegate->m_CurIndex =  mRadioPresetStandardItemModel->index(curfreq_in_preset_idx,0);
+                    if(curfreq_in_preset_idx == presetFreqs.size()-1){
+                        mRadioPresetFragmentListView->scrollToBottom();
+                    }
+                }
+            }
+        }
+        //----------------------------------------
+
     }
 }
 void RadioPrivate::doReFreshListFreqs(const QList<double> &listFreqs){
@@ -628,30 +699,30 @@ void RadioPrivate::onBtnBottomFmNext()
  mProcess->requestFmNextChannel();
 }
 
-void RadioPrivate::onBtnBottomPresetPageUp()
+void RadioPrivate::onBtnBottomPresetSeekPrev()
 {
-
+ mProcess->requestFmSeekPrev();
 }
 void RadioPrivate::onBtnBottomPresetAutoSearch()
 {
 
 }
-void RadioPrivate::onBtnBottomPresetPageDown()
+void RadioPrivate::onBtnBottomPresetSeekNext()
 {
-
+  mProcess->requestFmSeekNext();
 }
 
-void RadioPrivate::onBtnBottomListPageUp()
+void RadioPrivate::onBtnBottomListSeekPrev()
 {
-
+ mProcess->requestFmSeekPrev();
 }
 void RadioPrivate::onBtnBottomListSearch()
 {
 
 }
-void RadioPrivate::onBtnBottomListPageDown()
+void RadioPrivate::onBtnBottomListSeekNext()
 {
-
+ mProcess->requestFmSeekNext();
 }
 
 
@@ -824,10 +895,67 @@ void RadioPresetFreqDelegate::mouseReleaseEvent(QMouseEvent* event,
                                            const QModelIndex &index)
 {
     PresetVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<PresetVariant>();
-
+    QRect ItemFuncIconRect(mFunIconRect.x() + option.rect.x(),
+                               mFunIconRect.y() + option.rect.y(),
+                               mFunIconRect.width(),
+                               mFunIconRect.height());
+    QList<double> presetFreqs =gRadioData->getData().getFmPresetFreqs();
     variant.m_SaveIconSta = PresetVariant::B_Normal;
     variant.m_RemoveIconSta = PresetVariant::B_Normal;
     model->setData(index, qVariantFromValue(variant), Qt::UserRole);
+
+    if(ItemFuncIconRect.contains(event->pos())&&ItemFuncIconRect.contains(m_StartMovePoint)){
+        switch (variant.m_ActiveIcon) {
+        case PresetVariant::SaveIcon:
+             //TODO: add the item
+            if(!presetFreqs.contains(variant.mFrequency)){
+                presetFreqs.append(variant.mFrequency);
+                mRadioPri->mProcess->setFmPresetFreqs(presetFreqs);
+            }
+            break;
+        case PresetVariant::RemoveIcon:
+             //TODO: delete the item
+             presetFreqs.removeOne(variant.mFrequency);
+             mRadioPri->mProcess->setFmPresetFreqs(presetFreqs);
+            break;
+         default:
+            break;
+        }
+
+    }
+
+}
+
+bool RadioPresetFreqDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
+{
+    switch (event->type()) {
+    case QEvent::MouseButtonPress: {
+        QMouseEvent* mouseEvent = reinterpret_cast<QMouseEvent*>(event);
+        if (NULL != mouseEvent) {
+            mousePressEvent(mouseEvent, model, option, index);
+        }
+        break;
+    }
+    case QEvent::MouseMove: {
+        QMouseEvent* mouseEvent = reinterpret_cast<QMouseEvent*>(event);
+        if (NULL != mouseEvent) {
+            mouseMoveEvent(mouseEvent, model, option, index);
+        }
+        break;
+    }
+    case QEvent::MouseButtonRelease: {
+        QMouseEvent* mouseEvent = reinterpret_cast<QMouseEvent*>(event);
+        if (NULL != mouseEvent) {
+            mouseReleaseEvent(mouseEvent, model, option, index);
+        }
+        break;
+    }
+    default: {
+        break;
+    }
+    }
+    return true;
+    ////return QItemDelegate::editorEvent(event, model, option, index);
 }
 
 void RadioPresetFreqDelegate::onPressIndexChanged(const QModelIndex &index)
@@ -850,7 +978,7 @@ void RadioPresetFreqDelegate::onCurrentIndexChange(const QModelIndex &index)
 {
     m_CurIndex = index;
     PresetVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<PresetVariant>();
-    mRadioPri->mProcess->setFmCurFreq(variant.mFrequency,true,false,true);
+    mRadioPri->mProcess->setFmCurFreq(variant.mFrequency,true,true,true);
 }
 
 //---------------------------
