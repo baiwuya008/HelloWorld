@@ -11,6 +11,8 @@
 #define FREQ_STEP  0.1
 #define SLIDER_BAR_MAX  ((FREQ_MAX-FREQ_MIN)/FREQ_STEP)
 
+#define LISTVIEW_SLIDER_THRESHOLD  5
+
 
 RadioPrivate::RadioPrivate(Radio *parent)
     : QObject(),q_ptr(parent)
@@ -771,6 +773,7 @@ void RadioPresetFreqDelegate::mousePressEvent(QMouseEvent* event,
                                          const QStyleOptionViewItem &option,
                                          const QModelIndex &index)
 {
+   m_StartMovePoint = event->pos();
    PresetVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<PresetVariant>();
    QRect ItemFuncIconRect(mFunIconRect.x() + option.rect.x(),
                               mFunIconRect.y() + option.rect.y(),
@@ -790,6 +793,7 @@ void RadioPresetFreqDelegate::mousePressEvent(QMouseEvent* event,
            break;
        }
        model->setData(index, qVariantFromValue(variant), Qt::UserRole);
+       m_PressIndex = QModelIndex(); //clean the press modelindex here
    }
 }
 
@@ -798,7 +802,20 @@ void RadioPresetFreqDelegate::mouseMoveEvent(QMouseEvent* event,
                                         const QStyleOptionViewItem &option,
                                         const QModelIndex &index)
 {
-
+    PresetVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<PresetVariant>();
+    QRect ItemFuncIconRect(mFunIconRect.x() + option.rect.x(),
+                               mFunIconRect.y() + option.rect.y(),
+                               mFunIconRect.width(),
+                               mFunIconRect.height());
+    if(!ItemFuncIconRect.contains(event->pos())){
+        variant.m_SaveIconSta = PresetVariant::B_Normal;
+        variant.m_RemoveIconSta = PresetVariant::B_Normal;
+        model->setData(index, qVariantFromValue(variant), Qt::UserRole);
+    }
+    int deltaEnd = event->pos().y() - m_StartMovePoint.y();
+    if(qAbs(deltaEnd)>LISTVIEW_SLIDER_THRESHOLD){
+        m_PressIndex = QModelIndex(); //clean the press modelindex here
+    }
 }
 
 void RadioPresetFreqDelegate::mouseReleaseEvent(QMouseEvent* event,
@@ -807,40 +824,25 @@ void RadioPresetFreqDelegate::mouseReleaseEvent(QMouseEvent* event,
                                            const QModelIndex &index)
 {
     PresetVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<PresetVariant>();
-    QRect ItemFuncIconRect(mFunIconRect.x() + option.rect.x(),
-                               mFunIconRect.y() + option.rect.y(),
-                               mFunIconRect.width(),
-                               mFunIconRect.height());
-    if(ItemFuncIconRect.contains(event->pos())){
-        switch (variant.m_ActiveIcon) {
-        case PresetVariant::SaveIcon:
-            variant.m_SaveIconSta = PresetVariant::B_Normal;
-            variant.m_RemoveIconSta = PresetVariant::B_Normal;
-            //ToDo something
 
-            break;
-        case PresetVariant::RemoveIcon:
-            variant.m_RemoveIconSta = PresetVariant::B_Normal;
-            variant.m_SaveIconSta = PresetVariant::B_Normal;
-            //ToDo something
-
-            break;
-         default:
-            break;
-        }
-        model->setData(index, qVariantFromValue(variant), Qt::UserRole);
-    }
+    variant.m_SaveIconSta = PresetVariant::B_Normal;
+    variant.m_RemoveIconSta = PresetVariant::B_Normal;
+    model->setData(index, qVariantFromValue(variant), Qt::UserRole);
 }
 
 void RadioPresetFreqDelegate::onPressIndexChanged(const QModelIndex &index)
 {
-  m_PressIndex = index;
+
   PresetVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<PresetVariant>();
-  if(variant.mFrequency>0){
+  PresetVariant last_variant = qVariantFromValue(m_PressIndex.data(Qt::UserRole)).value<PresetVariant>();
+  if(variant.mFrequency==0 && last_variant.mFrequency >0){
       if(mRadioPri->mRadioPresetFragmentListView != NULL){
-          mRadioPri->mRadioPresetFragmentListView->setCurrentIndex(index);
+          mRadioPri->mRadioPresetFragmentListView->setCurrentIndex(m_PressIndex);
       }
   }
+
+  m_PressIndex = index;
+
   //qDebug()<<"RadioPresetFreqDelegate::onPressIndexChanged mFrequency="<<variant.mFrequency<<endl;
 }
 
@@ -900,15 +902,44 @@ void RadioListFreqDelegate::paint(QPainter* painter,
 
 }
 
+void RadioListFreqDelegate::mousePressEvent(QMouseEvent* event,
+                                         QAbstractItemModel *model,
+                                         const QStyleOptionViewItem &option,
+                                         const QModelIndex &index)
+{
+   m_StartMovePoint = event->pos();
+}
+
+void RadioListFreqDelegate::mouseMoveEvent(QMouseEvent* event,
+                                        QAbstractItemModel *model,
+                                        const QStyleOptionViewItem &option,
+                                        const QModelIndex &index)
+{
+    int deltaEnd = event->pos().y() - m_StartMovePoint.y();
+    if(qAbs(deltaEnd)>LISTVIEW_SLIDER_THRESHOLD){
+        m_PressIndex = QModelIndex(); //clean the press modelindex here
+    }
+}
+
+void RadioListFreqDelegate::mouseReleaseEvent(QMouseEvent* event,
+                                           QAbstractItemModel *model,
+                                           const QStyleOptionViewItem &option,
+                                           const QModelIndex &index)
+{
+
+}
+
 void RadioListFreqDelegate::onPressIndexChanged(const QModelIndex &index)
 {
-  m_PressIndex = index;
-  ListVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<ListVariant>();
-  if(variant.mFrequency>0){
-      if(mRadioPri->mRadioListFragmentListView != NULL){
-          mRadioPri->mRadioListFragmentListView->setCurrentIndex(index);
-      }
-  }
+    ListVariant variant = qVariantFromValue(index.data(Qt::UserRole)).value<ListVariant>();
+    ListVariant last_variant = qVariantFromValue(m_PressIndex.data(Qt::UserRole)).value<ListVariant>();
+    if(variant.mFrequency==0 && last_variant.mFrequency >0){
+        if(mRadioPri->mRadioListFragmentListView != NULL){
+            mRadioPri->mRadioListFragmentListView->setCurrentIndex(m_PressIndex);
+        }
+    }
+
+    m_PressIndex = index;
   //qDebug()<<"RadioListFreqDelegate::onPressIndexChanged mFrequency="<<variant.mFrequency<<endl;
 }
 

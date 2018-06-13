@@ -4,6 +4,7 @@
 #include "Src/Framework/Base/Core/activity.h"
 #include <QStackedLayout>
 #include <QList>
+#include <QPoint>
 #include <QStandardItemModel>
 #include <QMouseEvent>
 #include <QRect>
@@ -76,6 +77,7 @@ private:
     const RadioAmPrivate *mRadioPri;
     QModelIndex m_PressIndex;
     QModelIndex m_CurIndex;
+    QPoint m_StartMovePoint;
     QScopedPointer<QPixmap> m_Interval_Line;
     QScopedPointer<QPixmap> m_SaveIconNormal;
     QScopedPointer<QPixmap> m_SaveIconPressed;
@@ -94,6 +96,20 @@ class RadioAmListFreqDelegate : public CustomItemDelegate
 public:
     explicit RadioAmListFreqDelegate(RadioAmPrivate *radioPri,QObject* parent = NULL);
     ~RadioAmListFreqDelegate();
+private:
+    void mousePressEvent(QMouseEvent* event,
+                                 QAbstractItemModel *model,
+                                 const QStyleOptionViewItem &option,
+                                 const QModelIndex &index);
+    void mouseMoveEvent(QMouseEvent* event,
+                                QAbstractItemModel *model,
+                                const QStyleOptionViewItem &option,
+                                const QModelIndex &index);
+    void mouseReleaseEvent(QMouseEvent* event,
+                                   QAbstractItemModel *model,
+                                   const QStyleOptionViewItem &option,
+                                   const QModelIndex &index);
+
 protected:
     void paint(QPainter* painter,
                const QStyleOptionViewItem &option,
@@ -105,6 +121,7 @@ private:
     const RadioAmPrivate *mRadioPri;
     QModelIndex m_PressIndex;
     QModelIndex m_CurIndex;
+    QPoint m_StartMovePoint;
     QScopedPointer<QPixmap> m_Interval_Line;
     friend class RadioAmPrivate;
 };

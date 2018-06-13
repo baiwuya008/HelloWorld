@@ -4,6 +4,7 @@
 #include "Src/Framework/Base/Core/activity.h"
 #include <QStackedLayout>
 #include <QList>
+#include <QPoint>
 #include <QStandardItemModel>
 #include <QMouseEvent>
 #include <QRect>
@@ -78,6 +79,7 @@ private:
     const RadioPrivate *mRadioPri;
     QModelIndex m_PressIndex;
     QModelIndex m_CurIndex;
+    QPoint m_StartMovePoint;
     QScopedPointer<QPixmap> m_Interval_Line;
     QScopedPointer<QPixmap> m_SaveIconNormal;
     QScopedPointer<QPixmap> m_SaveIconPressed;
@@ -100,6 +102,19 @@ protected:
     void paint(QPainter* painter,
                const QStyleOptionViewItem &option,
                const QModelIndex &index) const;
+private:
+    void mousePressEvent(QMouseEvent* event,
+                                 QAbstractItemModel *model,
+                                 const QStyleOptionViewItem &option,
+                                 const QModelIndex &index);
+    void mouseMoveEvent(QMouseEvent* event,
+                                QAbstractItemModel *model,
+                                const QStyleOptionViewItem &option,
+                                const QModelIndex &index);
+    void mouseReleaseEvent(QMouseEvent* event,
+                                   QAbstractItemModel *model,
+                                   const QStyleOptionViewItem &option,
+                                   const QModelIndex &index);
 protected slots:
     void onCurrentIndexChange(const QModelIndex &index);
     void onPressIndexChanged(const QModelIndex &index);
@@ -107,6 +122,7 @@ private:
     const RadioPrivate *mRadioPri;
     QModelIndex m_PressIndex;
     QModelIndex m_CurIndex;
+    QPoint m_StartMovePoint;
     QScopedPointer<QPixmap> m_Interval_Line;
     friend class RadioPrivate;
 
