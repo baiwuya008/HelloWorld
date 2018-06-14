@@ -250,7 +250,7 @@ void RadioAmPrivate::tabSwitch(const Tab mytab)
 void RadioAmPrivate::initRadioAmFragment()
 {
     const int freq_y= 85;
-    const int freq_text_w= 140;
+    const int freq_text_w= 200;
     const int freq_scalebar_y= 205;
     const int cur_freq = gRadioData->getData().getCurAmFreq();
 
