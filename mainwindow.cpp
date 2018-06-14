@@ -18,10 +18,13 @@ MainWindow::MainWindow(QWidget *parent)
     move(300,240); //设置窗口起始顶点位置
 #else
     setFixedSize(800,480); //固定窗口大小
-    move(600,240); //设置窗口起始顶点位置
+    move(0,0); //设置窗口起始顶点位置
 #endif
 
  //setStyleSheet("MainWindow{background-image:url(:/Res/drawable/test/logo01.png);}"); //设置背景图片
+ #if(APP_WITH_SIMULATION == 0)
+    setWindowFlags(Qt::FramelessWindowHint); //去掉应用框架外框
+ #endif
  //setWindowFlags(Qt::FramelessWindowHint); //去掉应用框架外框
 }
 
