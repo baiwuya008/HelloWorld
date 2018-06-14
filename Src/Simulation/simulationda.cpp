@@ -1,5 +1,5 @@
 #include "simulationda.h"
-
+#include <QDebug>
 
 
 
@@ -123,7 +123,11 @@ void SimulationDaPrivate::onBtnMEDIA_Release()
 }
 void SimulationDaPrivate::onBtnDISP_Release()
 {
-
+   Q_Q(SimulationDa);
+   qDebug()<<"test send msg to systemUi here!!"<<endl;
+   OMessage myMsg;
+   myMsg.mId = 0xFF00;
+   q->sendBroadcast(T_SystemUi,myMsg);
 }
 void SimulationDaPrivate::onBtnSETUP_Release()
 {

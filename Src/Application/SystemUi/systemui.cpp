@@ -192,7 +192,7 @@ void Systemui::onLanguageChanged()
 
 void Systemui::onReceiveBroadcast(AppType appType,OMessage &msg)
 {
-
+ qDebug()<<"get msg here msg id="<<msg.mId<<endl;
 }
 
 void Systemui::onReceiveCmd(AppType appType,OMessage &msg)

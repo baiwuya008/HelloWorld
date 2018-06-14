@@ -16,12 +16,12 @@ Context::Context(QObject *parent) :
 
 void Context::sendBroadcast(AppType type,OMessage &msg)
 {
-
+ oklApp->sendBroadcast(type,msg);
 }
 
 void Context::sendCmdTo(AppType type,OMessage &msg)
 {
-
+ oklApp->sendCmdTo(type,msg);
 }
 
 bool Context::startApplication(AppType type,char **argv)
