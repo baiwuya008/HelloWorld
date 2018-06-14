@@ -13,9 +13,10 @@ class MusicListWidget : public QWidget
     Q_DISABLE_COPY(MusicListWidget)
 public:
     explicit MusicListWidget(QWidget *parent,
-                             MediaUtils::MEDIA_TYPE type = MediaUtils::MUSIC_LIST);
+                             MediaUtils::MEDIA_TYPE type = MediaUtils::MEDIA_TYPE::MUSIC_LIST);
     ~MusicListWidget();
     void setPlayIndex(int index);
+    void updateList(int deviceType, QStringList &pathList);
 
 signals:
     void selectItem(QString path, int index);

@@ -72,6 +72,12 @@ void MusicListItem::setSize(int size)
     d->initLabText(d->name, size);
 }
 
+void MusicListItem::setName(QString name)
+{
+    Q_D(MusicListItem);
+    d->name->setText(name);
+}
+
 
 void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
     mainLayout = new QVBoxLayout;
@@ -98,7 +104,7 @@ void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
 
 
 
-    if (mMediaType == MediaUtils::MUSIC) {
+    if (mMediaType == MediaUtils::MEDIA_TYPE::MUSIC) {
         initLabText(name, 15);
         line->setVisible(false);
     }else {

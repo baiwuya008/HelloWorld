@@ -19,7 +19,7 @@ class MusicProgressWidget : public QWidget
     Q_DISABLE_COPY(MusicProgressWidget)
 public:
     explicit MusicProgressWidget(QWidget *parent,
-                                 MediaUtils::MEDIA_TYPE type = MediaUtils::MUSIC);
+                                 MediaUtils::MEDIA_TYPE type = MediaUtils::MEDIA_TYPE::MUSIC);
     ~MusicProgressWidget();
 
 signals:

@@ -10,8 +10,11 @@ class MusicPlayer : public Player
 {
     Q_OBJECT
 public:
-    explicit MusicPlayer(QObject *parent = 0);
+    explicit MusicPlayer(QObject *parent = nullptr);
     ~MusicPlayer();
+
+    QStringList* getPathList(int deviceType);
+    void clearPathList(int deviceType);
 
 signals:
 
@@ -19,6 +22,7 @@ protected slots:
     void scanMusicFilePath(int deviceType, const QString &filePath);
 
 public slots:
+
 private:
     friend class MusicPlayerPrivate;
     QScopedPointer<MusicPlayerPrivate> m_Private;

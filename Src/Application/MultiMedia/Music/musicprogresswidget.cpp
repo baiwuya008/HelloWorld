@@ -3,7 +3,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QDebug>
-#include "Src/CommonUserWidget/BmpButton.h"
+#include "Src/CommonUserWidget\BmpButton.h"
 #include "Src/Application/MultiMedia/Tools/mediautils.h"
 
 
@@ -11,7 +11,7 @@ class MusicProgressWidgetPrivate {
     Q_DISABLE_COPY(MusicProgressWidgetPrivate)
 public:
     explicit MusicProgressWidgetPrivate(MusicProgressWidget *parent,
-                                        MediaUtils::MEDIA_TYPE type = MediaUtils::MUSIC);
+                                        MediaUtils::MEDIA_TYPE type = MediaUtils::MEDIA_TYPE::MUSIC);
     ~MusicProgressWidgetPrivate();
 
 private slots:
@@ -147,17 +147,17 @@ void MusicProgressWidgetPrivate::switchPlayModeView() {
 
 void MusicProgressWidgetPrivate::switchSliderMode() {
     switch (mSliderType) {
-    case MediaUtils::MUSIC:
+    case MediaUtils::MEDIA_TYPE::MUSIC:
         startTimeLabel->setVisible(false);
         modeBtn->setVisible(true);
         modeBtn->setGeometry(680, 8, 0, 0);
         break;
-    case MediaUtils::VIDEO:
+    case MediaUtils::MEDIA_TYPE::VIDEO:
         endTimeLabel->setText("60:00");
         modeBtn->setVisible(false);
         startTimeLabel->setVisible(true);
         break;
-    case MediaUtils::BT_MUSIC:
+    case MediaUtils::MEDIA_TYPE::BT_MUSIC:
         modeBtn->setVisible(false);
         startTimeLabel->setVisible(false);
         break;

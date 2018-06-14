@@ -10,7 +10,7 @@ class MusicClickWidget : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY(MusicClickWidget)
 public:
-    explicit MusicClickWidget(QWidget *parent = 0);
+    explicit MusicClickWidget(QWidget *parent = nullptr);
     ~MusicClickWidget();
 
 

@@ -13,13 +13,14 @@ class MusicListItem : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MusicListItem(QWidget *parent = 0,
-                           MediaUtils::MEDIA_TYPE type = MediaUtils::MUSIC);
+    explicit MusicListItem(QWidget *parent = nullptr,
+                           MediaUtils::MEDIA_TYPE type = MediaUtils::MEDIA_TYPE::MUSIC);
     ~MusicListItem();
     void initItem(QString title, QString iconPath = "", bool isFocus = false);
     void refreshItem(bool isFocus);
 
     void setSize(int size);
+    void setName(QString name);
     QString getPath();
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;

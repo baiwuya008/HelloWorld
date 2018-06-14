@@ -10,9 +10,10 @@ public:
     ~MusicPlayerPrivate();
     void initialize();
 
-    QStringList mUsbPathList;
+    QStringList* mUsbPathList = NULL;
 private:
     MusicPlayer *m_Parent;
+
 };
 
 MusicPlayer::MusicPlayer(QObject *parent)
@@ -30,18 +31,43 @@ MusicPlayerPrivate::MusicPlayerPrivate(MusicPlayer *parent)
 }
 
 void MusicPlayerPrivate::initialize() {
-    mUsbPathList.clear();
+    mUsbPathList = new QStringList;
 }
 
 void MusicPlayer::scanMusicFilePath(int deviceType, const QString &filePath)
 {
-
-    qDebug() << "scanMusicFilePath deviceType = " << deviceType;
     switch (deviceType) {
     case MultimediaUtils::DWT_Undefined:
         break;
     case MultimediaUtils::DWT_USBDisk:
-        m_Private->mUsbPathList.append(filePath);
+        m_Private->mUsbPathList->append(filePath);
+        break;
+    case MultimediaUtils::DWT_SDDisk:
+        break;
+    }
+}
+
+QStringList* MusicPlayer::getPathList(int deviceType)
+{
+    switch (deviceType) {
+    case MultimediaUtils::DWT_Undefined:
+        break;
+    case MultimediaUtils::DWT_USBDisk:
+        return m_Private->mUsbPathList;
+    case MultimediaUtils::DWT_SDDisk:
+        break;
+    }
+
+    return NULL;
+}
+
+void MusicPlayer::clearPathList(int deviceType)
+{
+    switch (deviceType) {
+    case MultimediaUtils::DWT_Undefined:
+        break;
+    case MultimediaUtils::DWT_USBDisk:
+        m_Private->mUsbPathList->clear();
         break;
     case MultimediaUtils::DWT_SDDisk:
         break;
@@ -51,13 +77,17 @@ void MusicPlayer::scanMusicFilePath(int deviceType, const QString &filePath)
 
 MusicPlayerPrivate::~MusicPlayerPrivate()
 {
-
+    if (mUsbPathList != NULL) {
+        delete mUsbPathList;
+        mUsbPathList = NULL;
+    }
 }
 
 
 MusicPlayer::~MusicPlayer() {
 
 }
+
 
 
 

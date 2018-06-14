@@ -11,16 +11,18 @@ class DiskScanner : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(DiskScanner)
 public:
-    explicit DiskScanner(QObject *parent = 0);
+    explicit DiskScanner(QObject *parent = nullptr);
     ~DiskScanner();
 
     void setScannerSuffixMap(const QMap<int, QStringList> &mapList);
     void setMinimumScanTime(const int msec);
-    void startScanner(const QString &path);
+    void startScanner(const int mediaType, const QString &path);
     void stopScanner();
     void setDeviceType(int deviceType);
 signals:
     void scanFilePath(int deviceType, int mediaType, const QString &filePath);
+    void scanFilesFinish(int deviceType, int mediaType);
+    void startScanFiles(int deviceType, int mediaType);
 
 public slots:
 private slots:

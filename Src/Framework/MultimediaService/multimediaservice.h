@@ -12,7 +12,7 @@ class MultimediaService : public QObject
     Q_DISABLE_COPY(MultimediaService)
     //       Q_CLASSINFO("D-Bus Interface", "Local.DbusServer.Multimedia")
 public:
-    explicit MultimediaService(QObject *parent = 0);
+    explicit MultimediaService(QObject *parent = nullptr);
     ~MultimediaService();
 
 signals:
@@ -25,6 +25,7 @@ signals:
     void onStop(const int mediaType);
     void onSetPlayMode(const int mediaType, const int playMode);
     void onUpdateProgress(const int mediaType, const long currentPosition, const long duration);
+    void onScanFilesPath(QString& xml);
 
 public slots:
     void setPlayToggle(const int mediaType);
@@ -39,10 +40,15 @@ public slots:
     long getDuration(const int mediaType);
     bool isPlaying(const int mediaType);
 
+private slots:
+    void onScanFilesFinish(int deviceType, int mediaType);
+    void onStartScanFiles(int deviceType, int mediaType);
+
 
 private:
     friend class MultimediaServicePrivate;
     QScopedPointer<MultimediaServicePrivate> m_Private;
+
 
     bool isYY = false;
 };

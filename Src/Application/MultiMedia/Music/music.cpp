@@ -33,7 +33,7 @@ void MusicPrivate::initializeBasicWidget(QWidget *parent)
     initializePlayView(parent);
     initializeListView(parent);
 
-    connectMultimediaSlots();
+    connectAllSlots();
 
     setCurrentPageView(0);
 }
@@ -77,14 +77,23 @@ void MusicPrivate::initializeListView(QWidget *parent) {
     connect(mMusicListWidget, SIGNAL(selectItem(QString,int)), this, SLOT(onSelectItem(QString,int)));
 }
 
-void MusicPrivate::connectMultimediaSlots()
+void MusicPrivate::connectAllSlots()
 {
- connect(g_Multimedia, SIGNAL(onPlay(int, int, QString, long)), this, SLOT(setPlayMusic(int, int, QString, long)));
+    connect(g_Multimedia, SIGNAL(onPlay(int, int, QString, long)), this, SLOT(playMusic(int, int, QString, long)));
+    connect(g_Multimedia, SIGNAL(onPause(int)), this, SLOT(pauseMusic(int)));
+    connect(g_Multimedia, SIGNAL(onUpdateMusic(int,QString,QString,QString)), this, SLOT(updateMusic(int,QString,QString,QString)));
+    connect(g_Multimedia, SIGNAL(onResume(int)), this, SLOT(resumeMusic(int)));
+    connect(g_Multimedia, SIGNAL(onSetPlayMode(int,int)), this, SLOT(setPlayModeMusic(int,int)));
+    connect(g_Multimedia, SIGNAL(onUpdateProgress(int,long,long)), this, SLOT(updateProgressMusic(int,long,long)));
+    connect(g_Multimedia, SIGNAL(onScanMusicFiles(int,QStringList&)), this, SLOT(scanMusicFiles(int,QStringList&)));
 }
 
+void MusicPrivate::scanMusicFiles(int deviceType, QStringList &pathList)
+{
+    mMusicListWidget->updateList(deviceType, pathList);
+}
 
-
-void MusicPrivate::setPlayMusic(const int mediaType, const int index, const QString &fileName, const long endTime)
+void MusicPrivate::playMusic(const int mediaType, const int index, const QString &fileName, const long endTime)
 {
     if (mediaType != MediaUtils::MUSIC) {
         return;
@@ -97,6 +106,58 @@ void MusicPrivate::setPlayMusic(const int mediaType, const int index, const QStr
     mMusicListWidget->setPlayIndex(index);
     mMusicPlayWidget->setPlay(fileName, endTime);
 }
+
+void MusicPrivate::pauseMusic(const int mediaType)
+{
+    if (mediaType != MediaUtils::MUSIC) {
+        return;
+    }
+
+    mMusicPlayWidget->onSwitchStatus(false);
+}
+
+void MusicPrivate::updateMusic(const int mediaType, const QString &title, const QString &artist, const QString &album)
+{
+    if (mediaType != MediaUtils::MUSIC) {
+        return;
+    }
+
+    mMusicPlayWidget->updateMusicInfo(title, artist, album);
+}
+
+void MusicPrivate::resumeMusic(const int mediaType)
+{
+    if (mediaType != MediaUtils::MUSIC) {
+        return;
+    }
+    mMusicPlayWidget->onSwitchStatus(true);
+}
+
+void MusicPrivate::stopMusic(const int mediaType)
+{
+    if (mediaType != MediaUtils::MUSIC) {
+        return;
+    }
+
+    mMusicPlayWidget->onSwitchStatus(false);
+}
+
+void MusicPrivate::setPlayModeMusic(const int mediaType, const int playMode)
+{
+    if (mediaType != MediaUtils::MUSIC) {
+        return;
+    }
+    mMusicPlayWidget->onSwitchPlayMode(playMode);
+}
+
+void MusicPrivate::updateProgressMusic(const int mediaType, const long currentPosition, const long duration)
+{
+    if (mediaType != MediaUtils::MUSIC) {
+        return;
+    }
+    mMusicPlayWidget->updateProgress(currentPosition, duration);
+}
+
 
 void MusicPrivate::onSelectItem(QString filePath, int index) {
     qDebug() << "onSelectItem filePath = " << filePath

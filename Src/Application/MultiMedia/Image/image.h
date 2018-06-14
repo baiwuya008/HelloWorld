@@ -4,8 +4,8 @@
 #include "Src/Framework/Base/Core/activity.h"
 #include <QHBoxLayout>
 #include <QPushButton>
-#include "Src/CommonUserWidget/flowview.h"
-#include "Src/CommonUserWidget/flowadapter.h"
+#include "Src/CommonUserWidget\flowview.h"
+#include "Src/CommonUserWidget\flowadapter.h"
 #include "Src/Application/MultiMedia/Tools/mediatoolswidget.h"
 #include <QList>
 #include <QLabel>

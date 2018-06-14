@@ -12,7 +12,7 @@ class Player : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(Player)
 public:
-    explicit Player(QObject *parent = 0, MultimediaType type = MultimediaUtils::MUSIC);
+    explicit Player(QObject *parent = nullptr, MultimediaType type = MultimediaUtils::MUSIC);
     ~Player();
     static QString changeDuration(qint64 duration);
 

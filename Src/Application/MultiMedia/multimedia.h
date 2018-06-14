@@ -44,18 +44,12 @@ signals:
     void onSetPlayMode(const int mediaType, const int playMode);
     void onUpdateProgress(const int mediaType, const long currentPosition, const long duration);
 
-
+    void onScanMusicFiles(int deviceType, QStringList& pathList);
+    void onScanVideoFiles(int deviceType, QStringList& pathList);
+    void onScanImageFiles(int deviceType, QStringList& pathList);
 
 private slots:
-    void onPlayT(const int mediaType, const int index,
-                const QString &fileName, const long endTime);
-    void onUpdateMusicT(const int mediaType, const QString& title,
-                       const QString& artist, const QString& album);
-    void onResumeT(const int mediaType);
-    void onPauseT(const int mediaType);
-    void onStopT(const int mediaType);
-    void onSetPlayModeT(const int mediaType, const int playMode);
-    void onUpdateProgressT(const int mediaType, const long currentPosition, const long duration);
+    void readFilesPathXml(QString& xml);
 
 
 private:

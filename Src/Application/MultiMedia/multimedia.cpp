@@ -1,5 +1,7 @@
 #include "multimedia.h"
 #include "Src/Framework/MultimediaService/multimediaservice.h"
+#include "Src/Application/MultiMedia/Tools/mediautils.h"
+#include <QDomDocument>
 
 class MultimediaPrivate
 {
@@ -34,7 +36,7 @@ void Multimedia::initializePrivate()
 MultimediaPrivate::MultimediaPrivate(Multimedia *parent)
     : m_Parent(parent)
 {
-    mMultimediaService = new MultimediaService();
+    mMultimediaService = new MultimediaService;
     initializeProxy();
     connectAllSlots();
 }
@@ -46,15 +48,62 @@ void MultimediaPrivate::initializeProxy()
 void MultimediaPrivate::connectAllSlots()
 {
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
-    QObject::connect(mMultimediaService, SIGNAL(onPlay(int, int, QString, long)), m_Parent, SLOT(onPlayT(int, int, QString, long)), type);
-    QObject::connect(mMultimediaService, SIGNAL(onResume(int)), m_Parent, SLOT(onResumeT(int)), type);
+    QObject::connect(mMultimediaService, &MultimediaService::onPlay, m_Parent, &Multimedia::onPlay, type);
+    QObject::connect(mMultimediaService, &MultimediaService::onResume, m_Parent, &Multimedia::onResume, type);
+    QObject::connect(mMultimediaService, &MultimediaService::onPause, m_Parent, &Multimedia::onPause, type);
+    QObject::connect(mMultimediaService, &MultimediaService::onStop, m_Parent, &Multimedia::onStop, type);
+    QObject::connect(mMultimediaService, &MultimediaService::onSetPlayMode, m_Parent, &Multimedia::onSetPlayMode, type);
+    QObject::connect(mMultimediaService, &MultimediaService::onUpdateProgress, m_Parent, &Multimedia::onUpdateProgress, type);
+    QObject::connect(mMultimediaService, SIGNAL(onScanFilesPath(QString&)), m_Parent, SLOT(readFilesPathXml(QString&)), type);
 }
 
+
+void Multimedia::readFilesPathXml(QString &xml)
+{
+    QDomDocument doc;
+    if (!doc.setContent(xml)) {
+        return;
+    }
+
+    QDomElement root = doc.documentElement();
+    if (root.tagName().compare("MediaPathList")) {
+        return;
+    }
+
+    int deviceType = root.attribute("DeviceType").toInt();
+    int mediaType = root.attribute("MediaType").toInt();
+    if (-1 == deviceType || -1 == mediaType) {
+        return;
+    }
+
+
+    QStringList pathList;
+    QDomNode n = root.firstChild();
+    while(!n.isNull()) {
+        QDomElement e = n.toElement();
+        if(!e.isNull() && !e.tagName().compare("Path")) {
+            pathList.append(e.text());
+        }
+        n = n.nextSibling();
+    }
+
+    switch (mediaType) {
+    case MediaUtils::MUSIC:
+        emit onScanMusicFiles(deviceType, pathList);
+        break;
+    case MediaUtils::VIDEO:
+        emit onScanVideoFiles(deviceType, pathList);
+        break;
+    case MediaUtils::IMAGE:
+        emit onScanImageFiles(deviceType, pathList);
+        break;
+    }
+}
 
 void Multimedia::setPlayToggle(const int mediaType)
 {
     qDebug() << "setPlayToggle mediaType = " << mediaType;
-     m_Private->mMultimediaService->setPlayToggle(mediaType);
+    m_Private->mMultimediaService->setPlayToggle(mediaType);
 }
 
 void Multimedia::prev(const int mediaType)
@@ -106,43 +155,6 @@ bool Multimedia::isPlaying(const int mediaType)
 {
     return false;
 }
-
-void Multimedia::onPlayT(const int mediaType, const int index, const QString &fileName, const long endTime)
-{
-    emit onPlay(mediaType, index, fileName, endTime);
-}
-
-void Multimedia::onUpdateMusicT(const int mediaType, const QString &title, const QString &artist, const QString &album)
-{
-    emit onUpdateMusic(mediaType, title, artist, album);
-}
-
-void Multimedia::onResumeT(const int mediaType)
-{
-    emit onResume(mediaType);
-}
-
-void Multimedia::onPauseT(const int mediaType)
-{
-    emit onPause(mediaType);
-}
-
-void Multimedia::onStopT(const int mediaType)
-{
-    emit onStop(mediaType);
-}
-
-void Multimedia::onSetPlayModeT(const int mediaType, const int playMode)
-{
-    emit onSetPlayMode(mediaType, playMode);
-}
-
-void Multimedia::onUpdateProgressT(const int mediaType, const long currentPosition, const long duration)
-{
-    emit onUpdateProgress(mediaType, currentPosition, duration);
-}
-
-
 
 MultimediaPrivate::~MultimediaPrivate()
 {

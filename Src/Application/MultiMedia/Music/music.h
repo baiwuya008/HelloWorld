@@ -60,8 +60,19 @@ public:
 private slots:
     void setCurrentPageView(int tabIndex);
     void onSelectItem(QString filePath, int index);
-    void setPlayMusic(const int mediaType, const int index,
+
+    void playMusic(const int mediaType, const int index,
                       const QString &fileName, const long endTime);
+    void pauseMusic(const int mediaType);
+    void updateMusic(const int mediaType, const QString& title,
+                       const QString& artist, const QString& album);
+    void resumeMusic(const int mediaType);
+    void stopMusic(const int mediaType);
+    void setPlayModeMusic(const int mediaType, const int playMode);
+    void updateProgressMusic(const int mediaType, const long currentPosition, const long duration);
+
+
+    void scanMusicFiles(int deviceType, QStringList& pathList);
 
 private:
     Q_DECLARE_PUBLIC(Music)
@@ -78,7 +89,7 @@ private:
     QStackedWidget *mStackedWidget = NULL;
 
 
-    void connectMultimediaSlots();
+    void connectAllSlots();
 
     //----------
     BmpWidget *mBackground;

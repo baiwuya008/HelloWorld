@@ -6,7 +6,7 @@
 #include "musiclistitem.h"
 #include "musicprogresswidget.h"
 #include "musicclickwidget.h"
-#include "Src/CommonUserWidget/rotatewidget.h"
+#include "Src/CommonUserWidget\rotatewidget.h"
 #include <QDebug>
 #include <QList>
 #include "Src/Application/MultiMedia/multimedia.h"
@@ -77,7 +77,7 @@ void MusicPlayWidgetPrivate::initializeListView(QWidget *parent) {
 
     mSingerItem = new MusicListItem(parent);
     mSingerItem->setFixedSize(QSize(300, 30));
-     mSingerItem->initItem("music_singer", ":/Res/drawable/multimedia/music_singer_icon.png");
+    mSingerItem->initItem("music_singer", ":/Res/drawable/multimedia/music_singer_icon.png");
     mSingerItem->setGeometry(41, top, 0, 0);
     top += 30 + 20;
 
@@ -86,7 +86,6 @@ void MusicPlayWidgetPrivate::initializeListView(QWidget *parent) {
     mSongItem->setFixedSize(QSize(300, 30));
     mSongItem->initItem("music_song_normal", ":/Res/drawable/multimedia/music_song_icon.png");
     mSongItem->setGeometry(41, top, 0, 0);
-
 }
 
 
@@ -204,6 +203,19 @@ MusicPlayWidget::~MusicPlayWidget() {
 }
 
 void MusicPlayWidget::setPlay(const QString &fileName, const long endTime)
+{
+
+}
+
+void MusicPlayWidget::updateMusicInfo(const QString &title, const QString &artist, const QString &album)
+{
+    Q_D(MusicPlayWidget);
+    d->mAlbumItem->setName(album);
+    d->mSingerItem->setName(title);
+    d->mSongItem->setName(artist);
+}
+
+void MusicPlayWidget::updateProgress(const long currentPosition, const long duration)
 {
 
 }

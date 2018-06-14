@@ -14,16 +14,16 @@ class DiskScannerPrivate : public CustomThreadListener
 public:
     explicit DiskScannerPrivate(DiskScanner *parent);
     ~DiskScannerPrivate();
-    void initialize();
     void scanFinish();
-    void startScanThread();
+    void startScanThread(const int mediaType, const QString &path);
     void closeScanThread();
     void handleResults(const QString &);
-    void recursionScan(const QString& path);
-    void scanFile(QFileInfo &file);
+
+
 
     QTimer *mQTimer = NULL;
     QString mPath = NULL;
+    int mMediaType = MultimediaUtils::ALL_MEDIA;
     bool isContinueScan = false;
     QMap<int, QStringList> mFilterMapList;
     int mDeviceType = MultimediaUtils::DWT_Undefined;
@@ -33,6 +33,12 @@ protected:
 private:
     DiskScanner *m_Parent;
     CustomThread *mCustomThread = NULL;
+
+    void initialize();
+    void recursionScan(const QString& path);
+    void scanFile(QFileInfo &file);
+    QString changeWindowsPath(QString &filePath);
+
 };
 
 DiskScanner::DiskScanner(QObject *parent)
@@ -58,7 +64,7 @@ void DiskScannerPrivate::initialize()
 
 }
 
-void DiskScannerPrivate::startScanThread()
+void DiskScannerPrivate::startScanThread(const int mediaType, const QString &path)
 {
     if (isContinueScan) {
         return;
@@ -66,6 +72,14 @@ void DiskScannerPrivate::startScanThread()
 
     qDebug() << "DiskScannerPrivate::startScanThread() ";
     isContinueScan = true;
+
+    emit m_Parent->startScanFiles(mDeviceType, mediaType);
+    if (!mQTimer->isActive()) {
+        mQTimer->start();
+    }
+    mPath = path;
+    mMediaType = mediaType;
+
     if (NULL == mCustomThread) {
         mCustomThread = new CustomThread;
         mCustomThread->setListener(this);
@@ -86,11 +100,13 @@ void DiskScannerPrivate::closeScanThread()
 void DiskScannerPrivate::scanFinish()
 {
     qDebug() << "DiskScannerPrivate::scanFinish() ";
-    isContinueScan = false;
     if (mCustomThread != NULL) {
         delete mCustomThread;
         mCustomThread = NULL;
     }
+
+    emit m_Parent->scanFilesFinish(mDeviceType, mMediaType);
+    isContinueScan = false;
 }
 
 
@@ -122,6 +138,7 @@ void DiskScannerPrivate::recursionScan(const QString &path)
     }
 
     dir.setFilter(QDir::AllEntries|QDir::NoDotAndDotDot);
+//     dir.setSorting(QDir::Time);
     QFileInfoList dirList = dir.entryInfoList();
     int size = dirList.size();
     QFileInfo file;
@@ -138,12 +155,35 @@ void DiskScannerPrivate::recursionScan(const QString &path)
 void DiskScannerPrivate::scanFile(QFileInfo &file)
 {
     QString suffix = ("."+file.suffix().toUpper()).toLocal8Bit().data();
-    for (QMap< int, QStringList >::iterator suffixIter = mFilterMapList.begin();
-         suffixIter != mFilterMapList.end(); suffixIter++) {
+    if (mMediaType == MultimediaUtils::ALL_MEDIA) {
+        for (QMap< int, QStringList >::iterator suffixIter = mFilterMapList.begin();
+             suffixIter != mFilterMapList.end(); suffixIter++) {
+            if (suffixIter.value().contains(suffix)) {
+                emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), changeWindowsPath(file.absoluteFilePath()));
+            }
+        }
+    }else {
+        QMap< int, QStringList >::iterator suffixIter =  mFilterMapList.find(mMediaType);
         if (suffixIter.value().contains(suffix)) {
-            emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), file.absoluteFilePath());
+            emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), changeWindowsPath(file.absoluteFilePath()));
         }
     }
+}
+
+QString DiskScannerPrivate::changeWindowsPath(QString &filePath)
+{
+    QStringList list = filePath.split("/");
+    QString path;
+    int size = list.size();
+    for (int i = 0; i < size; i++) {
+        if (i == size-1) {
+            path.append(list.at(i));
+        }else {
+            path.append(list.at(i)+"\\");
+        }
+    }
+
+    return path;
 }
 
 void DiskScanner::setScannerSuffixMap(const QMap<int, QStringList> &mapList)
@@ -164,13 +204,9 @@ void DiskScanner::setMinimumScanTime(const int msec)
     m_Private->mQTimer->setInterval(msec);
 }
 
-void DiskScanner::startScanner(const QString &path)
+void DiskScanner::startScanner(const int mediaType, const QString &path)
 {
-    if (!m_Private->mQTimer->isActive()) {
-        m_Private->mQTimer->start();
-    }
-    m_Private->mPath = path;
-    m_Private->startScanThread();
+    m_Private->startScanThread(mediaType, path);
 }
 
 void DiskScanner::stopScanner()
