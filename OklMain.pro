@@ -71,7 +71,12 @@ SOURCES += main.cpp\
     Src/Application/Radio/radio_data.cpp \
     Src/Application/Radio/radio_process.cpp \
     Src/Application/Settings/wheelview.cpp \
-    Src/Application/Settings/tumbler.cpp
+    Src/Application/Settings/tumbler.cpp \
+    Src/Application/BlueTooth/Phone/phonelistwidgetitem.cpp \
+    Src/Application/BlueTooth/Phone/phonerecordwidget.cpp \
+    Src/Application/BlueTooth/Phone/listitembean.cpp \
+    Src/Application/BlueTooth/Phone/customwidget.cpp \
+    Src/Application/BlueTooth/Phone/phonedialwidget.cpp
 
 HEADERS  += mainwindow.h \
     configuration.h \
@@ -132,7 +137,12 @@ HEADERS  += mainwindow.h \
     Src/Application/Radio/radio_data.h \
     Src/Application/Radio/radio_process.h \
     Src/Application/Settings/wheelview.h \
-    Src/Application/Settings/tumbler.h
+    Src/Application/Settings/tumbler.h \
+    Src/Application/BlueTooth/Phone/phonelistwidgetitem.h \
+    Src/Application/BlueTooth/Phone/phonerecordwidget.h \
+    Src/Application/BlueTooth/Phone/listitembean.h \
+    Src/Application/BlueTooth/Phone/customwidget.h \
+    Src/Application/BlueTooth/Phone/phonedialwidget.h
 
 
 
@@ -142,6 +152,7 @@ RESOURCES += \
     Res/multimedia.qrc \
     Res/settingsrc.qrc \
     Res/commonsrc.qrc \
+    Res/blu.qrc \
     Res/systemuisrc.qrc \
     Res/launchersrc.qrc \
     Res/rediosrc.qrc \
