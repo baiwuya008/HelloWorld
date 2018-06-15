@@ -19,9 +19,9 @@ public:
     };
 
 public:
-    static QString changePathToName(QString &path);
-    static QString changeDirPath(QString &path);
-    static QString getDirName(QString &path);
+    static QString changePathToName(QString path);
+    static QString changeDirPath(QString path);
+    static QString getDirName(QString path);
 };
 
 #endif // MEDIAUTILS_H

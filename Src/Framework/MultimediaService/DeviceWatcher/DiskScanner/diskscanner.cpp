@@ -81,7 +81,7 @@ void DiskScannerPrivate::startScanThread(const int mediaType, const QString &pat
     mMediaType = mediaType;
 
     if (NULL == mCustomThread) {
-        mCustomThread = new CustomThread;
+        mCustomThread = new CustomThread();
         mCustomThread->setListener(this);
         Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
         QObject::connect(mCustomThread, SIGNAL(resultReady(QString)), m_Parent, SLOT(threadHandleResults(QString)), type);
@@ -159,13 +159,17 @@ void DiskScannerPrivate::scanFile(QFileInfo &file)
         for (QMap< int, QStringList >::iterator suffixIter = mFilterMapList.begin();
              suffixIter != mFilterMapList.end(); suffixIter++) {
             if (suffixIter.value().contains(suffix)) {
-                emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), changeWindowsPath(file.absoluteFilePath()));
+                QString a0 = file.absoluteFilePath();
+                QString aa = changeWindowsPath(a0);
+                emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), aa);
             }
         }
     }else {
         QMap< int, QStringList >::iterator suffixIter =  mFilterMapList.find(mMediaType);
         if (suffixIter.value().contains(suffix)) {
-            emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), changeWindowsPath(file.absoluteFilePath()));
+            QString b0 = file.absoluteFilePath();
+            QString bb = changeWindowsPath(b0);
+            emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), bb);
         }
     }
 }

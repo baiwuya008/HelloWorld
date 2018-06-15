@@ -10,7 +10,7 @@ class PhoneDialWidget : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY(PhoneDialWidget)
 public:
-    explicit PhoneDialWidget(QWidget *parent = nullptr);
+    explicit PhoneDialWidget(QWidget *parent = 0);
     ~PhoneDialWidget();
 
     //电话状态

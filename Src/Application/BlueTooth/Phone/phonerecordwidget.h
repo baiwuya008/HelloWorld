@@ -14,7 +14,7 @@ class PhoneRecordWidget : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY(PhoneRecordWidget)
 public:
-    explicit PhoneRecordWidget(QWidget *parent = nullptr);
+    explicit PhoneRecordWidget(QWidget *parent = 0);
     ~PhoneRecordWidget();
 
 signals:

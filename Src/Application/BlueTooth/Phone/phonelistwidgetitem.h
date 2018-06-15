@@ -11,7 +11,7 @@ class phoneListwidgetItem : public QWidget
 {
     Q_OBJECT
 public:
-    explicit phoneListwidgetItem(QWidget *parent = nullptr);
+    explicit phoneListwidgetItem(QWidget *parent = 0);
     ~phoneListwidgetItem();
 
     //设置Item数据
@@ -22,10 +22,10 @@ protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 
 signals:
-    deleteBtnOnclick();//删除键被点击
+    void deleteBtnOnclick();//删除键被点击
 
 public slots:
-    deleteBtnOnclickSlots();//删除键被点击槽函数
+    void deleteBtnOnclickSlots();//删除键被点击槽函数
 
 private:
     Q_DECLARE_PRIVATE(phoneListwidgetItem)

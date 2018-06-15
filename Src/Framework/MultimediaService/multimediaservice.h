@@ -12,7 +12,7 @@ class MultimediaService : public QObject
     Q_DISABLE_COPY(MultimediaService)
     //       Q_CLASSINFO("D-Bus Interface", "Local.DbusServer.Multimedia")
 public:
-    explicit MultimediaService(QObject *parent = nullptr);
+    explicit MultimediaService(QObject *parent = 0);
     ~MultimediaService();
 
 signals:

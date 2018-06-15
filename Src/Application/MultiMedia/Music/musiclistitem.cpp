@@ -104,7 +104,7 @@ void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
 
 
 
-    if (mMediaType == MediaUtils::MEDIA_TYPE::MUSIC) {
+    if (mMediaType == MediaUtils::MUSIC) {
         initLabText(name, 15);
         line->setVisible(false);
     }else {

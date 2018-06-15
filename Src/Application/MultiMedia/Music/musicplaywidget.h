@@ -10,7 +10,7 @@ class MusicPlayWidget : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY(MusicPlayWidget)
 public:
-    explicit MusicPlayWidget(QWidget *parent = nullptr);
+    explicit MusicPlayWidget(QWidget *parent = 0);
     ~MusicPlayWidget();
 
     void setPlay(const QString &fileName, const long endTime);

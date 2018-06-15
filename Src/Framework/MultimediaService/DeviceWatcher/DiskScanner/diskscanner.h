@@ -11,7 +11,7 @@ class DiskScanner : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(DiskScanner)
 public:
-    explicit DiskScanner(QObject *parent = nullptr);
+    explicit DiskScanner(QObject *parent = 0);
     ~DiskScanner();
 
     void setScannerSuffixMap(const QMap<int, QStringList> &mapList);

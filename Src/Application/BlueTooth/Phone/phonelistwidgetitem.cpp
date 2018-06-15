@@ -142,7 +142,7 @@ void phoneListwidgetItem::resizeEvent(QResizeEvent *event) {
 }
 
 //删除按钮被点击
-phoneListwidgetItem::deleteBtnOnclickSlots()
+void phoneListwidgetItem::deleteBtnOnclickSlots()
 {
    qDebug() << "deleteBtnOnclickSlots" << endl;
    emit deleteBtnOnclick();

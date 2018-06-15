@@ -6,7 +6,7 @@
 #include "musiclistitem.h"
 #include "musicprogresswidget.h"
 #include "musicclickwidget.h"
-#include "Src/CommonUserWidget\rotatewidget.h"
+#include "Src/CommonUserWidget/rotatewidget.h"
 #include <QDebug>
 #include <QList>
 #include "Src/Application/MultiMedia/multimedia.h"
