@@ -3,7 +3,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include "musiclistitem.h"
-#include "Src\CommonUserWidget\BmpButton.h"
+#include "Src/CommonUserWidget/BmpButton.h"
 #include <QTextCodec>
 #include <QDebug>
 #include <QListWidget>
