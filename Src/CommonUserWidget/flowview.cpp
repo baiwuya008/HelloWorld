@@ -57,7 +57,7 @@ private:
     bool isOnClick = false;
     int mClickPosition = -1;
     void onClick();
-    void startCheckClick(QPoint &p);
+    void startCheckClick(QPoint p);
     bool computeClickPosition(QPoint &p);
     void stopCheckClick();
 
@@ -222,7 +222,7 @@ bool FlowViewPrivate::computeClickPosition(QPoint &p) {
 }
 
 
-void FlowViewPrivate::startCheckClick(QPoint &p) {
+void FlowViewPrivate::startCheckClick(QPoint p) {
     if (!isOnClick && computeClickPosition(p)) {
         isOnClick = true;
         mClickTimer->start(ON_CLICK_TIME_OUT);
