@@ -9,7 +9,6 @@
 #include "Src/CommonUserWidget/rotatewidget.h"
 #include <QDebug>
 #include <QList>
-#include "Src/Application/MultiMedia/multimedia.h"
 
 
 class MusicPlayWidgetPrivate {
@@ -19,19 +18,22 @@ public:
     ~MusicPlayWidgetPrivate();
 
 private slots:
-    void setCurrentPlayMode(int mode);
     void onPlay();
     void onPause();
 
 private:
     Q_DECLARE_PUBLIC(MusicPlayWidget)
     MusicPlayWidget* const q_ptr;
+    void connectAllSlots();
     void initializeBasicWidget(QWidget *parent);
     void initializeListView(QWidget *parent);
     void initializeRightView(QWidget *parent);
     void initializeProgressView(QWidget *parent);
     void initializeClickView(QWidget *parent);
-    void updateInfo(QString title, QString artist, QString album, QString path);
+
+    void updateCurrentInfo(QString title, QString artist, QString album, QString path);
+    void updateCurrentPlay(QString path, qint64 duration);
+    void updateCurrentProgress(qint64 currentPosition, qint64 duration);
 
     MusicListItem *mFileItem = NULL;
     MusicListItem *mAlbumItem = NULL;
@@ -40,8 +42,9 @@ private:
     RotateWidget *mMusicPlayIcon =NULL;
     RotateWidget *mMusicPlayAni = NULL;
 
-    PLAY_MODE mCurrentPlayMode = LOOP;
-
+    MusicProgressWidget *mMusicProgressWidget = NULL;
+    MusicClickWidget *mMusicClickWidget = NULL;
+    QString mCurrentPlayPath;
 
 };
 
@@ -124,61 +127,44 @@ void MusicPlayWidgetPrivate::initializeRightView(QWidget *parent) {
 }
 
 void MusicPlayWidgetPrivate::initializeProgressView(QWidget *parent) {
-    MusicProgressWidget *mMusicProgressWidget = new MusicProgressWidget(parent);
+    mMusicProgressWidget = new MusicProgressWidget(parent);
     mMusicProgressWidget->setFixedSize(QSize(730, 36));
     mMusicProgressWidget->setGeometry(40, 283, 0, 0);
-
-
-    Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
-    QObject::connect(mMusicProgressWidget, SIGNAL(switchPlayMode(int)), parent, SLOT(onSwitchPlayMode(int)), type);
-}
-
-void MusicPlayWidget::onSwitchPlayMode(int mode) {
-    Q_D(MusicPlayWidget);
-    d->setCurrentPlayMode(mode);
-}
-
-void MusicPlayWidgetPrivate::setCurrentPlayMode(int mode) {
-    this->mCurrentPlayMode = mode;
 }
 
 void MusicPlayWidgetPrivate::onPlay()
 {
     mMusicPlayIcon->start();
     mMusicPlayAni->start();
+    mMusicClickWidget->setPlayStatus(true);
 }
 
 void MusicPlayWidgetPrivate::onPause()
 {
     mMusicPlayIcon->stop();
     mMusicPlayAni->stop();
+    mMusicClickWidget->setPlayStatus(false);
 }
-
 
 void MusicPlayWidgetPrivate::initializeClickView(QWidget *parent) {
-    MusicClickWidget *mMusicClickWidget = new MusicClickWidget(parent);
+    mMusicClickWidget = new MusicClickWidget(parent);
     mMusicClickWidget->setFixedSize(QSize(800, 60));
     mMusicClickWidget->setGeometry(0, 324, 0, 0);
+}
 
 
+void MusicPlayWidgetPrivate::connectAllSlots()
+{
+    Q_Q(MusicPlayWidget);
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
-    QObject::connect(mMusicClickWidget, SIGNAL(changeStatus(bool)), parent, SLOT(onSwitchStatus(bool)), type);
-    QObject::connect(mMusicClickWidget, SIGNAL(switchIndex(bool)), parent, SLOT(onSwitchIndex(bool)), type);
+    QObject::connect(mMusicClickWidget, &MusicClickWidget::switchStatus, q, &MusicPlayWidget::onSwitchStatus, type);
+    QObject::connect(mMusicClickWidget, &MusicClickWidget::switchIndex, q, &MusicPlayWidget::onSwitchIndex, type);
+    QObject::connect(mMusicProgressWidget, &MusicProgressWidget::switchPlayMode, q, &MusicPlayWidget::onSwitchMode, type);
+    QObject::connect(mMusicProgressWidget, &MusicProgressWidget::seekTo, q, &MusicPlayWidget::onSeekTo, type);
 }
 
-
-
-
-void MusicPlayWidget::onSwitchIndex(bool isNext) {
-    qDebug() << "onSwitchIndex = " << isNext;
-}
-
-
-void MusicPlayWidget::onSwitchStatus(bool isPlay) {
-    qDebug() << "onSwitchStatus = " << isPlay;
-
-    g_Multimedia->setPlayToggle(MediaUtils::MUSIC);
-
+void MusicPlayWidget::setPlayStatus(bool isPlay)
+{
     Q_D(MusicPlayWidget);
     if (isPlay) {
         d->onPlay();
@@ -187,14 +173,18 @@ void MusicPlayWidget::onSwitchStatus(bool isPlay) {
     }
 }
 
+void MusicPlayWidget::setPlayMode(int mode)
+{
+    Q_D(MusicPlayWidget);
+    d->mMusicProgressWidget->setPlayMode(mode);
+}
+
 void MusicPlayWidgetPrivate::initializeBasicWidget(QWidget *parent) {
     initializeListView(parent);
     initializeRightView(parent);
     initializeProgressView(parent);
     initializeClickView(parent);
-}
-
-void MusicPlayWidget::resizeEvent(QResizeEvent *event) {
+    connectAllSlots();
 }
 
 MusicPlayWidgetPrivate::~MusicPlayWidgetPrivate(){
@@ -205,19 +195,15 @@ MusicPlayWidget::~MusicPlayWidget() {
 
 }
 
-void MusicPlayWidget::setPlay(const QString &fileName, const long endTime)
-{
-
-}
-
-void MusicPlayWidget::updateMusicInfo(const QString &title, const QString &artist, const QString &album)
+void MusicPlayWidget::updateScanFile(QString path)
 {
     Q_D(MusicPlayWidget);
-    d->updateInfo(title, artist, album, "");
+    if (d->mCurrentPlayPath.size() < 2) {
+        d->updateCurrentPlay(path, 0);
+    }
 }
 
-
-void MusicPlayWidgetPrivate::updateInfo(QString title, QString artist, QString album, QString path)
+void MusicPlayWidgetPrivate::updateCurrentInfo(QString title, QString artist, QString album, QString path)
 {
     mAlbumItem->setName(album);
     mSingerItem->setName(title);
@@ -227,12 +213,37 @@ void MusicPlayWidgetPrivate::updateInfo(QString title, QString artist, QString a
     }
 }
 
+void MusicPlayWidgetPrivate::updateCurrentPlay(QString path, qint64 duration)
+{
+    mCurrentPlayPath = path;
+    mFileItem->setName(MediaUtils::changePathToName(path));
+    updateCurrentProgress(0, duration);
+    if (duration > 0) {
+        onPlay();
+    }
+}
+
+void MusicPlayWidgetPrivate::updateCurrentProgress(qint64 currentPosition, qint64 duration)
+{
+    mMusicProgressWidget->setProgress(currentPosition, duration);
+}
+
 void MusicPlayWidget::updateProgress(const qint64 currentPosition, const qint64 duration)
 {
-
+    Q_D(MusicPlayWidget);
+    d->updateCurrentProgress(currentPosition, duration);
 }
 
-void MusicPlayWidget::updateScanFile(int index, QString path)
+void MusicPlayWidget::updatePlayInfo(const QString &title, const QString &artist, const QString &album)
 {
-
+    Q_D(MusicPlayWidget);
+    d->updateCurrentInfo(title, artist, album, "");
 }
+
+void MusicPlayWidget::updatePlayFile(QString path, qint64 duration)
+{
+    Q_D(MusicPlayWidget);
+    d->updateCurrentPlay(path, duration);
+}
+
+

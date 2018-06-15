@@ -70,7 +70,7 @@ void DiskScannerPrivate::startScanThread(const int mediaType, const QString &pat
         return;
     }
 
-    qDebug() << "DiskScannerPrivate::startScanThread() ";
+//    qDebug() << "DiskScannerPrivate::startScanThread() ";
     isContinueScan = true;
 
     emit m_Parent->startScanFiles(mDeviceType, mediaType);
@@ -99,7 +99,6 @@ void DiskScannerPrivate::closeScanThread()
 
 void DiskScannerPrivate::scanFinish()
 {
-    qDebug() << "DiskScannerPrivate::scanFinish() ";
     if (mCustomThread != NULL) {
         delete mCustomThread;
         mCustomThread = NULL;
@@ -112,7 +111,7 @@ void DiskScannerPrivate::scanFinish()
 
 void DiskScannerPrivate::handleResults(const QString &result)
 {
-    qDebug() << "DiskScannerPrivate::handleResults() result = " << result;
+//    qDebug() << "DiskScannerPrivate::handleResults() result = " << result;
 }
 
 void DiskScanner::threadHandleResults(const QString &result)
@@ -193,7 +192,6 @@ void DiskScanner::setScannerSuffixMap(const QMap<int, QStringList> &mapList)
 
 void DiskScanner::onTimeout()
 {
-    qDebug() << "DiskScanner::onTimeout()---------";
     //    if (!m_Private->mCustomThread->isRunning()) {
     //        m_Private->scanFinish();
     //    }

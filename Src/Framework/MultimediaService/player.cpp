@@ -10,13 +10,16 @@ public:
 
     void connectAllSlots();
     void deleteMediaPlayer();
-    void startPlay(QString path);
+    void startPlay(int index, QString path);
+    void switchPlayStatus(bool isPlay);
 
     QMediaPlayer *mMediaPlayer = NULL;
     MultimediaType mPlayType;
     qint64 mDuration = 0;
-    QMediaPlayer::State mCurrentStatus = QMediaPlayer::StoppedState;
     QString mPath;
+    int mCurrentIndex = -1;
+    QMediaPlayer::State mCurrentStatus = QMediaPlayer::StoppedState;
+
 
 private:
     Player* m_Parent;
@@ -38,19 +41,22 @@ PlayerPrivate::PlayerPrivate(Player *parent, MultimediaType type)
 }
 
 
-void Player::play(QString path)
+void Player::play(int index, QString path)
 {
-    m_Private->startPlay(path);
+    m_Private->startPlay(index, path);
 }
 
-void PlayerPrivate::startPlay(QString path) {
+void PlayerPrivate::startPlay(int index, QString path) {
     deleteMediaPlayer();
     mPath = path;
+    mCurrentIndex = index;
     mMediaPlayer = new QMediaPlayer;
     connectAllSlots();
     mMediaPlayer->setMedia(QUrl::fromLocalFile(path));
     mMediaPlayer->play();
 }
+
+
 
 
 void Player::play()
@@ -98,10 +104,15 @@ bool Player::isPlaying()
     return false;
 }
 
+void Player::setPlayStatus(bool isPlay)
+{
+    m_Private->switchPlayStatus(isPlay);
+}
+
 void PlayerPrivate::connectAllSlots()
 {
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
-    QObject::connect(mMediaPlayer, SIGNAL(positionChanged(qint64)), m_Parent, SLOT(onPositionChanged(qint64)), type);
+    QObject::connect(mMediaPlayer, SIGNAL(positionChanged(qint64)), m_Parent, SLOT(onUpdatePosition(qint64)), type);
     QObject::connect(mMediaPlayer, SIGNAL(audioAvailableChanged(bool)), m_Parent, SLOT(onPrepared(bool)), type);
     QObject::connect(mMediaPlayer, SIGNAL(error(QMediaPlayer::Error)), m_Parent, SLOT(onError(QMediaPlayer::Error)), type);
     QObject::connect(mMediaPlayer, SIGNAL(stateChanged(QMediaPlayer::State)), m_Parent, SLOT(onStatusChanged(QMediaPlayer::State)), type);
@@ -113,7 +124,7 @@ void Player::onPrepared(bool available) {
     if (available) {
         m_Private->mCurrentStatus = QMediaPlayer::PlayingState;
         m_Private->mDuration = m_Private->mMediaPlayer->duration();
-        emit onPlay(m_Private->mPlayType, m_Private->mPath, m_Private->mDuration);
+        emit onPlay(m_Private->mPlayType, m_Private->mCurrentIndex, m_Private->mPath, m_Private->mDuration);
     }
 }
 
@@ -128,6 +139,19 @@ void Player::onCompletion() {
     qDebug() << "onCompletion -----";
     m_Private->mCurrentStatus = QMediaPlayer::StoppedState;
     emit onFinish(m_Private->mPlayType, false);
+}
+
+void PlayerPrivate::switchPlayStatus(bool isPlay)
+{
+    if (NULL == mMediaPlayer) {
+        return;
+    }
+
+    if (isPlay && QMediaPlayer::PausedState == mCurrentStatus) {
+        mMediaPlayer->play();
+    }else if (!isPlay && QMediaPlayer::PlayingState == mCurrentStatus) {
+        mMediaPlayer->pause();
+    }
 }
 
 void Player::onStatusChanged(QMediaPlayer::State status) {
@@ -148,33 +172,10 @@ void Player::onStatusChanged(QMediaPlayer::State status) {
     m_Private->mCurrentStatus = status;
 }
 
-void Player::onPositionChanged(qint64 position) {
-    qDebug() << "onPositionChanged position = " << position;
-    emit onPositionChanged(m_Private->mPlayType, m_Private->mDuration, position);
+void Player::onUpdatePosition(qint64 position) {
+    emit onPositionChanged(m_Private->mPlayType, position, m_Private->mDuration);
 }
 
-
-QString Player::changeDuration(qint64 duration) {
-    duration = duration / 1000;// 转换成秒
-
-    int minute = (int) (duration / 60);
-    int sec = (int) (duration % 60);
-    QString seconds;
-    QString min;
-    if (sec < 10) {
-        seconds = "0" + QString::number(sec);
-    } else {
-        seconds = "" + QString::number(sec);
-    }
-
-    if (minute < 10) {
-        min = "0" + QString::number(minute);
-    } else {
-        min = "" + QString::number(minute);
-    }
-
-    return min + ":" + seconds;
-}
 
 void PlayerPrivate::deleteMediaPlayer()
 {

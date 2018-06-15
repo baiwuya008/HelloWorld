@@ -16,10 +16,11 @@ public:
                              MediaUtils::MEDIA_TYPE type = MediaUtils::MUSIC_LIST);
     ~MusicListWidget();
     void setPlayIndex(int index);
+    void setPlayNext(bool isNext);
     void updateList(int deviceType, QStringList &pathList);
 
 signals:
-    void selectItem(QString path, int index);
+    void selectItem(int deviceType, QString path, int index);
 
 public slots:
 private slots:

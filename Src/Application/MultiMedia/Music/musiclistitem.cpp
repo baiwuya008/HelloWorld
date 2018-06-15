@@ -119,8 +119,8 @@ void MusicListItemPrivate::initItemView(QString title, QString iconPath, bool is
     switch (mMediaType) {
     case MediaUtils::MUSIC_LIST:
     case MediaUtils::VIDEO_LIST:
-        name->setText(title);
         setFilePath(title);
+        name->setText(mFileName);
         setIconFocus(isFocus);
         setNameFocus(isFocus);
         break;
@@ -134,7 +134,7 @@ void MusicListItemPrivate::initItemView(QString title, QString iconPath, bool is
 void MusicListItemPrivate::setFilePath(QString path)
 {
     this->mFilePath = path;
-    this->mFileName = path;
+    this->mFileName = MediaUtils::changePathToName(path);
 }
 
 void MusicListItemPrivate::setIconFocus(bool isFocus)

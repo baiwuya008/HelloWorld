@@ -7,19 +7,18 @@ class MusicClickWidgetPrivate {
 public:
     explicit MusicClickWidgetPrivate(MusicClickWidget *parent);
     ~MusicClickWidgetPrivate();
-private slots:
-    void switchStatus(bool play);
+
 private:
     Q_DECLARE_PUBLIC(MusicClickWidget)
     MusicClickWidget* const q_ptr;
     void initializeBasicWidget(QWidget *parent);
+    void refreshStatusView(bool play);
+    bool isCurrentPlay = false;
 
 
     BmpButton *prevBtn = NULL;
     BmpButton *playBtn = NULL;
     BmpButton *nextBtn = NULL;
-
-    bool isPlay = false;
 };
 
 MusicClickWidget::MusicClickWidget(QWidget *parent)
@@ -28,10 +27,6 @@ MusicClickWidget::MusicClickWidget(QWidget *parent)
 {
 
 }
-
-
-
-
 
 MusicClickWidgetPrivate::MusicClickWidgetPrivate(MusicClickWidget *parent)
     : q_ptr(parent)
@@ -63,47 +58,42 @@ void MusicClickWidgetPrivate::initializeBasicWidget(QWidget *parent)
 
 
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
-    QObject::connect(prevBtn, SIGNAL(released()), parent, SLOT(prevT()), type);
-    QObject::connect(nextBtn, SIGNAL(released()), parent, SLOT(nextT()), type);
-    QObject::connect(playBtn, SIGNAL(released()), parent, SLOT(switchStatus()), type);
+    QObject::connect(prevBtn, SIGNAL(released()), parent, SLOT(prev()), type);
+    QObject::connect(nextBtn, SIGNAL(released()), parent, SLOT(next()), type);
+    QObject::connect(playBtn, SIGNAL(released()), parent, SLOT(changeStatus()), type);
+
+
+    isCurrentPlay = false;
+    refreshStatusView(isCurrentPlay);
 }
 
 
-MusicClickWidget::~MusicClickWidget()
-{
-
-}
-
-
-
-void MusicClickWidget::prevT()
+void MusicClickWidget::prev()
 {
     emit switchIndex(false);
 }
 
-void MusicClickWidget::nextT()
+void MusicClickWidget::next()
 {
     emit switchIndex(true);
 }
 
-void MusicClickWidget::setStatus(bool play)
+void MusicClickWidget::changeStatus()
 {
     Q_D(MusicClickWidget);
-    d->switchStatus(play);
+    emit switchStatus(!(d->isCurrentPlay));
 }
 
-void MusicClickWidget::switchStatus()
+void MusicClickWidget::setPlayStatus(bool play)
 {
     Q_D(MusicClickWidget);
-    d->switchStatus(!d->isPlay);
-    emit changeStatus(d->isPlay);
+    d->refreshStatusView(play);
 }
 
 
-void MusicClickWidgetPrivate::switchStatus(bool play) {
-    this->isPlay = play;
-
-    if (isPlay) {
+void MusicClickWidgetPrivate::refreshStatusView(bool play) {
+    this->isCurrentPlay = play;
+    if (isCurrentPlay) {
         playBtn->setNormalBmpPath(":/Res/drawable/multimedia/music_pause_normal.png");
         playBtn->setPressBmpPath(":/Res/drawable/multimedia/music_pause_focus.png");
     }else {
@@ -111,6 +101,12 @@ void MusicClickWidgetPrivate::switchStatus(bool play) {
         playBtn->setPressBmpPath(":/Res/drawable/multimedia/music_play_focus.png");
     }
 }
+
+MusicClickWidget::~MusicClickWidget()
+{
+
+}
+
 MusicClickWidgetPrivate::~MusicClickWidgetPrivate()
 {
 
