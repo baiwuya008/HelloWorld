@@ -102,9 +102,6 @@ bool MultimediaService::isPlaying(const int mediaType)
     return false;
 }
 
-
-
-
 void MultimediaServicePrivate::initialize()
 {
     mDeviceWatcher = new DeviceWatcher();
@@ -145,11 +142,8 @@ void MultimediaService::onScanFilesFinish(int deviceType, int mediaType)
     case MultimediaUtils::ALL_MEDIA:
         break;
     case MultimediaUtils::MUSIC:
-        {
-        QString aa = m_Private->createFilesPathXml(deviceType, mediaType,
-                                                   m_Private->mMusicPlayer->getPathList(deviceType));
-        emit onScanFilesPath(aa);
-        }
+        emit onScanFilesPath(m_Private->createFilesPathXml(deviceType, mediaType,
+                                                           m_Private->mMusicPlayer->getPathList(deviceType)));
         break;
     case MultimediaUtils::VIDEO:
         break;

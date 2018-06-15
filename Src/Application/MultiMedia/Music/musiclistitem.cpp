@@ -80,12 +80,12 @@ void MusicListItem::setName(QString name)
 
 
 void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
-    mainLayout = new QVBoxLayout;
+    mainLayout = new QVBoxLayout();
     parent->setLayout(mainLayout);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
 
-    infoLayout = new QHBoxLayout;
+    infoLayout = new QHBoxLayout();
     infoLayout->setContentsMargins(0, 0, 0, 0);
     icon = new QLabel(parent);
     name = new QLabel(parent);
@@ -95,7 +95,7 @@ void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
     infoLayout->addWidget(name,  0, Qt::AlignVCenter);
     infoLayout->addStretch();
 
-    line = new QLabel;
+    line = new QLabel();
     line->setContentsMargins(0, 0, 0, 0);
 
     mainLayout->addLayout(infoLayout);
@@ -104,7 +104,7 @@ void MusicListItemPrivate::initializeBasicWidget(QWidget *parent) {
 
 
 
-    if (mMediaType == MediaUtils::MUSIC) {
+    if (mMediaType == MediaUtils::MEDIA_TYPE::MUSIC) {
         initLabText(name, 15);
         line->setVisible(false);
     }else {

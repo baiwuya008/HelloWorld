@@ -62,14 +62,14 @@ private slots:
     void onSelectItem(QString filePath, int index);
 
     void playMusic(const int mediaType, const int index,
-                      const QString &fileName, const long endTime);
+                      const QString &fileName, const qint64 endTime);
     void pauseMusic(const int mediaType);
     void updateMusic(const int mediaType, const QString& title,
                        const QString& artist, const QString& album);
     void resumeMusic(const int mediaType);
     void stopMusic(const int mediaType);
     void setPlayModeMusic(const int mediaType, const int playMode);
-    void updateProgressMusic(const int mediaType, const long currentPosition, const long duration);
+    void updateProgressMusic(const int mediaType, const qint64 currentPosition, const qint64 duration);
 
 
     void scanMusicFiles(int deviceType, QStringList& pathList);

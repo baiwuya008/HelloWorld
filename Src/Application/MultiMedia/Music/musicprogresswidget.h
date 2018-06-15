@@ -21,6 +21,7 @@ public:
     explicit MusicProgressWidget(QWidget *parent,
                                  MediaUtils::MEDIA_TYPE type = MediaUtils::MUSIC);
     ~MusicProgressWidget();
+    void setProgress(qint64 currentPosition, qint64 duration);
 
 signals:
     void onSeekTo(int value);

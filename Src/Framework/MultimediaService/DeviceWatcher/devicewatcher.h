@@ -10,7 +10,7 @@ class DeviceWatcher : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(DeviceWatcher)
 public:
-    explicit DeviceWatcher(QObject *parent = 0);
+    explicit DeviceWatcher(QObject *parent = NULL);
     ~DeviceWatcher();
 
 signals:

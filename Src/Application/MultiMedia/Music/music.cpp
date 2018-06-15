@@ -79,21 +79,24 @@ void MusicPrivate::initializeListView(QWidget *parent) {
 
 void MusicPrivate::connectAllSlots()
 {
-    connect(g_Multimedia, SIGNAL(onPlay(int, int, QString, long)), this, SLOT(playMusic(int, int, QString, long)));
+    connect(g_Multimedia, SIGNAL(onPlay(int, int, QString, qint64)), this, SLOT(playMusic(int, int, QString, qint64)));
     connect(g_Multimedia, SIGNAL(onPause(int)), this, SLOT(pauseMusic(int)));
     connect(g_Multimedia, SIGNAL(onUpdateMusic(int,QString,QString,QString)), this, SLOT(updateMusic(int,QString,QString,QString)));
     connect(g_Multimedia, SIGNAL(onResume(int)), this, SLOT(resumeMusic(int)));
     connect(g_Multimedia, SIGNAL(onSetPlayMode(int,int)), this, SLOT(setPlayModeMusic(int,int)));
-    connect(g_Multimedia, SIGNAL(onUpdateProgress(int,long,long)), this, SLOT(updateProgressMusic(int,long,long)));
+    connect(g_Multimedia, SIGNAL(onUpdateProgress(int,qint64,qint64)), this, SLOT(updateProgressMusic(int,qint64,qint64)));
     connect(g_Multimedia, SIGNAL(onScanMusicFiles(int,QStringList&)), this, SLOT(scanMusicFiles(int,QStringList&)));
 }
 
-void MusicPrivate::scanMusicFiles(int deviceType, QStringList &pathList)
+void MusicPrivate::scanMusicFiles(int deviceType, QStringList& pathList)
 {
     mMusicListWidget->updateList(deviceType, pathList);
+    if (pathList.size() > 0) {
+        mMusicPlayWidget->updateScanFile(0, pathList.at(0));
+    }
 }
 
-void MusicPrivate::playMusic(const int mediaType, const int index, const QString &fileName, const long endTime)
+void MusicPrivate::playMusic(const int mediaType, const int index, const QString &fileName, const qint64 endTime)
 {
     if (mediaType != MediaUtils::MUSIC) {
         return;
@@ -150,7 +153,7 @@ void MusicPrivate::setPlayModeMusic(const int mediaType, const int playMode)
     mMusicPlayWidget->onSwitchPlayMode(playMode);
 }
 
-void MusicPrivate::updateProgressMusic(const int mediaType, const long currentPosition, const long duration)
+void MusicPrivate::updateProgressMusic(const int mediaType, const qint64 currentPosition, const qint64 duration)
 {
     if (mediaType != MediaUtils::MUSIC) {
         return;

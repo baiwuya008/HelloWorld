@@ -10,7 +10,7 @@ class MusicPlayer : public Player
 {
     Q_OBJECT
 public:
-    explicit MusicPlayer(QObject *parent = 0);
+    explicit MusicPlayer(QObject *parent = NULL);
     ~MusicPlayer();
 
     QStringList* getPathList(int deviceType);

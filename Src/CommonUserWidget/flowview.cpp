@@ -709,9 +709,7 @@ void FlowViewPrivate::mouseMoveEvent(QMouseEvent *event)
 
 void FlowViewPrivate::mousePressEvent(QMouseEvent *event) {
     stopCheckClick();
-    QPoint point;
-    point = event->pos();
-    startCheckClick(point);
+    startCheckClick(event->pos());
     initMoveMark();
     downPoint = event->pos();
 }

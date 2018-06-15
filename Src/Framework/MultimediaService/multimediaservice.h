@@ -12,20 +12,20 @@ class MultimediaService : public QObject
     Q_DISABLE_COPY(MultimediaService)
     //       Q_CLASSINFO("D-Bus Interface", "Local.DbusServer.Multimedia")
 public:
-    explicit MultimediaService(QObject *parent = 0);
+    explicit MultimediaService(QObject *parent = NULL);
     ~MultimediaService();
 
 signals:
     void onPlay(const int mediaType, const int index,
-                const QString &fileName, const long endTime);
-    void onUpdateMusic(const int mediaType, const QString& title,
-                       const QString& artist, const QString& album);
+                const QString fileName, const qint64 endTime);
+    void onUpdateMusic(const int mediaType, const QString title,
+                       const QString artist, const QString album);
     void onResume(const int mediaType);
     void onPause(const int mediaType);
     void onStop(const int mediaType);
     void onSetPlayMode(const int mediaType, const int playMode);
-    void onUpdateProgress(const int mediaType, const long currentPosition, const long duration);
-    void onScanFilesPath(QString& xml);
+    void onUpdateProgress(const int mediaType, const qint64 currentPosition, const qint64 duration);
+    void onScanFilesPath(QString xml);
 
 public slots:
     void setPlayToggle(const int mediaType);

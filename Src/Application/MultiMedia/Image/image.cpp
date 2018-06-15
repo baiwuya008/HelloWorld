@@ -95,7 +95,7 @@ void ImagePrivate::initializeBottomView(QWidget *parent)
     mBottomWidget->setFixedSize(QSize(800, 45));
     mBottomWidget->setGeometry(0, 346, 0, 0);
 
-    QHBoxLayout *mBottomLayout = new QHBoxLayout;
+    QHBoxLayout *mBottomLayout = new QHBoxLayout();
     mBottomWidget->setLayout(mBottomLayout);
     mBottomLayout->setContentsMargins(0, 0, 0, 0);
 
@@ -114,7 +114,7 @@ void ImagePrivate::initializeBottomView(QWidget *parent)
 
 
 
-    mTabLabel = new QLabel;
+    mTabLabel = new QLabel();
     initLabText(mTabLabel, 20);
     mTabLabel->setText("3/10");
     mBottomLayout->addWidget(mTabLabel, 0, Qt::AlignCenter);

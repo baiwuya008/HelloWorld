@@ -54,11 +54,11 @@ void MultimediaPrivate::connectAllSlots()
     QObject::connect(mMultimediaService, &MultimediaService::onStop, m_Parent, &Multimedia::onStop, type);
     QObject::connect(mMultimediaService, &MultimediaService::onSetPlayMode, m_Parent, &Multimedia::onSetPlayMode, type);
     QObject::connect(mMultimediaService, &MultimediaService::onUpdateProgress, m_Parent, &Multimedia::onUpdateProgress, type);
-    QObject::connect(mMultimediaService, SIGNAL(onScanFilesPath(QString&)), m_Parent, SLOT(readFilesPathXml(QString&)), type);
+    QObject::connect(mMultimediaService, SIGNAL(onScanFilesPath(QString)), m_Parent, SLOT(readFilesPathXml(QString)), type);
 }
 
 
-void Multimedia::readFilesPathXml(QString &xml)
+void Multimedia::readFilesPathXml(QString xml)
 {
     QDomDocument doc;
     if (!doc.setContent(xml)) {

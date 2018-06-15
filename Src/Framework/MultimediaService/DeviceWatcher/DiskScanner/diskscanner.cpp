@@ -37,7 +37,7 @@ private:
     void initialize();
     void recursionScan(const QString& path);
     void scanFile(QFileInfo &file);
-    QString changeWindowsPath(QString &filePath);
+    QString changeWindowsPath(QString filePath);
 
 };
 
@@ -159,22 +159,18 @@ void DiskScannerPrivate::scanFile(QFileInfo &file)
         for (QMap< int, QStringList >::iterator suffixIter = mFilterMapList.begin();
              suffixIter != mFilterMapList.end(); suffixIter++) {
             if (suffixIter.value().contains(suffix)) {
-                QString a0 = file.absoluteFilePath();
-                QString aa = changeWindowsPath(a0);
-                emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), aa);
+                emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), changeWindowsPath(file.absoluteFilePath()));
             }
         }
     }else {
         QMap< int, QStringList >::iterator suffixIter =  mFilterMapList.find(mMediaType);
         if (suffixIter.value().contains(suffix)) {
-            QString b0 = file.absoluteFilePath();
-            QString bb = changeWindowsPath(b0);
-            emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), bb);
+            emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), changeWindowsPath(file.absoluteFilePath()));
         }
     }
 }
 
-QString DiskScannerPrivate::changeWindowsPath(QString &filePath)
+QString DiskScannerPrivate::changeWindowsPath(QString filePath)
 {
     QStringList list = filePath.split("/");
     QString path;

@@ -3,7 +3,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include "musiclistitem.h"
-#include "Src/CommonUserWidget/BmpButton.h"
+#include "Src\CommonUserWidget\BmpButton.h"
 #include <QTextCodec>
 #include <QDebug>
 #include <QListWidget>
@@ -19,7 +19,7 @@ public:
     explicit MusicListWidgetPrivate(MusicListWidget *parent, MediaUtils::MEDIA_TYPE type);
     ~MusicListWidgetPrivate();
 private slots:
-    void onitemClick(int index);
+    void onItemClick(int index);
     void onPrev();
     void onNext();
     void onMainDir();
@@ -36,11 +36,12 @@ private:
     void addItemList();
     void flipOver(bool isNext);
     void appendListView(QString path);
+    void clearListView();
 
     MusicListItem *mDirItem = NULL;
     QListWidget *mListView = NULL;
     QList<MusicListItem*> mListItem;
-    int mSelectItemIndex = 0;
+    int mSelectItemIndex = -1;
     MediaUtils::MEDIA_TYPE mType;
     const int PAGE_MAX_SIZE = 5;
     const int ITEM_WIDTH = 600;
@@ -75,7 +76,7 @@ void MusicListWidgetPrivate::initializeDirView(QWidget *parent)
     mDirItem = new MusicListItem(parent);
     mDirItem->setSize(18);
     mDirItem->setFixedSize(QSize(600, 30));
-    mDirItem->initItem("RK007-box", ":/Res/drawable/multimedia/music_file_icon.png");
+    mDirItem->initItem("nothing", ":/Res/drawable/multimedia/music_file_icon.png");
     mDirItem->setGeometry(93, 30, 0, 0);
 }
 
@@ -212,7 +213,7 @@ void MusicListWidgetPrivate::onUpDir()
 
 void MusicListWidgetPrivate::initializeListView(QWidget *parent)
 {
-    mSelectItemIndex = 0;
+    mSelectItemIndex = -1;
     mListView = new QListWidget(parent);
 
     mListView->setFixedSize(QSize(710, 230));
@@ -305,12 +306,12 @@ void MusicListWidgetPrivate::addItemList()
 {
     QListWidgetItem *item = NULL;
     MusicListItem *infoItem = NULL;
-    mSelectItemIndex = 0;
+    mSelectItemIndex = 1;
     for(int i = 0; i < 30; i++) {
         item = new QListWidgetItem;
         item->setSizeHint(QSize(ITEM_WIDTH, ITEM_HEIGHT));
 
-        infoItem = new MusicListItem(0, mType);
+        infoItem = new MusicListItem(NULL, mType);
         infoItem->setFixedSize(QSize(ITEM_WIDTH, ITEM_HEIGHT));
         infoItem->initItem("fileName_" + QString::number(i));
 
@@ -329,7 +330,7 @@ void MusicListWidgetPrivate::appendListView(QString path)
     QListWidgetItem *item = new QListWidgetItem;
     item->setSizeHint(QSize(ITEM_WIDTH, ITEM_HEIGHT));
 
-    MusicListItem *infoItem = new MusicListItem(0, mType);
+    MusicListItem *infoItem = new MusicListItem(NULL, mType);
     infoItem->setFixedSize(QSize(ITEM_WIDTH, ITEM_HEIGHT));
     infoItem->initItem(MediaUtils::changePathToName(path));
 
@@ -338,48 +339,59 @@ void MusicListWidgetPrivate::appendListView(QString path)
     mListItem.append(infoItem);
 }
 
+void MusicListWidgetPrivate::clearListView()
+{
+    mListView->clear();
+}
+
 
 
 void MusicListWidget::itemClick(QModelIndex index)
 {
     Q_D(MusicListWidget);
-    d->onitemClick(index.row());
-    emit selectItem(d->mListItem.at(index.row())->getPath(), index.row());
+    d->onItemClick(index.row());
 }
 
 
+void MusicListWidgetPrivate::onItemClick(int index) {
+    qDebug() << "onitemClick index = " << index
+             << "; mSelectItemIndex = " << mSelectItemIndex;
 
-void MusicListWidgetPrivate::onitemClick(int index) {
-    //    qDebug() << "onitemClick column = " << index.row();
-    if (mSelectItemIndex < 0 || mSelectItemIndex >= mListItem.size()
+    if (index < 0 || index >= mListItem.size()
             || index == mSelectItemIndex) {
         return;
     }
 
-    if (index < 0 || index >= mListItem.size()) {
-        return;
+    if (mSelectItemIndex >= 0) {
+        mListItem.at(mSelectItemIndex)->refreshItem(false);
     }
-
-    mListItem.at(mSelectItemIndex)->refreshItem(false);
     mSelectItemIndex = index;
     mListItem.at(mSelectItemIndex)->refreshItem(true);
+
+
+    Q_Q(MusicListWidget);
+    emit q->selectItem(mListItem.at(index)->getPath(), index);
 }
 
 
 void MusicListWidget::setPlayIndex(int index)
 {
     Q_D(MusicListWidget);
-    d->onitemClick(index);
+    d->onItemClick(index);
 }
 
 void MusicListWidget::updateList(int deviceType, QStringList &pathList)
 {
     Q_D(MusicListWidget);
-    QString path = pathList.at(0);
-    d->mDirItem->setName(MediaUtils::getDirName(path));
-    int size = pathList.size();
-    for (int i = 0; i < size; i++) {
-        d->appendListView(pathList.at(i));
+    if (pathList.size() > 0) {
+        QString path = pathList.at(0);
+        d->mDirItem->setName(MediaUtils::getDirName(path));
+        int size = pathList.size();
+        for (int i = 0; i < size; i++) {
+            d->appendListView(pathList.at(i));
+        }
+    }else {
+        d->clearListView();
     }
 }
 

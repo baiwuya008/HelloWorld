@@ -1,5 +1,5 @@
 #include "musicclickwidget.h"
-#include "Src/CommonUserWidget/BmpButton.h"
+#include "Src/CommonUserWidget\BmpButton.h"
 
 
 class MusicClickWidgetPrivate {

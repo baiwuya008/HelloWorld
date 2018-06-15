@@ -14,7 +14,6 @@
 #include <QPropertyAnimation>
 #include <QTimer>
 #include "flowadapter.h"
-#include <QMouseEvent>
 
 class FlowViewPrivate;
 class FlowView : public QWidget

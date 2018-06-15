@@ -10,7 +10,7 @@ class VideoPlayWidget : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY(VideoPlayWidget)
 public:
-    explicit VideoPlayWidget(QWidget *parent = 0);
+    explicit VideoPlayWidget(QWidget *parent = NULL);
     ~VideoPlayWidget();
 
 signals:

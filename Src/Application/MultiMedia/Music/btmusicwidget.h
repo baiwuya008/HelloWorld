@@ -10,7 +10,7 @@ class BtMusicWidget : public QWidget
     Q_OBJECT
      Q_DISABLE_COPY(BtMusicWidget)
 public:
-    explicit BtMusicWidget(QWidget *parent = 0);
+    explicit BtMusicWidget(QWidget *parent = NULL);
     ~BtMusicWidget();
 
 signals:

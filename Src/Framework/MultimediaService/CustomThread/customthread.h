@@ -12,7 +12,7 @@ class CustomThread : public QObject
 {
     Q_OBJECT
 public:
-    explicit CustomThread(QObject *parent = 0);
+    explicit CustomThread(QObject *parent = NULL);
     ~CustomThread();
     void setListener(CustomThreadListener *listener);
     void start(int msec);

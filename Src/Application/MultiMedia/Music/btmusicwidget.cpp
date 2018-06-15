@@ -2,7 +2,7 @@
 #include <QDebug>
 #include "musicclickwidget.h"
 #include "musicprogresswidget.h"
-#include "Src/CommonUserWidget/rotatewidget.h"
+#include "Src\CommonUserWidget\rotatewidget.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QFont>
@@ -100,7 +100,7 @@ void BtMusicWidgetPrivate::initializeClickView(QWidget *parent) {
 
 
 void BtMusicWidgetPrivate::initializeProgressView(QWidget *parent) {
-    MusicProgressWidget *mMusicProgressWidget = new MusicProgressWidget(parent, MediaUtils::BT_MUSIC);
+    MusicProgressWidget *mMusicProgressWidget = new MusicProgressWidget(parent, MediaUtils::MEDIA_TYPE::BT_MUSIC);
     mMusicProgressWidget->setFixedSize(QSize(730, 36));
     mMusicProgressWidget->setGeometry(75, 273, 0, 0);
 }
@@ -110,7 +110,7 @@ void BtMusicWidgetPrivate::initializeSongView(QWidget *parent)
     QWidget *songWidget = new QWidget(parent);
     songWidget->setFixedSize(QSize(800, 40));
     songWidget->setGeometry(0, 221, 0, 0);
-    QHBoxLayout  *songLayout = new QHBoxLayout;
+    QHBoxLayout  *songLayout = new QHBoxLayout();
     songLayout->setContentsMargins(0, 0, 0, 0);
     songWidget->setLayout(songLayout);
 

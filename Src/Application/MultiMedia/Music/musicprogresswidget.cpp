@@ -69,7 +69,7 @@ void MusicProgressWidgetPrivate::initializeBasicWidget(QWidget *parent) {
     initializeSlider(parent);
 
     endTimeLabel = new QLabel(parent);
-    endTimeLabel->setText("60:00/04:52");
+    endTimeLabel->setText("00:00/00:00");
     initLabText(endTimeLabel);
     mainLayout->addWidget(endTimeLabel, Qt::AlignVCenter);
     endTimeLabel->setContentsMargins(5, 0, 0, 0);
@@ -177,7 +177,7 @@ void MusicProgressWidgetPrivate::initLabText(QLabel *text) {
 }
 
 void MusicProgressWidgetPrivate::initializeSlider(QWidget *parent) {
-    horizontalSlider = new QSlider;
+    horizontalSlider = new QSlider();
     horizontalSlider->setObjectName(QString::fromUtf8("music_horizontalSlider"));
     horizontalSlider->setMaximum(100);
     horizontalSlider->setOrientation(Qt::Horizontal);
@@ -203,7 +203,7 @@ void MusicProgressWidgetPrivate::initializeSlider(QWidget *parent) {
 
 
 
-    horizontalSlider->setValue(50);
+    horizontalSlider->setValue(0);
 
 
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
@@ -230,9 +230,11 @@ void MusicProgressWidget::onActionTriggered(int action){
     d->currentOnClick = true;
 }
 
-
-
-
 MusicProgressWidget::~MusicProgressWidget() {
 
+}
+
+void MusicProgressWidget::setProgress(qint64 currentPosition, qint64 duration)
+{
+    Q_D(MusicProgressWidget);
 }

@@ -31,7 +31,7 @@ MusicPlayerPrivate::MusicPlayerPrivate(MusicPlayer *parent)
 }
 
 void MusicPlayerPrivate::initialize() {
-    mUsbPathList = new QStringList;
+    mUsbPathList = new QStringList();
 }
 
 void MusicPlayer::scanMusicFilePath(int deviceType, const QString &filePath)

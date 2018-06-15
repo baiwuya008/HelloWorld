@@ -10,13 +10,14 @@ class MusicPlayWidget : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY(MusicPlayWidget)
 public:
-    explicit MusicPlayWidget(QWidget *parent = 0);
+    explicit MusicPlayWidget(QWidget *parent = NULL);
     ~MusicPlayWidget();
 
     void setPlay(const QString &fileName, const long endTime);
 
     void updateMusicInfo(const QString& title, const QString& artist, const QString& album);
-    void updateProgress(const long currentPosition, const long duration);
+    void updateProgress(const qint64 currentPosition, const qint64 duration);
+    void updateScanFile(int index, QString path);
 
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
