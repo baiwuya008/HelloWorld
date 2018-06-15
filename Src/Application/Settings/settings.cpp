@@ -568,8 +568,8 @@ void SettingsPrivate::initSystemList(QString language)
     mListWidget->clear();
 
     mListSystem << "Change Language " + language;
-    mListSystem << "SW Version (MI)";
-    mListSystem << "BT Version";
+    mListSystem << "SW Version (MI) V2.59(QT)-V5.224";
+    mListSystem << "BT Version BTM-QTc161012av1";
 
     int format = settings.value("time").toInt();
     qDebug()<<"initSystemList"<<format;
@@ -781,6 +781,10 @@ void SettingsPrivate::onResetDialogOkPressed()
         mReSetBtDialog->hide();
     }
     qDebug() << "Yes";
+    OMessage msg;
+    msg.mId = 0x11;
+    Q_Q(Settings);
+    q->sendBroadcast(AppType::T_Bluetooth,msg);
 }
 
 void SettingsPrivate::onResetDialogNoPressed()
