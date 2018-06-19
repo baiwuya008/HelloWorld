@@ -17,7 +17,7 @@ public:
 
 signals:
     void onPlay(const int mediaType, const int index,
-                const QString fileName, const qint64 endTime);
+                const QString filePath, const qint64 duration);
     void onUpdateMusic(const int mediaType, const QString title,
                        const QString artist, const QString album);
     void onResume(const int mediaType);
@@ -27,18 +27,16 @@ signals:
     void onUpdateProgress(const int mediaType, const qint64 currentPosition, const qint64 duration);
     void onScanFilesPath(QString xml);
 
-public slots:
-    void setPlayToggle(const int mediaType);
-    void prev(const int mediaType);
-    void next(const int mediaType);
+public slots://提供给外部界面操作的接口
+    void setPlayStatus(const int mediaType, const bool isPlay);
+    void setPlayIndex(const int mediaType, const int deviceType, const int index);
+    void seekTo(const int mediaType, const int msec);
+    qint64 getCurrentPosition(const int mediaType);
+    qint64 getDuration(const int mediaType);
+    bool isPlaying(const int mediaType);
     void setPlayMode(const int mediaType, const int playMode);
     int getPlayMode(const int mediaType);
-    void playIndex(const int mediaType, const int index);
     void exitPlayer(const int mediaType);
-    void seekTo(const int mediaType, const int millesimal);
-    long getCurrentPosition(const int mediaType);
-    long getDuration(const int mediaType);
-    bool isPlaying(const int mediaType);
 
 private slots:
     void onScanFilesFinish(int deviceType, int mediaType);

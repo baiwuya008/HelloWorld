@@ -47,6 +47,30 @@ void MusicPlayer::scanMusicFilePath(int deviceType, const QString &filePath)
     }
 }
 
+void MusicPlayer::startPlay(int deviceType, int index)
+{
+    switch (deviceType) {
+    case MultimediaUtils::DWT_Undefined:
+        break;
+    case MultimediaUtils::DWT_USBDisk:
+        if (index >= 0 && index < m_Private->mUsbPathList->size()) {
+            play(index, m_Private->mUsbPathList->at(index));
+        }
+        break;
+    case MultimediaUtils::DWT_SDDisk:
+        break;
+    }
+}
+
+bool MusicPlayer::isNullData()
+{
+    if (m_Private->mUsbPathList->size() < 1) {
+        return true;
+    }
+
+    return false;
+}
+
 QStringList* MusicPlayer::getPathList(int deviceType)
 {
     switch (deviceType) {

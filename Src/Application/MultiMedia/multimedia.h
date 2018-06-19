@@ -20,22 +20,21 @@ public:
     }
 
 
-    void setPlayToggle(const int mediaType);
-    void prev(const int mediaType);
-    void next(const int mediaType);
+public://界面操作的接口
+    void setPlayStatus(const int mediaType, bool isPlay);
     void setPlayMode(const int mediaType, const int playMode);
     int getPlayMode(const int mediaType);
-    void playIndex(const int mediaType, const int index);
+    void setPlayIndex(const int mediaType, const int deviceType, const int index);
     void exitPlayer(const int mediaType);
-    void seekTo(const int mediaType, const int millesimal);
-    long getCurrentPosition(const int mediaType);
-    long getDuration(const int mediaType);
+    void seekTo(const int mediaType, const int msec);
+    qint64 getCurrentPosition(const int mediaType);
+    qint64 getDuration(const int mediaType);
     bool isPlaying(const int mediaType);
 
 
 signals:
     void onPlay(const int mediaType, const int index,
-                const QString &fileName, const qint64 endTime);
+                const QString filePath, const qint64 duration);
     void onUpdateMusic(const int mediaType, const QString& title,
                        const QString& artist, const QString& album);
     void onResume(const int mediaType);

@@ -100,60 +100,49 @@ void Multimedia::readFilesPathXml(QString xml)
     }
 }
 
-void Multimedia::setPlayToggle(const int mediaType)
+void Multimedia::setPlayStatus(const int mediaType, bool isPlay)
 {
-    qDebug() << "setPlayToggle mediaType = " << mediaType;
-    m_Private->mMultimediaService->setPlayToggle(mediaType);
-}
-
-void Multimedia::prev(const int mediaType)
-{
-
-}
-
-void Multimedia::next(const int mediaType)
-{
-
+    m_Private->mMultimediaService->setPlayStatus(mediaType, isPlay);
 }
 
 void Multimedia::setPlayMode(const int mediaType, const int playMode)
 {
-
+    m_Private->mMultimediaService->setPlayMode(mediaType, playMode);
 }
 
 int Multimedia::getPlayMode(const int mediaType)
 {
-    return 0;
+    return m_Private->mMultimediaService->getPlayMode(mediaType);
 }
 
-void Multimedia::playIndex(const int mediaType, const int index)
+void Multimedia::setPlayIndex(const int mediaType, const int deviceType, const int index)
 {
-
+    return m_Private->mMultimediaService->setPlayIndex(mediaType, deviceType, index);
 }
 
-void Multimedia::exitPlayer(const int mediaType)
+void Multimedia::seekTo(const int mediaType, const int msec )
 {
-
+    return m_Private->mMultimediaService->seekTo(mediaType, msec);
 }
 
-void Multimedia::seekTo(const int mediaType, const int millesimal)
+qint64 Multimedia::getCurrentPosition(const int mediaType)
 {
-
+    return m_Private->mMultimediaService->getCurrentPosition(mediaType);
 }
 
-long Multimedia::getCurrentPosition(const int mediaType)
+qint64 Multimedia::getDuration(const int mediaType)
 {
-    return 0;
-}
-
-long Multimedia::getDuration(const int mediaType)
-{
-    return 0;
+    return m_Private->mMultimediaService->getDuration(mediaType);
 }
 
 bool Multimedia::isPlaying(const int mediaType)
 {
-    return false;
+    return m_Private->mMultimediaService->isPlaying(mediaType);
+}
+
+void Multimedia::exitPlayer(const int mediaType)
+{
+    m_Private->mMultimediaService->exitPlayer(mediaType);
 }
 
 MultimediaPrivate::~MultimediaPrivate()

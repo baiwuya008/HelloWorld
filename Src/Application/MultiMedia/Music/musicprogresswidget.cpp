@@ -25,15 +25,18 @@ private:
     void switchSliderMode();
     void switchPlayMode();
     void switchPlayModeView();
+    void setCurrentProgress(qint64 currentPosition, qint64 duration);
+    QString changeDuration(qint64 msec);
 
     bool currentOnClick = false;
+    qint64 mDuration = 0;
 
     QHBoxLayout *mainLayout = NULL;
     QSlider *horizontalSlider = NULL;
     QLabel *startTimeLabel = NULL;
     QLabel *endTimeLabel = NULL;
     BmpButton *modeBtn = NULL;
-    MediaUtils::MEDIA_TYPE mSliderType;
+    MediaUtils::MEDIA_TYPE mMediaType;
     PLAY_MODE mPlayMode = LOOP;
 };
 
@@ -41,7 +44,7 @@ private:
 MusicProgressWidgetPrivate::MusicProgressWidgetPrivate(MusicProgressWidget *parent, MediaUtils::MEDIA_TYPE type)
     : q_ptr(parent)
 {
-    this->mSliderType = type;
+    this->mMediaType = type;
     initializeBasicWidget(parent);
 }
 
@@ -145,15 +148,17 @@ void MusicProgressWidgetPrivate::switchPlayModeView() {
     }
 }
 
+
+
 void MusicProgressWidgetPrivate::switchSliderMode() {
-    switch (mSliderType) {
+    switch (mMediaType) {
     case MediaUtils::MUSIC:
         startTimeLabel->setVisible(false);
         modeBtn->setVisible(true);
         modeBtn->setGeometry(680, 8, 0, 0);
         break;
     case MediaUtils::VIDEO:
-        endTimeLabel->setText("60:00");
+        endTimeLabel->setText("00:00");
         modeBtn->setVisible(false);
         startTimeLabel->setVisible(true);
         break;
@@ -221,7 +226,9 @@ void MusicProgressWidget::onValueChanged(int value) {
     Q_D(MusicProgressWidget);
     if (d->currentOnClick) {
         d->currentOnClick = false;
-        emit onSeekTo(value);
+        if (d->mDuration > 0) {
+            emit seekTo(value);
+        }
     }
 }
 
@@ -237,4 +244,51 @@ MusicProgressWidget::~MusicProgressWidget() {
 void MusicProgressWidget::setProgress(qint64 currentPosition, qint64 duration)
 {
     Q_D(MusicProgressWidget);
+    d->setCurrentProgress(currentPosition, duration);
+}
+
+void MusicProgressWidgetPrivate::setCurrentProgress(qint64 currentPosition, qint64 duration)
+{
+    this->mDuration = duration;
+    QString totalDuration = changeDuration(duration);
+    QString currentDuration = changeDuration(currentPosition);
+    int progress = (int) round((1.0 * currentPosition * 100) / duration);
+
+    horizontalSlider->setValue(progress);
+    switch (mMediaType) {
+    case MediaUtils::BT_MUSIC:
+    case MediaUtils::MUSIC:
+        endTimeLabel->setText(currentDuration+"/"+totalDuration);
+        break;
+    case MediaUtils::VIDEO:
+        startTimeLabel->setText(currentDuration);
+        endTimeLabel->setText(totalDuration);
+        break;
+    }
+}
+
+QString MusicProgressWidgetPrivate::changeDuration(qint64 msec) {
+    if (msec < 1000) {
+        return "00:00";
+    }
+
+    msec = msec / 1000;// 转换成秒
+
+    int minute = (int) (msec / 60);
+    int sec = (int) (msec % 60);
+    QString seconds = NULL;
+    QString min = NULL;
+    if (sec < 10) {
+        seconds = "0" +  QString::number(sec);
+    } else {
+        seconds = "" +  QString::number(sec);
+    }
+
+    if (minute < 10) {
+        min = "0" + QString::number(minute);
+    } else {
+        min = "" + QString::number(minute);
+    }
+
+    return min + ":" + seconds;
 }

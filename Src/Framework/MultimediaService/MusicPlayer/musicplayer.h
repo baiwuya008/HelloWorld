@@ -15,13 +15,13 @@ public:
 
     QStringList* getPathList(int deviceType);
     void clearPathList(int deviceType);
+    void startPlay(int deviceType, int index);
+    bool isNullData();
 
 signals:
 
 protected slots:
     void scanMusicFilePath(int deviceType, const QString &filePath);
-
-public slots:
 
 private:
     friend class MusicPlayerPrivate;

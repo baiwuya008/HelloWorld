@@ -13,22 +13,22 @@ public:
     explicit MusicPlayWidget(QWidget *parent = NULL);
     ~MusicPlayWidget();
 
-    void setPlay(const QString &fileName, const long endTime);
-
-    void updateMusicInfo(const QString& title, const QString& artist, const QString& album);
+    void updateScanFile(QString path);
     void updateProgress(const qint64 currentPosition, const qint64 duration);
-    void updateScanFile(int index, QString path);
+    void updatePlayInfo(const QString& title, const QString& artist, const QString& album);
+    void updatePlayFile(QString path, qint64 duration);
 
-protected:
-    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void setPlayStatus(bool isPlay);
+    void setPlayMode(int mode);
 
 signals:
+    void onSwitchStatus(bool isPlay);
+    void onSwitchIndex(bool isNext);
+    void onSwitchMode(int mode);
+    void onSeekTo(int value);
 
-public slots:
- void onSwitchPlayMode(int mode);
- void onSwitchStatus(bool isPlay);
 private slots:
- void onSwitchIndex(bool isNext);
+
 private:
     Q_DECLARE_PRIVATE(MusicPlayWidget)
     MusicPlayWidgetPrivate* const d_ptr;

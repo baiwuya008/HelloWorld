@@ -42,6 +42,7 @@ private:
     QListWidget *mListView = NULL;
     QList<MusicListItem*> mListItem;
     int mSelectItemIndex = -1;
+    int mDeviceType = -1;
     MediaUtils::MEDIA_TYPE mType;
     const int PAGE_MAX_SIZE = 5;
     const int ITEM_WIDTH = 600;
@@ -332,7 +333,7 @@ void MusicListWidgetPrivate::appendListView(QString path)
 
     MusicListItem *infoItem = new MusicListItem(NULL, mType);
     infoItem->setFixedSize(QSize(ITEM_WIDTH, ITEM_HEIGHT));
-    infoItem->initItem(MediaUtils::changePathToName(path));
+    infoItem->initItem(path);
 
     mListView->addItem(item);
     mListView->setItemWidget(item, infoItem);
@@ -370,7 +371,7 @@ void MusicListWidgetPrivate::onItemClick(int index) {
 
 
     Q_Q(MusicListWidget);
-    emit q->selectItem(mListItem.at(index)->getPath(), index);
+    emit q->selectItem(mDeviceType, mListItem.at(index)->getPath(), index);
 }
 
 
@@ -380,10 +381,19 @@ void MusicListWidget::setPlayIndex(int index)
     d->onItemClick(index);
 }
 
+void MusicListWidget::setPlayNext(bool isNext)
+{
+    Q_D(MusicListWidget);
+    int index = d->mSelectItemIndex;
+    index = isNext ? (isNext+1) : (isNext-1);
+    d->onItemClick(index);
+}
+
 void MusicListWidget::updateList(int deviceType, QStringList &pathList)
 {
     Q_D(MusicListWidget);
     if (pathList.size() > 0) {
+        d->mDeviceType = deviceType;
         QString path = pathList.at(0);
         d->mDirItem->setName(MediaUtils::getDirName(path));
         int size = pathList.size();

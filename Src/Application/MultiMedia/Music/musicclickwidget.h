@@ -12,23 +12,19 @@ class MusicClickWidget : public QWidget
 public:
     explicit MusicClickWidget(QWidget *parent = NULL);
     ~MusicClickWidget();
-
-
+    void setPlayStatus(bool play);
 
 signals:
     void switchIndex(bool isNext);
-    void changeStatus(bool isPlay);
-
+    void switchStatus(bool isPlay);
 
 public slots:
-    void setStatus(bool play);
-    void prevT();
-    void nextT();
 
 
 private slots:
-    void switchStatus();
-
+    void prev();
+    void next();
+    void changeStatus();
 
 private:
     Q_DECLARE_PRIVATE(MusicClickWidget)

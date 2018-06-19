@@ -39,32 +39,17 @@ MultimediaServicePrivate::MultimediaServicePrivate(MultimediaService* parent)
 }
 
 
-
-void MultimediaService::setPlayToggle(const int mediaType)
+void MultimediaService::setPlayStatus(const int mediaType, const bool isPlay)
 {
-    if (isYY) {
-        isYY = false;
-        m_Private->mDeviceWatcher->stopScan();
-    }else {
-        isYY = true;
+    if (m_Private->mMusicPlayer->isNullData()) {
         m_Private->mDeviceWatcher->startScan(MultimediaUtils::DWT_USBDisk, mediaType);
+    }else {
+        m_Private->mMusicPlayer->setPlayStatus(isPlay);
     }
-
-}
-
-void MultimediaService::prev(const int mediaType)
-{
-
-}
-
-void MultimediaService::next(const int mediaType)
-{
-
 }
 
 void MultimediaService::setPlayMode(const int mediaType, const int playMode)
 {
-
 }
 
 int MultimediaService::getPlayMode(const int mediaType)
@@ -72,9 +57,19 @@ int MultimediaService::getPlayMode(const int mediaType)
     return 0;
 }
 
-void MultimediaService::playIndex(const int mediaType, const int index)
+void MultimediaService::setPlayIndex(const int mediaType, const int deviceType, const int index)
 {
-
+    qDebug() << "MultimediaService::setPlayIndex index = " << index
+             << "; deviceType = " << deviceType;
+    switch (mediaType) {
+    case MultimediaUtils::MUSIC:
+        m_Private->mMusicPlayer->startPlay(deviceType, index);
+        break;
+    case MultimediaUtils::VIDEO:
+        break;
+    case MultimediaUtils::BT_MUSIC:
+        break;
+    }
 }
 
 void MultimediaService::exitPlayer(const int mediaType)
@@ -82,17 +77,17 @@ void MultimediaService::exitPlayer(const int mediaType)
 
 }
 
-void MultimediaService::seekTo(const int mediaType, const int millesimal)
+void MultimediaService::seekTo(const int mediaType, const int msec)
 {
 
 }
 
-long MultimediaService::getCurrentPosition(const int mediaType)
+qint64 MultimediaService::getCurrentPosition(const int mediaType)
 {
     return 0;
 }
 
-long MultimediaService::getDuration(const int mediaType)
+qint64 MultimediaService::getDuration(const int mediaType)
 {
     return 0;
 }
@@ -113,8 +108,11 @@ void MultimediaServicePrivate::connectAllSlots()
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
     QObject::connect(mDeviceWatcher, SIGNAL(onMusicFilePath(int,QString)), mMusicPlayer, SLOT(scanMusicFilePath(int,QString)), type);
     QObject::connect(mDeviceWatcher, SIGNAL(onScanFilesFinish(int,int)), m_Parent, SLOT(onScanFilesFinish(int,int)), type);
+    QObject::connect(mMusicPlayer, &MusicPlayer::onPositionChanged, m_Parent, &MultimediaService::onUpdateProgress, type);
+    QObject::connect(mMusicPlayer, &MusicPlayer::onPlay, m_Parent, &MultimediaService::onPlay, type);
+    QObject::connect(mMusicPlayer, &MusicPlayer::onResume, m_Parent, &MultimediaService::onResume, type);
+    QObject::connect(mMusicPlayer, &MusicPlayer::onPause, m_Parent, &MultimediaService::onPause, type);
 }
-
 
 
 void MultimediaService::onStartScanFiles(int deviceType, int mediaType)
@@ -210,3 +208,5 @@ MultimediaServicePrivate::~MultimediaServicePrivate()
 MultimediaService::~MultimediaService() {
 
 }
+
+

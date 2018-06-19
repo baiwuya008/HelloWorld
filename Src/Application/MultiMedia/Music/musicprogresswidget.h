@@ -24,7 +24,7 @@ public:
     void setProgress(qint64 currentPosition, qint64 duration);
 
 signals:
-    void onSeekTo(int value);
+    void seekTo(int value);
     void switchPlayMode(int mode);
 
 public slots:
