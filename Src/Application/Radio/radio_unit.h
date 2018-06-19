@@ -2,6 +2,8 @@
 #define RADIO_UNIT_H
 
 #include <QVariant>
+#include <QMouseEvent>
+#include "Src/CommonUserWidget/CustomListView.h"
 
 class RadioUnit
 {
@@ -39,6 +41,22 @@ public:
     double mFrequency;
 };
 Q_DECLARE_METATYPE(ListVariant)
+
+
+
+//----------
+class RadioListView :public CustomListView
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(RadioListView)
+public:
+    explicit RadioListView(QWidget* parent = NULL);
+    ~RadioListView();
+    void pageUpOrDown(bool pageup);
+protected:
+     void mouseMoveEvent(QMouseEvent* event);
+
+};
 
 
 #endif // RADIO_UNIT_H

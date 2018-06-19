@@ -1,4 +1,7 @@
 #include "radio_unit.h"
+#include <QScrollBar>
+
+#define RADIO_PAGE_HIGHT 250
 
 RadioUnit::RadioUnit()
 {
@@ -30,3 +33,31 @@ ListVariant::~ListVariant()
 {
 
 }
+
+
+//------------------
+RadioListView::RadioListView(QWidget* parent)
+    :CustomListView(parent)
+{
+
+}
+
+RadioListView::~RadioListView()
+{
+
+}
+
+void RadioListView::mouseMoveEvent(QMouseEvent* event){
+    //Do Nothing here
+}
+
+void RadioListView::pageUpOrDown(bool pageup){
+    if(pageup){
+        //page up
+         verticalScrollBar()->setValue(verticalOffset() - RADIO_PAGE_HIGHT);
+    }else{
+        //page down
+         verticalScrollBar()->setValue(verticalOffset() + RADIO_PAGE_HIGHT);
+    }
+}
+//------------------

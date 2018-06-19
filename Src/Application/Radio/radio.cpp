@@ -338,7 +338,8 @@ void RadioPrivate::initRadioPresetFragment()
     const int preset_y= 10;
     const int preset_yw= 300;
     if (NULL == mRadioPresetFragmentListView) {
-            mRadioPresetFragmentListView = new CustomListView(mPresetFragmentView);
+            //mRadioPresetFragmentListView = new CustomListView(mPresetFragmentView);
+            mRadioPresetFragmentListView = new RadioListView(mPresetFragmentView);
             mRadioPresetFragmentListView->setGeometry(preset_x,preset_y,preset_xw,preset_yw);
             mRadioPresetFragmentListView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
             //for test
@@ -447,7 +448,8 @@ void RadioPrivate::initRadioListFragment()
     const int list_y= 10;
     const int list_yw= 300;
     if (NULL == mRadioListFragmentListView) {
-            mRadioListFragmentListView = new CustomListView(mListFragmentView);
+            //mRadioListFragmentListView = new CustomListView(mListFragmentView);
+            mRadioListFragmentListView = new RadioListView(mListFragmentView);
             mRadioListFragmentListView->setGeometry(list_x,list_y,list_xw,list_yw);
             mRadioListFragmentListView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
@@ -581,9 +583,9 @@ void RadioPrivate::doReFreshCurFreq(const double &curFreq,bool updatePreset,bool
        }else{
            if(mRadioPresetDelegate != NULL&&mRadioPresetStandardItemModel !=NULL){
                mRadioPresetDelegate->m_CurIndex =  QModelIndex(); //use a new instance to clean the orig one
-               if(mRadioPresetFragmentListView != NULL){
-                   mRadioPresetFragmentListView->scrollToBottom();
-               }
+//               if(mRadioPresetFragmentListView != NULL){
+//                   mRadioPresetFragmentListView->scrollToBottom();
+//               }
            }
        }
 
@@ -701,7 +703,9 @@ void RadioPrivate::onBtnBottomFmNext()
 
 void RadioPrivate::onBtnBottomPresetSeekPrev()
 {
- mProcess->requestFmSeekPrev();
+ //mProcess->requestFmSeekPrev();
+ //here change to page up function
+  mRadioPresetFragmentListView->pageUpOrDown(true);
 }
 void RadioPrivate::onBtnBottomPresetAutoSearch()
 {
@@ -709,12 +713,16 @@ void RadioPrivate::onBtnBottomPresetAutoSearch()
 }
 void RadioPrivate::onBtnBottomPresetSeekNext()
 {
-  mProcess->requestFmSeekNext();
+  //mProcess->requestFmSeekNext();
+  //here change to page down function
+  mRadioPresetFragmentListView->pageUpOrDown(false);
 }
 
 void RadioPrivate::onBtnBottomListSeekPrev()
 {
- mProcess->requestFmSeekPrev();
+ //mProcess->requestFmSeekPrev();
+ //here change to page up function
+ mRadioListFragmentListView->pageUpOrDown(true);
 }
 void RadioPrivate::onBtnBottomListSearch()
 {
@@ -722,7 +730,9 @@ void RadioPrivate::onBtnBottomListSearch()
 }
 void RadioPrivate::onBtnBottomListSeekNext()
 {
- mProcess->requestFmSeekNext();
+ //mProcess->requestFmSeekNext();
+ //here change to page down function
+ mRadioListFragmentListView->pageUpOrDown(false);
 }
 
 

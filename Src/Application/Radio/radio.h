@@ -44,6 +44,7 @@ private:
 
 };
 
+
 //----------
 class RadioPresetFreqDelegate : public CustomItemDelegate
 {
@@ -137,6 +138,7 @@ private:
 
 
 //----------
+class RadioListView;
 class RadioProcess;
 class RadioPrivate :public QObject
 {
@@ -196,12 +198,14 @@ private:
     BmpButton *mBottom_List_Search;
     BmpButton *mBottom_List_Seek_Next;
 
-    CustomListView *mRadioPresetFragmentListView;
+    //CustomListView *mRadioPresetFragmentListView;
+    RadioListView *mRadioPresetFragmentListView;
     CustomScrollBar *mRadioPresetFragmentListViewScrollBar;
     RadioPresetFreqDelegate *mRadioPresetDelegate;
     QStandardItemModel *mRadioPresetStandardItemModel;
 
-    CustomListView *mRadioListFragmentListView;
+    //CustomListView *mRadioListFragmentListView;
+    RadioListView *mRadioListFragmentListView;
     CustomScrollBar *mRadioListFragmentListViewScrollBar;
     RadioListFreqDelegate *mRadioListDelegate;
     QStandardItemModel *mRadioListStandardItemModel;

@@ -133,6 +133,7 @@ private:
 
 
 //----------
+class RadioListView;
 class RadioProcess;
 class RadioAmPrivate :public QObject
 {
@@ -192,12 +193,14 @@ private:
     BmpButton *mBottom_List_Search;
     BmpButton *mBottom_List_Seek_Next;
 
-    CustomListView *mRadioPresetFragmentListView;
+    //CustomListView *mRadioPresetFragmentListView;
+    RadioListView *mRadioPresetFragmentListView;
     CustomScrollBar *mRadioPresetFragmentListViewScrollBar;
     RadioAmPresetFreqDelegate *mRadioPresetDelegate;
     QStandardItemModel *mRadioPresetStandardItemModel;
 
-    CustomListView *mRadioListFragmentListView;
+    //CustomListView *mRadioListFragmentListView;
+    RadioListView *mRadioListFragmentListView;
     CustomScrollBar *mRadioListFragmentListViewScrollBar;
     RadioAmListFreqDelegate *mRadioListDelegate;
     QStandardItemModel *mRadioListStandardItemModel;
