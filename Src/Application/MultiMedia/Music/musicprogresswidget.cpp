@@ -1,5 +1,6 @@
 #include "musicprogresswidget.h"
 #include <QSlider>
+#include <qmath.h>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QDebug>

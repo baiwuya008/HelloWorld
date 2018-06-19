@@ -784,7 +784,7 @@ void SettingsPrivate::onResetDialogOkPressed()
     OMessage msg;
     msg.mId = 0x11;
     Q_Q(Settings);
-    q->sendBroadcast(AppType::T_Bluetooth,msg);
+    q->sendBroadcast(T_Bluetooth,msg);
 }
 
 void SettingsPrivate::onResetDialogNoPressed()
