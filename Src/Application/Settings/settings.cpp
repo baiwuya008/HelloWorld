@@ -680,16 +680,31 @@ void SettingsPrivate::onSeatPointUp()
 void SettingsPrivate::onLowSoundValuesChange(int values)
 {
     qDebug()<< "Low" << values;
+    if(values <= LINE_MIN){
+        mLowSoundSlider->setValue(LINE_MIN);
+    }else if(values >= LINE_MAX){
+        mLowSoundSlider->setValue(LINE_MAX);
+    }
 }
 
 void SettingsPrivate::onCenSoundValuesChange(int values)
 {
     qDebug()<< "Cen" << values;
+    if(values <= LINE_MIN){
+        mCenSoundSlider->setValue(LINE_MIN);
+    }else if(values >= LINE_MAX){
+        mCenSoundSlider->setValue(LINE_MAX);
+    }
 }
 
 void SettingsPrivate::onHeightSoundValuesChange(int values)
 {
     qDebug()<< "Height" << values;
+    if(values <= LINE_MIN){
+        mHeightSoundSlider->setValue(LINE_MIN);
+    }else if(values >= LINE_MAX){
+        mHeightSoundSlider->setValue(LINE_MAX);
+    }
 }
 
 void SettingsPrivate::onBrightnessValuesChange(int values)
@@ -760,6 +775,27 @@ void SettingsPrivate::onBmpSoundWidgetMove(QMouseEvent *e)
         //左上：65 85 左下：65 255 右上：285 85 右下 285 255
         if(e->x() >= 65 && e->x() <= 285 && e->y() >= 85 && e->y() <= 255){
             mSeatPoint->move(e->x(),e->y());
+
+            //判断方向
+           if(e->x()>=65 && e->x() <=180 && e->y() >=85 && e->y() <=170){
+                qDebug() << "左上";
+                return;
+            }
+
+           if(e->x()>=180 && e->x() <=285 && e->y() >=85 && e->y() <=170){
+                qDebug() << "右上";
+                return;
+            }
+
+           if(e->x()>=65 && e->x() <=180 && e->y() >=170 && e->y() <=255){
+                qDebug() << "左下";
+                return;
+            }
+
+           if(e->x()>=180 && e->x() <=285 && e->y() >=170 && e->y() <=255){
+                qDebug() << "右下";
+                return;
+            }
         }
     }
 }
