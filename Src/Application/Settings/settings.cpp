@@ -130,7 +130,6 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mSoundSLabel->setPalette(pa);
     mSoundSLabel->setVisible(true);
     mSoundSLabel->setFont(font);
-    mSoundSLabel->setText(tr("按键音:打开"));
     mSoundSLabel->setGeometry(400,30,180,80);
 
     //开关
@@ -140,6 +139,19 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     connect(mKeySoundSwitch,SIGNAL(released()),this,SLOT(onBtnKeySoundtClick()));
 
     //获取系统按键音的开关 lgl
+    isKeySound = settings.value("keySound").toBool();
+    if(isKeySound){
+        mSoundSLabel->setText(tr("按键音:打开"));
+        mKeySoundSwitch->setNormalBmpPath(":/img/setting/img_key_sound_on.png");
+        mKeySoundSwitch->setPressBmpPath(":/img/setting/img_key_sound_on.png");
+        mKeySoundSwitch->setCheckBmpPath(":/img/setting/img_key_sound_on.png");
+    }else{
+        mSoundSLabel->setText(tr("按键音:关闭"));
+        mKeySoundSwitch->setNormalBmpPath(":/img/setting/img_key_sound_off.png");
+        mKeySoundSwitch->setPressBmpPath(":/img/setting/img_key_sound_off.png");
+        mKeySoundSwitch->setCheckBmpPath(":/img/setting/img_key_sound_off.png");
+    }
+
 
     //声音调节
     //低 左
@@ -655,14 +667,17 @@ void SettingsPrivate::onBtnKeySoundtClick()
 {
     isKeySound = !isKeySound;
     if(isKeySound){
+        mSoundSLabel->setText(tr("按键音:打开"));
         mKeySoundSwitch->setNormalBmpPath(":/img/setting/img_key_sound_on.png");
         mKeySoundSwitch->setPressBmpPath(":/img/setting/img_key_sound_on.png");
         mKeySoundSwitch->setCheckBmpPath(":/img/setting/img_key_sound_on.png");
     }else{
+        mSoundSLabel->setText(tr("按键音:关闭"));
         mKeySoundSwitch->setNormalBmpPath(":/img/setting/img_key_sound_off.png");
         mKeySoundSwitch->setPressBmpPath(":/img/setting/img_key_sound_off.png");
         mKeySoundSwitch->setCheckBmpPath(":/img/setting/img_key_sound_off.png");
     }
+    settings.setValue("keySound",isKeySound);
 }
 
 void SettingsPrivate::onSeatPointDown()
@@ -777,22 +792,22 @@ void SettingsPrivate::onBmpSoundWidgetMove(QMouseEvent *e)
             mSeatPoint->move(e->x(),e->y());
 
             //判断方向
-           if(e->x()>=65 && e->x() <=180 && e->y() >=85 && e->y() <=170){
+            if(e->x()>=65 && e->x() <=180 && e->y() >=85 && e->y() <=170){
                 qDebug() << "左上";
                 return;
             }
 
-           if(e->x()>=180 && e->x() <=285 && e->y() >=85 && e->y() <=170){
+            if(e->x()>=180 && e->x() <=285 && e->y() >=85 && e->y() <=170){
                 qDebug() << "右上";
                 return;
             }
 
-           if(e->x()>=65 && e->x() <=180 && e->y() >=170 && e->y() <=255){
+            if(e->x()>=65 && e->x() <=180 && e->y() >=170 && e->y() <=255){
                 qDebug() << "左下";
                 return;
             }
 
-           if(e->x()>=180 && e->x() <=285 && e->y() >=170 && e->y() <=255){
+            if(e->x()>=180 && e->x() <=285 && e->y() >=170 && e->y() <=255){
                 qDebug() << "右下";
                 return;
             }

@@ -3,6 +3,7 @@
 
 #include <QAbstractButton>
 #include <QScopedPointer>
+#include <QSettings>
 
 class BmpButtonPrivate;
 class BmpButton : public QAbstractButton
@@ -51,6 +52,7 @@ private slots:
 private:
     friend class BmpButtonPrivate;
     QScopedPointer<BmpButtonPrivate> m_Private;
+    QSettings settings;
 };
 
 #endif // BMPBUTTON_H

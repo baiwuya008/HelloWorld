@@ -167,6 +167,13 @@ void BmpButton::mouseReleaseEvent(QMouseEvent *event)
                 || (!m_Private->m_Filter)) {
             m_Private->m_Status = BmpButton::B_Normal;
             update();
+
+            //在这里做按键音的处理
+            bool boolKeySound = settings.value("keySound").toBool();
+            qDebug() << boolKeySound;
+            if(boolKeySound){
+                //播放声音 lgl
+            }
             emit released();
         }
         //emit bmpButtonRelease();
