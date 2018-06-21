@@ -43,6 +43,7 @@ void LauncherPrivate::initializeViewPager(QWidget *parent)
     mViewPaperWidget->setFixedSize(800, 384);
     mViewPaperWidget->setGeometry(0, 50, 0, 0);
     connect(mViewPaperWidget, SIGNAL(itemClick(int)), this, SLOT(onItemClick(int)));
+    connect(mViewPaperWidget, SIGNAL(changeViewPager(int)), this, SLOT(setCurrentViewPager(int)));
 
     initializeViewPagerPoint(parent, 2);
 }
