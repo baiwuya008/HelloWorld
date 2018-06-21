@@ -88,12 +88,6 @@ void CustomThreadPrivate::destroyeThread(bool isSync)
 }
 
 void CustomThreadPrivate::run() {
-//    for (int i = 0; i < 10; i++) {
-//        qDebug() << "run i = "+QString::number(i);
-//        sleep(1);
-//    }
-
-
     if (mListener != NULL) {
         mListener->onRun();
     }

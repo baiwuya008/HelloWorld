@@ -358,9 +358,6 @@ void MusicListWidget::itemClick(QModelIndex index)
 
 
 void MusicListWidgetPrivate::onItemClick(int index) {
-    qDebug() << "onitemClick index = " << index
-             << "; mSelectItemIndex = " << mSelectItemIndex;
-
     if (index < 0 || index >= mListItem.size()
             || index == mSelectItemIndex) {
         return;
@@ -397,7 +394,7 @@ void MusicListWidget::updateList(int deviceType, QString &dirPath, QStringList &
     Q_D(MusicListWidget);
     if (pathList.size() > 0) {
         d->mDeviceType = deviceType;
-        d->mDirItem->setName(MediaUtils::getDirName(dirPath));
+        d->mDirItem->setName(MediaUtils::getLastToName(dirPath));
         int size = pathList.size();
         for (int i = 0; i < size; i++) {
             d->appendListView(pathList.at(i));

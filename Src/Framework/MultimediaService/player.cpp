@@ -120,7 +120,7 @@ void PlayerPrivate::connectAllSlots()
 
 
 void Player::onPrepared(bool available) {
-    qDebug() << "onPrepared available = " << available;
+//    qDebug() << "onPrepared available = " << available;
     if (available) {
         m_Private->mCurrentStatus = QMediaPlayer::PlayingState;
         m_Private->mDuration = m_Private->mMediaPlayer->duration();
@@ -130,13 +130,13 @@ void Player::onPrepared(bool available) {
 
 
 void Player::onError(QMediaPlayer::Error error) {
-    qDebug() << "onError -----error = " << error;
+//    qDebug() << "onError -----error = " << error;
     m_Private->mCurrentStatus = QMediaPlayer::StoppedState;
     emit onFinish(m_Private->mPlayType, true);
 }
 
 void Player::onCompletion() {
-    qDebug() << "onCompletion -----";
+//    qDebug() << "onCompletion -----";
     m_Private->mCurrentStatus = QMediaPlayer::StoppedState;
     emit onFinish(m_Private->mPlayType, false);
 }
@@ -155,7 +155,7 @@ void PlayerPrivate::switchPlayStatus(bool isPlay)
 }
 
 void Player::onStatusChanged(QMediaPlayer::State status) {
-    qDebug() << "onStatusChanged status = " << status;
+//    qDebug() << "onStatusChanged status = " << status;
     switch (status) {
     case QMediaPlayer::PlayingState:
         if (m_Private->mCurrentStatus != QMediaPlayer::StoppedState) {

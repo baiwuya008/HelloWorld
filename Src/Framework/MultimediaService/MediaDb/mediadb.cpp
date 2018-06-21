@@ -13,13 +13,15 @@ class MediaDbPrivate {
 public:
     explicit MediaDbPrivate(MediaDb* parent);
     ~MediaDbPrivate();
+    void initialize();
     QSqlDatabase db;
 private:
     MediaDb* m_Parent;
-    void initialize();
+
     void createDb();
     void createTable();
     void connectAllSlots();
+    void close();
     const QString SQL_CONNECTION_NAME = "okl_media_default_connection";
 
 };
@@ -34,26 +36,29 @@ void MediaDbPrivate::createTable()
                         " dirName varchar(20), suffix varchar(6), modifiedTime int,"
                         " scanTime int)";
     bool result = query.prepare(table_sql);
-    qDebug() << "createTable prepare result = "<< result;
+    qDebug() << "MediaDbPrivate::createTable prepare result = "<< result;
     result = query.exec();
     if (!result) {
-        qDebug() << "lastError = " << query.lastError();
+        qDebug() << "MediaDbPrivate::createTable lastError = " << query.lastError();
     }
 }
 
 
+void MediaDb::initialize()
+{
+    m_Private->initialize();
+}
+
 void MediaDb::deleteAll()
 {
     QSqlQuery query(m_Private->db);
-    bool result = query.exec("delete from scan_files_table");
-    qDebug() << "deleteAll result = "<< result;
+    query.exec("delete from scan_files_table");
 }
 
 void MediaDb::deleteData(int deviceType)
 {
     QSqlQuery query(m_Private->db);
-    bool result = query.exec("delete from scan_files_table where deviceType = "+QString::number(deviceType));
-    qDebug() << "deleteData 222 result = "<< result;
+    query.exec("delete from scan_files_table where deviceType = "+QString::number(deviceType));
 }
 
 void MediaDb::insert(int deviceType, int mediaType, QFileInfo file)
@@ -72,8 +77,64 @@ void MediaDb::insert(int deviceType, int mediaType, QFileInfo file)
     query.addBindValue(file.dir().dirName());
     query.addBindValue(file.suffix());
     query.addBindValue(file.lastModified().toTime_t());
-    query.addBindValue(QDateTime::currentSecsSinceEpoch());
+    query.addBindValue(QDateTime::currentMSecsSinceEpoch()/1000);
     query.exec();
+}
+
+MediaDbEntity* MediaDb::query(QString filePath) {
+    QSqlQuery query(m_Private->db);
+    //    QString select = "SELECT * FROM scan_files_table where filePath = "+filePath;
+    QString select = "SELECT * FROM scan_files_table where name = '爱恨恢恢 - 周迅'";
+
+    MediaDbEntity *entity = NULL;
+    if (query.exec(select)) {
+        while (query.next()) {
+            entity = new MediaDbEntity();
+            entity->id = query.value(0).toInt();
+            entity->deviceType = query.value(1).toInt();
+            entity->mediaType = query.value(2).toInt();
+            entity->filePath = query.value(3).toString();
+            entity->fileName = query.value(4).toString();
+            entity->name = query.value(5).toString();
+            entity->dirPath = query.value(6).toString();
+            entity->dirName = query.value(7).toString();
+            entity->suffix = query.value(8).toString();
+            entity->modifiedTime = query.value(9).toInt();
+            entity->scanTime = query.value(10).toInt();
+            break;
+        }
+    }else {
+        qDebug() << "MediaDb::queryData lastError = " << query.lastError();
+    }
+
+    //    query.clear();
+    //    query.finish();
+    return entity;
+}
+
+void MediaDb::queryAll(int deviceType) {
+    QSqlQuery query(m_Private->db);
+    QString select = "SELECT * FROM scan_files_table where deviceType = " + QString::number(deviceType);
+    if (query.exec(select)) {
+        int nameIndex = query.record().indexOf("name");
+        while (query.next()) {
+            QString name = query.value(nameIndex).toString();
+            int id = query.value(0).toInt();
+            qDebug() << "queryAll name = " << name << "; id = " << id;
+        }
+    }else {
+        qDebug() << "queryAll lastError = " << query.lastError();
+    }
+}
+
+void MediaDb::updateData() {
+    QSqlQuery query(m_Private->db);
+    QString update = "UPDATE scan_files_table set name = :name where id = :id";
+    query.prepare(update);
+    query.bindValue(":name", "xiaoli_haollo");
+    query.bindValue(":id", 11);
+    bool result = query.exec();
+    qDebug() << "updateData result = "<< result;
 }
 
 void MediaDb::deleteData(QString filePath)
@@ -90,9 +151,12 @@ MediaDb::MediaDb(QObject *parent)
     initializePrivate();
 }
 
+
+void MediaDbPrivate::close() {
+    db.close();
+}
 MediaDb::~MediaDb()
 {
-
 }
 
 void MediaDb::initializePrivate()
@@ -105,13 +169,11 @@ void MediaDb::initializePrivate()
 MediaDbPrivate::MediaDbPrivate(MediaDb *parent)
     : m_Parent(parent)
 {
-    initialize();
-    connectAllSlots();
 }
 
 MediaDbPrivate::~MediaDbPrivate()
 {
-
+    close();
 }
 
 void MediaDbPrivate::initialize()
@@ -139,6 +201,7 @@ void MediaDbPrivate::createDb()
     bool result = db.open();
     if (result) {
         createTable();
+        connectAllSlots();
     }else {
         qDebug() << "DatabaseTest lastError result = " << db.lastError();
     }

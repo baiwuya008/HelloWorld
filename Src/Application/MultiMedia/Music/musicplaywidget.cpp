@@ -210,14 +210,14 @@ void MusicPlayWidgetPrivate::updateCurrentInfo(QString title, QString artist, QS
     mArtistItem->setName(artist);
     mAlbumItem->setName(album);
     if (path.length() > 1) {
-        mFileItem->setName(MediaUtils::getDirName(path));
+        mFileItem->setName(MediaUtils::getLastToName(path));
     }
 }
 
 void MusicPlayWidgetPrivate::updateCurrentPlay(QString path, qint64 duration)
 {
     mCurrentPlayPath = path;
-    mFileItem->setName(MediaUtils::changePathToName(path));
+    mFileItem->setName(MediaUtils::getLastToName(path));
     updateCurrentProgress(0, duration);
     if (duration > 0) {
         onPlay();
@@ -235,7 +235,7 @@ void MusicPlayWidget::updateProgress(const qint64 currentPosition, const qint64 
     d->updateCurrentProgress(currentPosition, duration);
 }
 
-void MusicPlayWidget::updatePlayInfo(const QString &title, const QString &artist, const QString &album)
+void MusicPlayWidget::updatePlayInfo(const QString &filePath, const QString &title, const QString &artist, const QString &album)
 {
     Q_D(MusicPlayWidget);
     d->updateCurrentInfo(title, artist, album, "");

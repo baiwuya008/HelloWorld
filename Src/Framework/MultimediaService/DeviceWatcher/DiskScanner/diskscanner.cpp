@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QFileInfoList>
 #include <QDateTime>
+#include <QFile>
 
 class DiskScannerPrivate : public CustomThreadListener
 {
@@ -18,17 +19,26 @@ public:
     ~DiskScannerPrivate();
     void scanFinish();
     void startScanThread(const int mediaType, const QString &path);
-    void closeScanThread();
+    void scanLrcThread(QString &filePath, QString &scanDir, QString &scanName);
+    void scanLrc();
+    void decodeLrc(QString &path);
     void handleResults(const QString &);
+    void createScanThread();
+    void destoryScanThread();
+    void closeScanThread();
 
 
 
     QTimer *mQTimer = NULL;
-    QString mPath = NULL;
     int mMediaType = MultimediaUtils::ALL_MEDIA;
     bool isContinueScan = false;
     QMap<int, QStringList> mFilterMapList;
     int mDeviceType = MultimediaUtils::DWT_Undefined;
+
+    QString mPath = NULL;
+    QString mScanDirPath;
+    QString mScanName;
+    bool isScanLrc = false;
 
 protected:
     void onRun() Q_DECL_OVERRIDE;
@@ -73,9 +83,8 @@ void DiskScannerPrivate::startScanThread(const int mediaType, const QString &pat
         return;
     }
 
-    //    qDebug() << "DiskScannerPrivate::startScanThread() ";
     isContinueScan = true;
-
+    isScanLrc = false;
     emit m_Parent->startScanFiles(mDeviceType, mediaType);
     if (!mQTimer->isActive()) {
         mQTimer->start();
@@ -83,6 +92,12 @@ void DiskScannerPrivate::startScanThread(const int mediaType, const QString &pat
     mPath = path;
     mMediaType = mediaType;
     g_MediaDb->deleteData(mDeviceType);
+    createScanThread();
+    mCustomThread->start();
+}
+
+void DiskScannerPrivate::createScanThread()
+{
     if (NULL == mCustomThread) {
         mCustomThread = new CustomThread();
         mCustomThread->setListener(this);
@@ -90,6 +105,28 @@ void DiskScannerPrivate::startScanThread(const int mediaType, const QString &pat
         QObject::connect(mCustomThread, SIGNAL(resultReady(QString)), m_Parent, SLOT(threadHandleResults(QString)), type);
         QObject::connect(mCustomThread, SIGNAL(onFinish()), m_Parent, SLOT(threadFinish()), type);
     }
+}
+
+void DiskScannerPrivate::destoryScanThread()
+{
+    if (mCustomThread != NULL) {
+        delete mCustomThread;
+        mCustomThread = NULL;
+    }
+}
+
+void DiskScannerPrivate::scanLrcThread(QString &filePath, QString &scanDir, QString &scanName)
+{
+    if (isContinueScan) {
+        return;
+    }
+
+    isContinueScan = true;
+    isScanLrc = true;
+    mPath = filePath;
+    mScanDirPath = scanDir;
+    mScanName = scanName;
+    createScanThread();
     mCustomThread->start();
 }
 
@@ -101,14 +138,16 @@ void DiskScannerPrivate::closeScanThread()
 }
 
 void DiskScannerPrivate::scanFinish()
-{
-    if (mCustomThread != NULL) {
-        delete mCustomThread;
-        mCustomThread = NULL;
+{  
+    destoryScanThread();
+    if (!isScanLrc) {
+        emit m_Parent->scanFilesFinish(mDeviceType, mMediaType, mPath);
     }
-
-    emit m_Parent->scanFilesFinish(mDeviceType, mMediaType, mPath);
     isContinueScan = false;
+    isScanLrc = false;
+    mScanName = "";
+    mScanDirPath = "";
+    mPath = "";
 }
 
 
@@ -116,6 +155,8 @@ void DiskScannerPrivate::handleResults(const QString &result)
 {
     //    qDebug() << "DiskScannerPrivate::handleResults() result = " << result;
 }
+
+
 
 void DiskScanner::threadHandleResults(const QString &result)
 {
@@ -129,11 +170,88 @@ void DiskScanner::threadFinish()
 
 void DiskScannerPrivate::onRun()
 {
-    recursionScan(mPath);
+    if (isScanLrc) {
+        scanLrc();
+    }else {
+        recursionScan(mPath);
+    }
+}
+
+
+void DiskScannerPrivate::scanLrc()
+{
+    if (mScanDirPath.length() < 1) {
+        return;
+    }
+
+    QDir dir(mScanDirPath);
+    if (!dir.exists()) {
+        return;
+    }
+    dir.setFilter(QDir::AllEntries|QDir::NoDotAndDotDot);
+    QFileInfoList dirList = dir.entryInfoList();
+    int size = dirList.size();
+    QFileInfo file;
+    QString suffix;
+    QString name;
+    for (int i = 0; i < size; i++) {
+        file = dirList.at(i);
+        suffix = file.suffix().toUpper().toLocal8Bit().data();
+        name = file.baseName().toLocal8Bit().data();
+        if (file.isFile() && !suffix.compare("LRC") && name.compare(mScanName)) {
+            decodeLrc(file.absoluteFilePath());
+            break;
+        }
+    }
+}
+
+void DiskScannerPrivate::decodeLrc(QString &path)
+{
+    QFile file(path);
+    if(file.open(QIODevice::ReadOnly)){
+        QString title = "[ti:";//歌曲名
+        QString artist = "[ar:";//歌手名
+        QString album = "[al:";//专辑名
+
+        QTextStream stream(&file);
+        int readLineNumber = 0;
+        int readIndex = 0;
+        QString data;
+        while (!stream.atEnd() ) {
+            data = stream.readLine().toUtf8();
+            if (0 == readLineNumber && data.contains(title)) {
+                title = data.mid(title.length());
+                title = title.left(title.length()-1);
+                readIndex++;
+            }else if (1 == readLineNumber && data.contains(artist)) {
+                artist = data.mid(artist.length());
+                artist = artist.left(artist.length()-1);
+                readIndex++;
+            }else if (2 == readLineNumber && data.contains(album)) {
+                album = data.mid(album.length());
+                album = album.left(album.length()-1);
+                readIndex++;
+            }
+
+            if (readLineNumber >= 3) {
+                break;
+            }
+            readLineNumber++;
+        }
+        file.close();
+
+        if (readIndex >= 3) {
+            emit m_Parent->scanLrcInfo(mPath, title, artist, album);
+        }
+    }
 }
 
 void DiskScannerPrivate::recursionScan(const QString &path)
 {
+    if (path.length() < 1) {
+        return;
+    }
+
     QDir dir(path);
     if (!dir.exists()) {
         return;
@@ -224,6 +342,11 @@ void DiskScanner::stopScanner()
         m_Private->mQTimer->stop();
     }
     m_Private->closeScanThread();
+}
+
+void DiskScanner::scanLrc(QString filePath, QString scanDir, QString scanName)
+{
+    m_Private->scanLrcThread(filePath, scanDir, scanName);
 }
 
 void DiskScanner::setDeviceType(int deviceType)

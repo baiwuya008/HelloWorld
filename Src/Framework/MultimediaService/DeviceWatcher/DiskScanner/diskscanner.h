@@ -18,11 +18,13 @@ public:
     void setMinimumScanTime(const int msec);
     void startScanner(const int mediaType, const QString &path);
     void stopScanner();
+    void scanLrc(QString filePath, QString scanDir, QString scanName);
     void setDeviceType(int deviceType);
 signals:
     void scanFilePath(int deviceType, int mediaType, const QString &filePath);
     void scanFilesFinish(int deviceType, int mediaType, QString path);
     void startScanFiles(int deviceType, int mediaType);
+    void scanLrcInfo(QString filePath, QString title, QString artist, QString album);
 
 public slots:
 private slots:

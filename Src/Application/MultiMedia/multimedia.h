@@ -35,8 +35,6 @@ public://界面操作的接口
 signals:
     void onPlay(const int mediaType, const int index,
                 const QString filePath, const qint64 duration);
-    void onUpdateMusic(const int mediaType, const QString& title,
-                       const QString& artist, const QString& album);
     void onResume(const int mediaType);
     void onPause(const int mediaType);
     void onStop(const int mediaType);
@@ -46,6 +44,7 @@ signals:
     void onScanMusicFiles(int deviceType, QString dirPath, QStringList& pathList);
     void onScanVideoFiles(int deviceType, QString dirPath, QStringList& pathList);
     void onScanImageFiles(int deviceType, QString dirPath, QStringList& pathList);
+    void onUpdateMusicInfo(const QString filePath, const QString title, const QString artist, const QString album);
 
 private slots:
     void readFilesPathXml(QString xml);

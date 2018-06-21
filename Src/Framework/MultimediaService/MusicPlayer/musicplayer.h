@@ -16,6 +16,7 @@ public:
     QStringList* getPathList(int deviceType);
     void clearPathList(int deviceType);
     void startPlay(int deviceType, int index);
+    QString getPlayPath(int deviceType, int index);
     bool isNullData();
 
 signals:

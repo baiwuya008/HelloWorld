@@ -62,6 +62,23 @@ void MusicPlayer::startPlay(int deviceType, int index)
     }
 }
 
+QString MusicPlayer::getPlayPath(int deviceType, int index)
+{
+    switch (deviceType) {
+    case MultimediaUtils::DWT_Undefined:
+        break;
+    case MultimediaUtils::DWT_USBDisk:
+        if (index >= 0 && index < m_Private->mUsbPathList->size()) {
+            return m_Private->mUsbPathList->at(index);
+        }
+        break;
+    case MultimediaUtils::DWT_SDDisk:
+        break;
+    }
+
+    return "";
+}
+
 bool MusicPlayer::isNullData()
 {
     if (m_Private->mUsbPathList->size() < 1) {

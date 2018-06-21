@@ -64,11 +64,11 @@ void MusicPrivate::connectAllSlots()
 {
     connect(g_Multimedia, SIGNAL(onPlay(int, int, QString, qint64)), this, SLOT(playMusic(int, int, QString, qint64)));
     connect(g_Multimedia, SIGNAL(onPause(int)), this, SLOT(pauseMusic(int)));
-    connect(g_Multimedia, SIGNAL(onUpdateMusic(int,QString,QString,QString)), this, SLOT(updateMusic(int,QString,QString,QString)));
     connect(g_Multimedia, SIGNAL(onResume(int)), this, SLOT(resumeMusic(int)));
     connect(g_Multimedia, SIGNAL(onSetPlayMode(int,int)), this, SLOT(setPlayModeMusic(int,int)));
     connect(g_Multimedia, SIGNAL(onUpdateProgress(int,qint64,qint64)), this, SLOT(updateProgressMusic(int,qint64,qint64)));
     connect(g_Multimedia, SIGNAL(onScanMusicFiles(int,QString,QStringList&)), this, SLOT(scanMusicFiles(int,QString,QStringList&)));
+    connect(g_Multimedia, SIGNAL(onUpdateMusicInfo(QString,QString,QString,QString)), this, SLOT(updateMusicInfo(QString,QString,QString,QString)));
 
 
 
@@ -80,9 +80,9 @@ void MusicPrivate::connectAllSlots()
 }
 
 void MusicPrivate::setPlayItem(int deviceType, QString filePath, int index) {
-    qDebug() << "MusicPrivate setPlayItem filePath = " << filePath
-             << "; index = " << index
-             << "; deviceType = " << deviceType;
+//    qDebug() << "MusicPrivate setPlayItem filePath = " << filePath
+//             << "; index = " << index
+//             << "; deviceType = " << deviceType;
 
     mMusicPlayWidget->updatePlayFile(filePath, 0);
     g_Multimedia->setPlayIndex(MediaUtils::MUSIC, deviceType, index);
@@ -139,13 +139,10 @@ void MusicPrivate::pauseMusic(const int mediaType)
     mMusicPlayWidget->setPlayStatus(false);
 }
 
-void MusicPrivate::updateMusic(const int mediaType, const QString &title, const QString &artist, const QString &album)
+void MusicPrivate::updateMusicInfo(const QString filePath, const QString title, const QString artist, const QString album)
 {
-    if (mediaType != MediaUtils::MUSIC) {
-        return;
-    }
+    mMusicPlayWidget->updatePlayInfo(filePath, title, artist, album);
 
-    mMusicPlayWidget->updatePlayInfo(title, artist, album);
 }
 
 void MusicPrivate::resumeMusic(const int mediaType)

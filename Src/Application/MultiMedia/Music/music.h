@@ -61,8 +61,8 @@ private slots:
     void playMusic(const int mediaType, const int index,
                    const QString &filePath, const qint64 duration);
     void pauseMusic(const int mediaType);
-    void updateMusic(const int mediaType, const QString& title,
-                     const QString& artist, const QString& album);
+    void updateMusicInfo(const QString filePath, const QString title,
+                           const QString artist, const QString album);
     void resumeMusic(const int mediaType);
     void stopMusic(const int mediaType);
     void setPlayModeMusic(const int mediaType, const int playMode);

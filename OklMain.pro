@@ -69,6 +69,7 @@ SOURCES += main.cpp\
     Src/Framework/MultimediaService/CustomThread/customthread.cpp \
     Src/Framework/MultimediaService/MusicPlayer/musicplayer.cpp \
      Src/Framework/MultimediaService/MediaDb/mediadb.cpp \
+     Src/Framework/MultimediaService/MediaDb/mediadbentity.cpp \
     Src/Application/Launcher/viewpagerwidget.cpp \
     Src/Application/Radio/radio_unit.cpp \
     Src/Application/Radio/radio_data.cpp \
@@ -137,6 +138,7 @@ HEADERS  += mainwindow.h \
     Src/Framework/MultimediaService/CustomThread/customthread.h \
     Src/Framework/MultimediaService/MusicPlayer/musicplayer.h \
      Src/Framework/MultimediaService/MediaDb/mediadb.h \
+     Src/Framework/MultimediaService/MediaDb/mediadbentity.h \
     Src/Application/Launcher/viewpagerwidget.h \
     Src/Application/Radio/radio_unit.h \
     Src/Application/Radio/radio_data.h \

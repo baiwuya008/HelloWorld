@@ -12,6 +12,7 @@ public:
     explicit MultimediaServicePrivate(MultimediaService* parent);
     ~MultimediaServicePrivate();
     QString createFilesPathXml(int deviceType, int mediaType, QString dirPath, QStringList* pathList);
+    void scanLrc(int deviceType, QString &filePath);
 
     DeviceWatcher *mDeviceWatcher = NULL;
     MusicPlayer *mMusicPlayer = NULL;
@@ -57,16 +58,24 @@ int MultimediaService::getPlayMode(const int mediaType)
 
 void MultimediaService::setPlayIndex(const int mediaType, const int deviceType, const int index)
 {
-    qDebug() << "MultimediaService::setPlayIndex index = " << index
-             << "; deviceType = " << deviceType;
+    //    qDebug() << "MultimediaService::setPlayIndex index = " << index
+    //             << "; deviceType = " << deviceType;
     switch (mediaType) {
     case MultimediaUtils::MUSIC:
         m_Private->mMusicPlayer->startPlay(deviceType, index);
+        m_Private->scanLrc(deviceType, m_Private->mMusicPlayer->getPlayPath(deviceType, index));
         break;
     case MultimediaUtils::VIDEO:
         break;
     case MultimediaUtils::BT_MUSIC:
         break;
+    }
+}
+
+void MultimediaServicePrivate::scanLrc(int deviceType, QString &filePath)
+{
+    if (filePath.length() > 1) {
+        mDeviceWatcher->scanLrc(deviceType, filePath);
     }
 }
 
@@ -117,6 +126,7 @@ void MultimediaServicePrivate::connectAllSlots()
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
     QObject::connect(mDeviceWatcher, SIGNAL(onMusicFilePath(int,QString)), mMusicPlayer, SLOT(scanMusicFilePath(int,QString)), type);
     QObject::connect(mDeviceWatcher, SIGNAL(onScanFilesFinish(int,int,QString)), m_Parent, SLOT(onScanFilesFinish(int,int,QString)), type);
+    QObject::connect(mDeviceWatcher, &DeviceWatcher::onScanLrcInfo, m_Parent, &MultimediaService::onUpdateMusic, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onPositionChanged, m_Parent, &MultimediaService::onUpdateProgress, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onPlay, m_Parent, &MultimediaService::onPlay, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onResume, m_Parent, &MultimediaService::onResume, type);
@@ -175,6 +185,8 @@ QString MultimediaServicePrivate::createFilesPathXml(int deviceType, int mediaTy
 
     return doc.toString();
 }
+
+
 
 
 MultimediaServicePrivate::~MultimediaServicePrivate()

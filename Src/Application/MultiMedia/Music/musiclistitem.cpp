@@ -134,7 +134,7 @@ void MusicListItemPrivate::initItemView(QString title, QString iconPath, bool is
 void MusicListItemPrivate::setFilePath(QString path)
 {
     this->mFilePath = path;
-    this->mFileName = MediaUtils::changePathToName(path);
+    this->mFileName = MediaUtils::getLastToName(path);
 }
 
 void MusicListItemPrivate::setIconFocus(bool isFocus)

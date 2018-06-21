@@ -37,6 +37,8 @@ DeviceWatcherPrivate::~DeviceWatcherPrivate()
 
 void DeviceWatcherPrivate::initialize()
 {
+    g_MediaDb->initialize();
+
     QStringList m_MusicSuffix;
     m_MusicSuffix.clear();
     m_MusicSuffix.append(QString(".MP2"));
@@ -95,6 +97,7 @@ void DeviceWatcherPrivate::initialize()
     QObject::connect(mUSBDiskScanner, SIGNAL(scanFilePath(int,int,QString)), m_Parent, SLOT(onScanFilePath(int,int,QString)), type);
     QObject::connect(mUSBDiskScanner, &DiskScanner::scanFilesFinish, m_Parent, &DeviceWatcher::onScanFilesFinish, type);
     QObject::connect(mUSBDiskScanner, &DiskScanner::startScanFiles, m_Parent, &DeviceWatcher::onStartScanFiles, type);
+    QObject::connect(mUSBDiskScanner, &DiskScanner::scanLrcInfo, m_Parent, &DeviceWatcher::onScanLrcInfo, type);
 }
 
 DeviceWatcher::~DeviceWatcher()
@@ -132,9 +135,25 @@ void DeviceWatcher::startScan(int deviceType, int mediaType, QString dir)
     }
 }
 
+void DeviceWatcher::scanLrc(int deviceType, QString &filePath)
+{
+    MediaDbEntity *entity = g_MediaDb->query(filePath);
+    if (entity != NULL) {
+        switch (deviceType) {
+        case MultimediaUtils::DWT_USBDisk:
+            m_Private->mUSBDiskScanner->scanLrc(filePath, entity->dirPath, entity->name);
+            break;
+        }
+        delete entity;
+        entity = NULL;
+    }
+}
+
 void DeviceWatcher::stopScan()
 {
     m_Private->mUSBDiskScanner->stopScanner();
 }
+
+
 
 

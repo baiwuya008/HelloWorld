@@ -23,8 +23,7 @@ signals:
     void onStop(const int mediaType);
     void onSetPlayMode(const int mediaType, const int playMode);
     void onUpdateProgress(const int mediaType, const qint64 currentPosition, const qint64 duration);
-    void onUpdateMusic(const int mediaType, const QString title,
-                       const QString artist, const QString album);
+    void onUpdateMusic(const QString filePath, const QString title, const QString artist, const QString album);
     void onScanFilesPath(QString xml);
 
 public slots://提供给外部界面操作的接口

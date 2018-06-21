@@ -1,6 +1,7 @@
 #ifndef MULTIMEDIAUTILS_H
 #define MULTIMEDIAUTILS_H
 
+#include <QString>
 
 class MultimediaUtils
 {
@@ -16,17 +17,16 @@ public:
         VIDEO_LIST = 5,  //视频文件列表
         IMAGE = 6       //图片
     } MultimediaType;
-    #define MultimediaType int
+#define MultimediaType int
 
     enum DeviceWatcherType {
         DWT_Undefined  = 0,
         DWT_SDDisk = 1,
         DWT_USBDisk = 2,
     };
-    #define DeviceWatcherType int
+#define DeviceWatcherType int
 
 public:
-
 };
 
 #endif // MULTIMEDIAUTILS_H
