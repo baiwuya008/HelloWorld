@@ -11,17 +11,15 @@ class MultimediaServicePrivate
 public:
     explicit MultimediaServicePrivate(MultimediaService* parent);
     ~MultimediaServicePrivate();
-    void initialize();
-    void connectAllSlots();
-
-    QString createFilesPathXml(int deviceType, int mediaType, QStringList* pathList);
-    void readFilesPathXml(QString& data);
+    QString createFilesPathXml(int deviceType, int mediaType, QString dirPath, QStringList* pathList);
 
     DeviceWatcher *mDeviceWatcher = NULL;
     MusicPlayer *mMusicPlayer = NULL;
 
 private:
     MultimediaService* m_Parent;
+    void initialize();
+    void connectAllSlots();
 
 };
 
@@ -77,9 +75,20 @@ void MultimediaService::exitPlayer(const int mediaType)
 
 }
 
-void MultimediaService::seekTo(const int mediaType, const int msec)
+void MultimediaService::seekTo(const int mediaType, const int progress)
 {
-
+    switch (mediaType) {
+    case MultimediaUtils::MUSIC:
+        m_Private->mMusicPlayer->seekTo(progress);
+        if (!m_Private->mMusicPlayer->isPlaying()) {
+            m_Private->mMusicPlayer->play();
+        }
+        break;
+    case MultimediaUtils::VIDEO:
+        break;
+    case MultimediaUtils::BT_MUSIC:
+        break;
+    }
 }
 
 qint64 MultimediaService::getCurrentPosition(const int mediaType)
@@ -107,7 +116,7 @@ void MultimediaServicePrivate::connectAllSlots()
 {
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
     QObject::connect(mDeviceWatcher, SIGNAL(onMusicFilePath(int,QString)), mMusicPlayer, SLOT(scanMusicFilePath(int,QString)), type);
-    QObject::connect(mDeviceWatcher, SIGNAL(onScanFilesFinish(int,int)), m_Parent, SLOT(onScanFilesFinish(int,int)), type);
+    QObject::connect(mDeviceWatcher, SIGNAL(onScanFilesFinish(int,int,QString)), m_Parent, SLOT(onScanFilesFinish(int,int,QString)), type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onPositionChanged, m_Parent, &MultimediaService::onUpdateProgress, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onPlay, m_Parent, &MultimediaService::onPlay, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onResume, m_Parent, &MultimediaService::onResume, type);
@@ -117,8 +126,6 @@ void MultimediaServicePrivate::connectAllSlots()
 
 void MultimediaService::onStartScanFiles(int deviceType, int mediaType)
 {
-    qDebug() << "MultimediaService::onStartScanFiles deviceType = " << deviceType
-             << "; mediaType = " << mediaType;
     switch (mediaType) {
     case MultimediaUtils::ALL_MEDIA:
         break;
@@ -132,15 +139,13 @@ void MultimediaService::onStartScanFiles(int deviceType, int mediaType)
     }
 }
 
-void MultimediaService::onScanFilesFinish(int deviceType, int mediaType)
+void MultimediaService::onScanFilesFinish(int deviceType, int mediaType, QString dirPath)
 {
-    qDebug() << "MultimediaService::onScanFilesFinish deviceType = " << deviceType
-             << "; mediaType = " << mediaType;
     switch (mediaType) {
     case MultimediaUtils::ALL_MEDIA:
         break;
     case MultimediaUtils::MUSIC:
-        emit onScanFilesPath(m_Private->createFilesPathXml(deviceType, mediaType,
+        emit onScanFilesPath(m_Private->createFilesPathXml(deviceType, mediaType, dirPath,
                                                            m_Private->mMusicPlayer->getPathList(deviceType)));
         break;
     case MultimediaUtils::VIDEO:
@@ -150,7 +155,7 @@ void MultimediaService::onScanFilesFinish(int deviceType, int mediaType)
     }
 }
 
-QString MultimediaServicePrivate::createFilesPathXml(int deviceType, int mediaType, QStringList *pathList)
+QString MultimediaServicePrivate::createFilesPathXml(int deviceType, int mediaType, QString dirPath, QStringList *pathList)
 {
     QDomDocument doc;
     QDomElement root = doc.createElement(QString("MediaPathList"));//创建根节点
@@ -158,6 +163,7 @@ QString MultimediaServicePrivate::createFilesPathXml(int deviceType, int mediaTy
 
     root.setAttribute("DeviceType", deviceType);//添加跟节点的属性
     root.setAttribute("MediaType", mediaType);
+    root.setAttribute("dirPath", dirPath);
 
     QDomElement child;
     int size = pathList->size();
@@ -168,36 +174,6 @@ QString MultimediaServicePrivate::createFilesPathXml(int deviceType, int mediaTy
     }
 
     return doc.toString();
-}
-
-void MultimediaServicePrivate::readFilesPathXml(QString& data)
-{
-    QDomDocument doc;
-    if (!doc.setContent(data)) {
-        return;
-    }
-
-    QDomElement root = doc.documentElement();
-    if (root.tagName().compare("MediaPathList")) {
-        return;
-    }
-
-    int deviceType = root.attribute("DeviceType").toInt();
-    int mediaType = root.attribute("MediaType").toInt();
-    if (-1 == deviceType || -1 == mediaType) {
-        return;
-    }
-
-
-    QStringList pathList;
-    QDomNode n = root.firstChild();
-    while(!n.isNull()) {
-        QDomElement e = n.toElement();
-        if(!e.isNull() && !e.tagName().compare("Path")) {
-            pathList.append(e.text());
-        }
-        n = n.nextSibling();
-    }
 }
 
 

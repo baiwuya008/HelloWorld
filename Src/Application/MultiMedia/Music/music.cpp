@@ -68,7 +68,7 @@ void MusicPrivate::connectAllSlots()
     connect(g_Multimedia, SIGNAL(onResume(int)), this, SLOT(resumeMusic(int)));
     connect(g_Multimedia, SIGNAL(onSetPlayMode(int,int)), this, SLOT(setPlayModeMusic(int,int)));
     connect(g_Multimedia, SIGNAL(onUpdateProgress(int,qint64,qint64)), this, SLOT(updateProgressMusic(int,qint64,qint64)));
-    connect(g_Multimedia, SIGNAL(onScanMusicFiles(int,QStringList&)), this, SLOT(scanMusicFiles(int,QStringList&)));
+    connect(g_Multimedia, SIGNAL(onScanMusicFiles(int,QString,QStringList&)), this, SLOT(scanMusicFiles(int,QString,QStringList&)));
 
 
 
@@ -93,9 +93,9 @@ void MusicPrivate::setPlayIndex(bool isNext)
     mMusicListWidget->setPlayNext(isNext);
 }
 
-void MusicPrivate::setPlaySeek(int value)
+void MusicPrivate::setPlaySeek(int progress)
 {
-    g_Multimedia->seekTo(MediaUtils::MUSIC, value);
+    g_Multimedia->seekTo(MediaUtils::MUSIC, progress);
 }
 
 void MusicPrivate::setPlayStatus(bool isPlay)
@@ -108,9 +108,9 @@ void MusicPrivate::setPlayMode(int mode)
     g_Multimedia->setPlayMode(MediaUtils::MUSIC, mode);
 }
 
-void MusicPrivate::scanMusicFiles(int deviceType, QStringList& pathList)
+void MusicPrivate::scanMusicFiles(int deviceType, QString dirPath, QStringList& pathList)
 {
-    mMusicListWidget->updateList(deviceType, pathList);
+    mMusicListWidget->updateList(deviceType, dirPath, pathList);
     if (pathList.size() > 0) {
         mMusicPlayWidget->updateScanFile(pathList.at(0));
     }

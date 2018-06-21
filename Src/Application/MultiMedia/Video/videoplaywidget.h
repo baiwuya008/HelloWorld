@@ -12,14 +12,17 @@ class VideoPlayWidget : public QWidget
 public:
     explicit VideoPlayWidget(QWidget *parent = NULL);
     ~VideoPlayWidget();
+    void setPlayStatus(bool isPlay);
 
 signals:
+    void onSwitchStatus(bool isPlay);
+    void onSwitchIndex(bool isNext);
+    void onSwitchMode(int mode);
+    void onSeekTo(int value);
 
 public slots:
 private slots:
-private slots:
- void onSwitchIndex(bool isNext);
- void onSwitchStatus(bool isPlay);
+
 private:
     Q_DECLARE_PRIVATE(VideoPlayWidget)
     VideoPlayWidgetPrivate* const d_ptr;

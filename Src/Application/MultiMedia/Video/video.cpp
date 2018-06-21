@@ -10,18 +10,6 @@ VideoPrivate::VideoPrivate(Video *parent)
 
 void VideoPrivate::initializeBasicWidget(QWidget *parent)
 {
-    //    mBackground = new BmpWidget(parent); //设置背景图片
-    //    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/video.png"));
-    //    mBackground->setFixedSize(QSize(800, 435));
-
-    //    mBtnTest= new BmpButton(parent);
-    //    mBtnTest->setNormalBmpPath(QString(":/Res/drawable/test/btn_n.png"));
-    //    mBtnTest->setPressBmpPath(QString(":/Res/drawable/test/btn_p.png"));
-    //    mBtnTest->setGeometry(600,300,195,50);
-
-    //   q->connect(mBtnTest,SIGNAL(released()),this,SLOT(onBtnTestRelease()));
-
-
     setWidgetBackground(parent, ":/img/Common/img_wap_bg.png");
     mStackedWidget = new QStackedWidget(parent);
     mStackedWidget->setFixedSize(QSize(800, 435));
@@ -51,6 +39,11 @@ void VideoPrivate::setCurrentPageView(int tabIndex) {
     mStackedWidget->setCurrentIndex(tabIndex);
 }
 
+void VideoPrivate::setPlayItem(int deviceType, QString filePath, int index)
+{
+
+}
+
 
 void VideoPrivate::initializeToolsWidget(QWidget *parent) {
     QList<QString> list;
@@ -63,15 +56,15 @@ void VideoPrivate::initializeToolsWidget(QWidget *parent) {
 void VideoPrivate::initializeVideoList(QWidget *parent)
 {
     mVideoListWidget = new MusicListWidget(parent, MediaUtils::VIDEO_LIST);
-    connect(mVideoListWidget, SIGNAL(selectItem(QString,int)), this, SLOT(onSelectItem(QString,int)));
+
     mStackedWidget->insertWidget(1, mVideoListWidget);
 }
 
-
-void VideoPrivate::onSelectItem(QString filePath, int index) {
-    qDebug() << "VideoPrivate onSelectItem filePath = " << filePath
-             << "; index = " << index;
+void VideoPrivate::connectAllSlots()
+{
+    connect(mVideoListWidget, SIGNAL(selectItem(int,QString,int)), this, SLOT(setPlayItem(int,QString,int)));
 }
+
 
 void VideoPrivate::initializeVideoPlay(QWidget *parent)
 {

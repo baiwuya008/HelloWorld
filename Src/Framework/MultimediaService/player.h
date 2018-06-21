@@ -18,7 +18,7 @@ public:
     void play(int index, QString path);
     void play();
     void pause();
-    void seekTo(int position);
+    void seekTo(int progress);
     qint64 getCurrentPosition();
     qint64 getDuration();
     bool isPlaying();

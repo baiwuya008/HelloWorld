@@ -196,6 +196,9 @@ void MusicListWidgetPrivate::flipOver(bool isNext)
                 (mListView->count()-1) : moveIndex;
     moveIndex = moveIndex < 0 ? 0 : moveIndex;
 
+    if (mListView->currentRow() == moveIndex) {//防止滑动后currentRow没变无法导致翻页功能
+        mListView->setCurrentRow(-1, QItemSelectionModel::Select);
+    }
     mListView->setCurrentRow(moveIndex, QItemSelectionModel::Select);
 }
 
@@ -389,13 +392,12 @@ void MusicListWidget::setPlayNext(bool isNext)
     d->onItemClick(index);
 }
 
-void MusicListWidget::updateList(int deviceType, QStringList &pathList)
+void MusicListWidget::updateList(int deviceType, QString &dirPath, QStringList &pathList)
 {
     Q_D(MusicListWidget);
     if (pathList.size() > 0) {
         d->mDeviceType = deviceType;
-        QString path = pathList.at(0);
-        d->mDirItem->setName(MediaUtils::getDirName(path));
+        d->mDirItem->setName(MediaUtils::getDirName(dirPath));
         int size = pathList.size();
         for (int i = 0; i < size; i++) {
             d->appendListView(pathList.at(i));

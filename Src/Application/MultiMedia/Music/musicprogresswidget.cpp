@@ -1,6 +1,5 @@
 #include "musicprogresswidget.h"
 #include <QSlider>
-#include <qmath.h>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QDebug>
@@ -29,7 +28,8 @@ private:
     void setCurrentProgress(qint64 currentPosition, qint64 duration);
     QString changeDuration(qint64 msec);
 
-    bool currentOnClick = false;
+    bool isOnClick = false;
+    bool isDragSlider = false;
     qint64 mDuration = 0;
 
     QHBoxLayout *mainLayout = NULL;
@@ -98,6 +98,8 @@ void MusicProgressWidget::setPlayMode(int mode) {
     d->mPlayMode = mode;
     d->switchPlayModeView();
 }
+
+
 
 void MusicProgressWidget::onClick() {
     Q_D(MusicProgressWidget);
@@ -210,32 +212,54 @@ void MusicProgressWidgetPrivate::initializeSlider(QWidget *parent) {
 
 
     horizontalSlider->setValue(0);
-
+    mainLayout->addWidget(horizontalSlider, Qt::AlignVCenter);
 
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
     QObject::connect(horizontalSlider, SIGNAL(sliderMoved(int)), parent, SLOT(onSliderMove(int)), type);
     QObject::connect(horizontalSlider, SIGNAL(valueChanged(int)), parent, SLOT(onValueChanged(int)), type);
     QObject::connect(horizontalSlider, SIGNAL(actionTriggered(int)), parent, SLOT(onActionTriggered(int)), type);
-    mainLayout->addWidget(horizontalSlider, Qt::AlignVCenter);
+    QObject::connect(horizontalSlider, SIGNAL(sliderPressed()), parent, SLOT(onSliderPressed()), type);
+    QObject::connect(horizontalSlider, SIGNAL(sliderReleased()), parent, SLOT(onSliderReleased()), type);
 }
 
+void MusicProgressWidget::onSliderPressed()
+{
+}
+
+void MusicProgressWidget::onSliderReleased() {
+    Q_D(MusicProgressWidget);
+    qDebug() << "onSliderReleased value = " << d->horizontalSlider->value()
+             << "; isDragSlider = " << d->isDragSlider;
+    if (d->isDragSlider) {
+        d->isDragSlider = false;
+         emit seekTo(d->horizontalSlider->value());
+    }
+}
 
 void MusicProgressWidget::onSliderMove(int progress) {
-
 }
-void MusicProgressWidget::onValueChanged(int value) {
+void MusicProgressWidget::onValueChanged(int progress) {
     Q_D(MusicProgressWidget);
-    if (d->currentOnClick) {
-        d->currentOnClick = false;
+    if (d->isOnClick) {
+        d->isOnClick = false;
         if (d->mDuration > 0) {
-            emit seekTo(value);
+            emit seekTo(progress);
         }
     }
 }
 
 void MusicProgressWidget::onActionTriggered(int action){
     Q_D(MusicProgressWidget);
-    d->currentOnClick = true;
+    if (3 == action || 4 == action) {//点击改变进度条进度, 不会触发sliderPressed和sliderReleased事件
+        d->isOnClick = true;
+    }else if (7 == action) {//拖动进度条, 会触发sliderPressed和sliderReleased事件
+        if (!d->isDragSlider) {
+            d->isDragSlider = true;
+            emit sliderSwitchStatus(false);
+        }
+    }
+
+    qDebug() << "onActionTriggered action = " << action;
 }
 
 MusicProgressWidget::~MusicProgressWidget() {
@@ -293,3 +317,5 @@ QString MusicProgressWidgetPrivate::changeDuration(qint64 msec) {
 
     return min + ":" + seconds;
 }
+
+

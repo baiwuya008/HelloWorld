@@ -9,7 +9,7 @@ QT       += core gui
 QT       += xml
 
 #greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia multimediawidgets sql axcontainer
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia multimediawidgets sql
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia multimediawidgets sql xml
 
 TARGET = OklMain
 TEMPLATE = app
@@ -68,6 +68,8 @@ SOURCES += main.cpp\
     Src/Framework/MultimediaService/DeviceWatcher/DiskScanner/diskscanner.cpp \
     Src/Framework/MultimediaService/CustomThread/customthread.cpp \
     Src/Framework/MultimediaService/MusicPlayer/musicplayer.cpp \
+     Src/Framework/MultimediaService/MediaDb/mediadb.cpp \
+    Src/Application/Launcher/viewpagerwidget.cpp \
     Src/Application/Radio/radio_unit.cpp \
     Src/Application/Radio/radio_data.cpp \
     Src/Application/Radio/radio_process.cpp \
@@ -134,6 +136,8 @@ HEADERS  += mainwindow.h \
     Src/Framework/MultimediaService/DeviceWatcher/DiskScanner/diskscanner.h \
     Src/Framework/MultimediaService/CustomThread/customthread.h \
     Src/Framework/MultimediaService/MusicPlayer/musicplayer.h \
+     Src/Framework/MultimediaService/MediaDb/mediadb.h \
+    Src/Application/Launcher/viewpagerwidget.h \
     Src/Application/Radio/radio_unit.h \
     Src/Application/Radio/radio_data.h \
     Src/Application/Radio/radio_process.h \

@@ -25,7 +25,7 @@ signals:
     void onSwitchStatus(bool isPlay);
     void onSwitchIndex(bool isNext);
     void onSwitchMode(int mode);
-    void onSeekTo(int value);
+    void onSeekTo(int progress);
 
 private slots:
 

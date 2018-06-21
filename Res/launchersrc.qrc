@@ -16,5 +16,7 @@
         <file>Launcher/img_launcher_setting_b.png</file>
         <file>Launcher/img_launcher_video_a.png</file>
         <file>Launcher/img_launcher_video_b.png</file>
+        <file>Launcher/img_launcher_point_a.png</file>
+        <file>Launcher/img_launcher_point_b.png</file>
     </qresource>
 </RCC>

@@ -73,10 +73,10 @@ void Player::pause()
     }
 }
 
-void Player::seekTo(int position)
+void Player::seekTo(int progress)
 {
     if (m_Private->mMediaPlayer != NULL && m_Private->mCurrentStatus != QMediaPlayer::StoppedState) {
-        m_Private->mMediaPlayer->setPosition((position*m_Private->mDuration)/100);
+        m_Private->mMediaPlayer->setPosition((progress*m_Private->mDuration)/100);
     }
 }
 

@@ -24,14 +24,17 @@ public:
     void setProgress(qint64 currentPosition, qint64 duration);
 
 signals:
-    void seekTo(int value);
+    void seekTo(int progress);
     void switchPlayMode(int mode);
+    void sliderSwitchStatus(bool isPlay);
 
 public slots:
     void setPlayMode(int mode);
 private slots:
+    void onSliderPressed();
+    void onSliderReleased();
     void onSliderMove(int progress);
-    void onValueChanged(int value);
+    void onValueChanged(int progress);
     void onActionTriggered(int action);
     void onClick();
 

@@ -18,7 +18,7 @@ signals:
     void onVideoFilePath(int deviceType, const QString &filePath);
     void onImageFilePath(int deviceType, const QString &filePath);
     void onStartScanFiles(int deviceType, int mediaType);
-    void onScanFilesFinish(int deviceType, int mediaType);
+    void onScanFilesFinish(int deviceType, int mediaType, QString path);
 
 private slots:
     void onScanFilePath(int deviceType, int mediaType, const QString &filePath);

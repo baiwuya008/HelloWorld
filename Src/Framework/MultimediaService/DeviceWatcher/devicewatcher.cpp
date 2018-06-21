@@ -1,6 +1,7 @@
 #include "devicewatcher.h"
 #include "Src/Framework/MultimediaService/DeviceWatcher/DiskScanner/diskscanner.h"
 #include "Src/Framework/MultimediaService/multimediautils.h"
+#include "Src/Framework/MultimediaService/MediaDb/mediadb.h"
 #include <QDebug>
 
 class DeviceWatcherPrivate {
@@ -10,11 +11,10 @@ public:
     ~DeviceWatcherPrivate();
     void initialize();
 
-
     DiskScanner *mUSBDiskScanner = NULL;
+    const QString USB_ROOT_DIR = "D:\\QT\\DA_project\\res";
 private:
     DeviceWatcher* m_Parent;
-
 };
 
 
@@ -119,7 +119,7 @@ void DeviceWatcher::onScanFilePath(int deviceType, int mediaType, const QString 
 
 void DeviceWatcher::startScan(int deviceType, int mediaType)
 {
-    startScan(deviceType, mediaType, "D:\\QT\\DA_project\\res");
+    startScan(deviceType, mediaType, m_Private->USB_ROOT_DIR);
 }
 
 
@@ -132,8 +132,9 @@ void DeviceWatcher::startScan(int deviceType, int mediaType, QString dir)
     }
 }
 
-
 void DeviceWatcher::stopScan()
 {
     m_Private->mUSBDiskScanner->stopScanner();
 }
+
+

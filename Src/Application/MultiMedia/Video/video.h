@@ -53,8 +53,8 @@ public:
 
 
 private slots:
-    void onSelectItem(QString filePath, int index);
     void setCurrentPageView(int tabIndex);
+    void setPlayItem(int deviceType, QString filePath, int index);
 
 private:
     Q_DECLARE_PUBLIC(Video)
@@ -65,6 +65,7 @@ private:
     void initializeToolsWidget(QWidget *parent);
     void initializeVideoPlay(QWidget *parent);
     void initializeVideoList(QWidget *parent);
+     void connectAllSlots();
 
     QStackedWidget *mStackedWidget = NULL;
     MediaToolsWidget *mMediaToolsWidget = NULL;

@@ -3,10 +3,12 @@
 #include <QStringList>
 #include "Src/Framework/MultimediaService/CustomThread/customthread.h"
 #include "Src/Framework/MultimediaService/multimediautils.h"
+#include "Src/Framework/MultimediaService/MediaDb/mediadb.h"
 #include <QTimer>
 #include <QDebug>
 #include <QDir>
 #include <QFileInfoList>
+#include <QDateTime>
 
 class DiskScannerPrivate : public CustomThreadListener
 {
@@ -37,6 +39,7 @@ private:
     void initialize();
     void recursionScan(const QString& path);
     void scanFile(QFileInfo &file);
+    void insertMediaDb(int deviceType, int mediaType, QFileInfo file);
     QString changeWindowsPath(QString filePath);
 
 };
@@ -70,7 +73,7 @@ void DiskScannerPrivate::startScanThread(const int mediaType, const QString &pat
         return;
     }
 
-//    qDebug() << "DiskScannerPrivate::startScanThread() ";
+    //    qDebug() << "DiskScannerPrivate::startScanThread() ";
     isContinueScan = true;
 
     emit m_Parent->startScanFiles(mDeviceType, mediaType);
@@ -79,7 +82,7 @@ void DiskScannerPrivate::startScanThread(const int mediaType, const QString &pat
     }
     mPath = path;
     mMediaType = mediaType;
-
+    g_MediaDb->deleteData(mDeviceType);
     if (NULL == mCustomThread) {
         mCustomThread = new CustomThread();
         mCustomThread->setListener(this);
@@ -104,14 +107,14 @@ void DiskScannerPrivate::scanFinish()
         mCustomThread = NULL;
     }
 
-    emit m_Parent->scanFilesFinish(mDeviceType, mMediaType);
+    emit m_Parent->scanFilesFinish(mDeviceType, mMediaType, mPath);
     isContinueScan = false;
 }
 
 
 void DiskScannerPrivate::handleResults(const QString &result)
 {
-//    qDebug() << "DiskScannerPrivate::handleResults() result = " << result;
+    //    qDebug() << "DiskScannerPrivate::handleResults() result = " << result;
 }
 
 void DiskScanner::threadHandleResults(const QString &result)
@@ -137,7 +140,7 @@ void DiskScannerPrivate::recursionScan(const QString &path)
     }
 
     dir.setFilter(QDir::AllEntries|QDir::NoDotAndDotDot);
-//     dir.setSorting(QDir::Time);
+    //     dir.setSorting(QDir::Time);
     QFileInfoList dirList = dir.entryInfoList();
     int size = dirList.size();
     QFileInfo file;
@@ -158,15 +161,22 @@ void DiskScannerPrivate::scanFile(QFileInfo &file)
         for (QMap< int, QStringList >::iterator suffixIter = mFilterMapList.begin();
              suffixIter != mFilterMapList.end(); suffixIter++) {
             if (suffixIter.value().contains(suffix)) {
+                insertMediaDb(mDeviceType, suffixIter.key(), file);
                 emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), changeWindowsPath(file.absoluteFilePath()));
             }
         }
     }else {
         QMap< int, QStringList >::iterator suffixIter =  mFilterMapList.find(mMediaType);
         if (suffixIter.value().contains(suffix)) {
+            insertMediaDb(mDeviceType, suffixIter.key(), file);
             emit m_Parent->scanFilePath(mDeviceType, suffixIter.key(), changeWindowsPath(file.absoluteFilePath()));
         }
     }
+}
+
+void DiskScannerPrivate::insertMediaDb(int deviceType, int mediaType, QFileInfo file)
+{
+    g_MediaDb->insert(deviceType, mediaType, file);
 }
 
 QString DiskScannerPrivate::changeWindowsPath(QString filePath)

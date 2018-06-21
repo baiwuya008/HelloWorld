@@ -22,11 +22,14 @@ private:
     void initializeProgressView(QWidget *parent);
     void initializeVideoView(QWidget *parent);
     void playVideo();
+    void connectAllSlots();
 
 
     QMediaPlayer *player = NULL;
     QMediaPlaylist *playlist = NULL;
     QVideoWidget *videoWidget = NULL;
+    MusicClickWidget *mMusicClickWidget = NULL;
+    MusicProgressWidget *mMusicProgressWidget = NULL;
 };
 
 
@@ -53,7 +56,7 @@ void VideoPlayWidgetPrivate::initializeBasicWidget(QWidget *parent)
 
 
 void VideoPlayWidgetPrivate::initializeProgressView(QWidget *parent) {
-    MusicProgressWidget *mMusicProgressWidget = new MusicProgressWidget(parent, MediaUtils::VIDEO);
+    mMusicProgressWidget = new MusicProgressWidget(parent, MediaUtils::VIDEO);
     mMusicProgressWidget->setFixedSize(QSize(730, 36));
     mMusicProgressWidget->setGeometry(75, 283, 0, 0);
 }
@@ -74,31 +77,29 @@ void VideoPlayWidgetPrivate::initializeVideoView(QWidget *parent)
 
 void VideoPlayWidgetPrivate::playVideo()
 {
-//    player->play();
+    //    player->play();
+}
+
+void VideoPlayWidgetPrivate::connectAllSlots()
+{
+    Q_Q(VideoPlayWidget);
+    Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
+    QObject::connect(mMusicClickWidget, &MusicClickWidget::switchStatus, q, &VideoPlayWidget::onSwitchStatus, type);
+    QObject::connect(mMusicClickWidget, &MusicClickWidget::switchIndex, q, &VideoPlayWidget::onSwitchIndex, type);
+    QObject::connect(mMusicProgressWidget, &MusicProgressWidget::seekTo, q, &VideoPlayWidget::onSeekTo, type);
+
 }
 
 
 void VideoPlayWidgetPrivate::initializeClickView(QWidget *parent) {
-    MusicClickWidget *mMusicClickWidget = new MusicClickWidget(parent);
+    mMusicClickWidget = new MusicClickWidget(parent);
     mMusicClickWidget->setFixedSize(QSize(800, 60));
     mMusicClickWidget->setGeometry(0, 324, 0, 0);
-
-
-    Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
-    QObject::connect(mMusicClickWidget, SIGNAL(changeStatus(bool)), parent, SLOT(onSwitchStatus(bool)), type);
-    QObject::connect(mMusicClickWidget, SIGNAL(switchIndex(bool)), parent, SLOT(onSwitchIndex(bool)), type);
 }
 
 
-
-void VideoPlayWidget::onSwitchIndex(bool isNext)
+void VideoPlayWidget::setPlayStatus(bool isPlay)
 {
-    qDebug() << "VideoPlayWidget onSwitchIndex = " << isNext;
-}
-
-void VideoPlayWidget::onSwitchStatus(bool isPlay)
-{
-    qDebug() << "VideoPlayWidget onSwitchStatus = " << isPlay;
     Q_D(VideoPlayWidget);
     if (isPlay) {
         d->onPlay();
@@ -106,6 +107,7 @@ void VideoPlayWidget::onSwitchStatus(bool isPlay)
         d->onPause();
     }
 }
+
 
 void VideoPlayWidgetPrivate::onPlay()
 {

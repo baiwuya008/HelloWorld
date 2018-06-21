@@ -21,7 +21,7 @@ public:
     void setDeviceType(int deviceType);
 signals:
     void scanFilePath(int deviceType, int mediaType, const QString &filePath);
-    void scanFilesFinish(int deviceType, int mediaType);
+    void scanFilesFinish(int deviceType, int mediaType, QString path);
     void startScanFiles(int deviceType, int mediaType);
 
 public slots:

@@ -72,6 +72,7 @@ void Multimedia::readFilesPathXml(QString xml)
 
     int deviceType = root.attribute("DeviceType").toInt();
     int mediaType = root.attribute("MediaType").toInt();
+    QString dirPath = root.attribute("dirPath");
     if (-1 == deviceType || -1 == mediaType) {
         return;
     }
@@ -89,13 +90,13 @@ void Multimedia::readFilesPathXml(QString xml)
 
     switch (mediaType) {
     case MediaUtils::MUSIC:
-        emit onScanMusicFiles(deviceType, pathList);
+        emit onScanMusicFiles(deviceType, dirPath, pathList);
         break;
     case MediaUtils::VIDEO:
-        emit onScanVideoFiles(deviceType, pathList);
+        emit onScanVideoFiles(deviceType, dirPath, pathList);
         break;
     case MediaUtils::IMAGE:
-        emit onScanImageFiles(deviceType, pathList);
+        emit onScanImageFiles(deviceType, dirPath, pathList);
         break;
     }
 }
@@ -120,9 +121,9 @@ void Multimedia::setPlayIndex(const int mediaType, const int deviceType, const i
     return m_Private->mMultimediaService->setPlayIndex(mediaType, deviceType, index);
 }
 
-void Multimedia::seekTo(const int mediaType, const int msec )
+void Multimedia::seekTo(const int mediaType, const int progress)
 {
-    return m_Private->mMultimediaService->seekTo(mediaType, msec);
+    return m_Private->mMultimediaService->seekTo(mediaType, progress);
 }
 
 qint64 Multimedia::getCurrentPosition(const int mediaType)

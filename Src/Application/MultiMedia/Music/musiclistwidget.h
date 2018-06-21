@@ -17,7 +17,7 @@ public:
     ~MusicListWidget();
     void setPlayIndex(int index);
     void setPlayNext(bool isNext);
-    void updateList(int deviceType, QStringList &pathList);
+    void updateList(int deviceType, QString &dirPath, QStringList &pathList);
 
 signals:
     void selectItem(int deviceType, QString path, int index);

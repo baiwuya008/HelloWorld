@@ -43,9 +43,9 @@ signals:
     void onSetPlayMode(const int mediaType, const int playMode);
     void onUpdateProgress(const int mediaType, const qint64 currentPosition, const qint64 duration);
 
-    void onScanMusicFiles(int deviceType, QStringList& pathList);
-    void onScanVideoFiles(int deviceType, QStringList& pathList);
-    void onScanImageFiles(int deviceType, QStringList& pathList);
+    void onScanMusicFiles(int deviceType, QString dirPath, QStringList& pathList);
+    void onScanVideoFiles(int deviceType, QString dirPath, QStringList& pathList);
+    void onScanImageFiles(int deviceType, QString dirPath, QStringList& pathList);
 
 private slots:
     void readFilesPathXml(QString xml);
