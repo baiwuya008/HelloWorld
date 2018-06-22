@@ -20,7 +20,7 @@ signals:
                 const QString filePath, const qint64 duration);
     void onResume(const int mediaType);
     void onPause(const int mediaType);
-    void onStop(const int mediaType);
+    void onStop(const int mediaType, bool isError);
     void onSetPlayMode(const int mediaType, const int playMode);
     void onUpdateProgress(const int mediaType, const qint64 currentPosition, const qint64 duration);
     void onUpdateMusic(const QString filePath, const QString title, const QString artist, const QString album);

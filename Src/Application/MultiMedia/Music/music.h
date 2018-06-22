@@ -64,7 +64,7 @@ private slots:
     void updateMusicInfo(const QString filePath, const QString title,
                            const QString artist, const QString album);
     void resumeMusic(const int mediaType);
-    void stopMusic(const int mediaType);
+    void stopMusic(const int mediaType, bool isError);
     void setPlayModeMusic(const int mediaType, const int playMode);
     void updateProgressMusic(const int mediaType, const qint64 currentPosition, const qint64 duration);
     void scanMusicFiles(int deviceType, QString dirPath, QStringList& pathList);
@@ -93,6 +93,7 @@ private:
 
 
     void connectAllSlots();
+    int mCurrentDeviceType = -1;
 
     //----------
     BmpWidget *mBackground;

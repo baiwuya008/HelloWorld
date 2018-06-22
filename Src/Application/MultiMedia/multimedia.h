@@ -22,7 +22,7 @@ public:
 
 public://界面操作的接口
     void setPlayStatus(const int mediaType, bool isPlay);
-    void setPlayMode(const int mediaType, const int playMode);
+    void setPlayMode( const int mediaType, const int playMode);
     int getPlayMode(const int mediaType);
     void setPlayIndex(const int mediaType, const int deviceType, const int index);
     void exitPlayer(const int mediaType);
@@ -37,7 +37,7 @@ signals:
                 const QString filePath, const qint64 duration);
     void onResume(const int mediaType);
     void onPause(const int mediaType);
-    void onStop(const int mediaType);
+    void onStop(const int mediaType, bool isError);
     void onSetPlayMode(const int mediaType, const int playMode);
     void onUpdateProgress(const int mediaType, const qint64 currentPosition, const qint64 duration);
 

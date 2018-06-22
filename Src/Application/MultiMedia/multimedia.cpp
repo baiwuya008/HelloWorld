@@ -109,7 +109,7 @@ void Multimedia::setPlayStatus(const int mediaType, bool isPlay)
 
 void Multimedia::setPlayMode(const int mediaType, const int playMode)
 {
-    m_Private->mMultimediaService->setPlayMode(mediaType, playMode);
+//    m_Private->mMultimediaService->setPlayMode(mediaType, playMode);
 }
 
 int Multimedia::getPlayMode(const int mediaType)

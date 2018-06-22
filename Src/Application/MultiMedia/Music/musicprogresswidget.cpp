@@ -228,8 +228,6 @@ void MusicProgressWidget::onSliderPressed()
 
 void MusicProgressWidget::onSliderReleased() {
     Q_D(MusicProgressWidget);
-    qDebug() << "onSliderReleased value = " << d->horizontalSlider->value()
-             << "; isDragSlider = " << d->isDragSlider;
     if (d->isDragSlider) {
         d->isDragSlider = false;
          emit seekTo(d->horizontalSlider->value());

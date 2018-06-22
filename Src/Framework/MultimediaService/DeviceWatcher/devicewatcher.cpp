@@ -135,9 +135,9 @@ void DeviceWatcher::startScan(int deviceType, int mediaType, QString dir)
     }
 }
 
-void DeviceWatcher::scanLrc(int deviceType, QString &filePath)
+void DeviceWatcher::scanLrc(int deviceType, QString filePath)
 {
-    MediaDbEntity *entity = g_MediaDb->query(filePath);
+    MediaDbEntity *entity = g_MediaDb->query(MultimediaUtils::getLastToName(filePath));
     if (entity != NULL) {
         switch (deviceType) {
         case MultimediaUtils::DWT_USBDisk:

@@ -16,7 +16,7 @@ public:
     void startScan(int deviceType, int mediaType);
     void startScan(int deviceType, int mediaType, QString dir);
     void stopScan();
-    void scanLrc(int deviceType, QString &filePath);
+    void scanLrc(int deviceType, QString filePath);
 
 signals:
     void onMusicFilePath(int deviceType, const QString &filePath);

@@ -12,7 +12,7 @@ public:
     explicit MultimediaServicePrivate(MultimediaService* parent);
     ~MultimediaServicePrivate();
     QString createFilesPathXml(int deviceType, int mediaType, QString dirPath, QStringList* pathList);
-    void scanLrc(int deviceType, QString &filePath);
+    void scanLrc(int deviceType, QString filePath);
 
     DeviceWatcher *mDeviceWatcher = NULL;
     MusicPlayer *mMusicPlayer = NULL;
@@ -49,10 +49,27 @@ void MultimediaService::setPlayStatus(const int mediaType, const bool isPlay)
 
 void MultimediaService::setPlayMode(const int mediaType, const int playMode)
 {
+    switch (mediaType) {
+    case MultimediaUtils::MUSIC:
+        break;
+    case MultimediaUtils::VIDEO:
+        break;
+    case MultimediaUtils::BT_MUSIC:
+        break;
+    }
 }
 
 int MultimediaService::getPlayMode(const int mediaType)
 {
+    switch (mediaType) {
+    case MultimediaUtils::MUSIC:
+        break;
+    case MultimediaUtils::VIDEO:
+        break;
+    case MultimediaUtils::BT_MUSIC:
+        break;
+    }
+
     return 0;
 }
 
@@ -72,7 +89,7 @@ void MultimediaService::setPlayIndex(const int mediaType, const int deviceType, 
     }
 }
 
-void MultimediaServicePrivate::scanLrc(int deviceType, QString &filePath)
+void MultimediaServicePrivate::scanLrc(int deviceType, QString filePath)
 {
     if (filePath.length() > 1) {
         mDeviceWatcher->scanLrc(deviceType, filePath);
@@ -131,6 +148,7 @@ void MultimediaServicePrivate::connectAllSlots()
     QObject::connect(mMusicPlayer, &MusicPlayer::onPlay, m_Parent, &MultimediaService::onPlay, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onResume, m_Parent, &MultimediaService::onResume, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onPause, m_Parent, &MultimediaService::onPause, type);
+    QObject::connect(mMusicPlayer, &MusicPlayer::onFinish, m_Parent, &MultimediaService::onStop, type);
 }
 
 

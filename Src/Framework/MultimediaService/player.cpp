@@ -166,6 +166,7 @@ void Player::onStatusChanged(QMediaPlayer::State status) {
         emit onPause(m_Private->mPlayType);
         break;
     case QMediaPlayer::StoppedState:
+        onCompletion();
         break;
     }
 

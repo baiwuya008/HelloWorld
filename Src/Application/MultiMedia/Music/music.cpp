@@ -65,6 +65,7 @@ void MusicPrivate::connectAllSlots()
     connect(g_Multimedia, SIGNAL(onPlay(int, int, QString, qint64)), this, SLOT(playMusic(int, int, QString, qint64)));
     connect(g_Multimedia, SIGNAL(onPause(int)), this, SLOT(pauseMusic(int)));
     connect(g_Multimedia, SIGNAL(onResume(int)), this, SLOT(resumeMusic(int)));
+    connect(g_Multimedia, SIGNAL(onStop(int,bool)), this, SLOT(stopMusic(int,bool)));
     connect(g_Multimedia, SIGNAL(onSetPlayMode(int,int)), this, SLOT(setPlayModeMusic(int,int)));
     connect(g_Multimedia, SIGNAL(onUpdateProgress(int,qint64,qint64)), this, SLOT(updateProgressMusic(int,qint64,qint64)));
     connect(g_Multimedia, SIGNAL(onScanMusicFiles(int,QString,QStringList&)), this, SLOT(scanMusicFiles(int,QString,QStringList&)));
@@ -110,6 +111,7 @@ void MusicPrivate::setPlayMode(int mode)
 
 void MusicPrivate::scanMusicFiles(int deviceType, QString dirPath, QStringList& pathList)
 {
+    this->mCurrentDeviceType = deviceType;
     mMusicListWidget->updateList(deviceType, dirPath, pathList);
     if (pathList.size() > 0) {
         mMusicPlayWidget->updateScanFile(pathList.at(0));
@@ -153,7 +155,7 @@ void MusicPrivate::resumeMusic(const int mediaType)
     mMusicPlayWidget->setPlayStatus(true);
 }
 
-void MusicPrivate::stopMusic(const int mediaType)
+void MusicPrivate::stopMusic(const int mediaType, bool isError)
 {
     if (mediaType != MediaUtils::MUSIC) {
         return;

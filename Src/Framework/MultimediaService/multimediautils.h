@@ -27,6 +27,7 @@ public:
 #define DeviceWatcherType int
 
 public:
+    static QString getLastToName(QString path);
 };
 
 #endif // MULTIMEDIAUTILS_H

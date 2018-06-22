@@ -67,29 +67,31 @@ MusicPlayWidget::MusicPlayWidget(QWidget *parent)
 void MusicPlayWidgetPrivate::initializeListView(QWidget *parent) {
     int top = 59;
     mFileItem = new MusicListItem(parent);
-    mFileItem->setFixedSize(QSize(300, 30));
+    mFileItem->setFixedSize(QSize(400, 30));
     mFileItem->initItem("nothing", ":/Res/drawable/multimedia/music_file_icon.png");
     mFileItem->setGeometry(41, top, 0, 0);
     top += 30 + 20;
 
     mTitleItem = new MusicListItem(parent);
-    mTitleItem->setFixedSize(QSize(300, 30));
-    mTitleItem->initItem("未知", ":/Res/drawable/multimedia/music_album_icon.png");
+    mTitleItem->setFixedSize(QSize(400, 30));
+    mTitleItem->initItem("unknown", ":/Res/drawable/multimedia/music_album_icon.png");
     mTitleItem->setGeometry(41, top, 0, 0);
     top += 30 + 20;
 
 
     mArtistItem = new MusicListItem(parent);
-    mArtistItem->setFixedSize(QSize(300, 30));
-    mArtistItem->initItem("未知", ":/Res/drawable/multimedia/music_singer_icon.png");
+    mArtistItem->setFixedSize(QSize(400, 30));
+    mArtistItem->initItem("unknown", ":/Res/drawable/multimedia/music_singer_icon.png");
     mArtistItem->setGeometry(41, top, 0, 0);
     top += 30 + 20;
 
 
     mAlbumItem = new MusicListItem(parent);
-    mAlbumItem->setFixedSize(QSize(300, 30));
-    mAlbumItem->initItem("未知", ":/Res/drawable/multimedia/music_song_icon.png");
+    mAlbumItem->setFixedSize(QSize(400, 30));
+    mAlbumItem->initItem("unknown", ":/Res/drawable/multimedia/music_song_icon.png");
     mAlbumItem->setGeometry(41, top, 0, 0);
+
+    updateCurrentInfo("","","","");
 }
 
 
@@ -206,9 +208,24 @@ void MusicPlayWidget::updateScanFile(QString path)
 
 void MusicPlayWidgetPrivate::updateCurrentInfo(QString title, QString artist, QString album, QString path)
 {
-    mTitleItem->setName(title);
-    mArtistItem->setName(artist);
-    mAlbumItem->setName(album);
+    if (title.length() > 0) {
+        mTitleItem->setName(title);
+    }else {
+        mTitleItem->setName("未知");
+    }
+
+    if (artist.length() > 0) {
+        mArtistItem->setName(artist);
+    }else {
+        mArtistItem->setName("未知");
+    }
+
+    if (album.length() > 0) {
+        mAlbumItem->setName(album);
+    }else {
+        mAlbumItem->setName("未知");
+    }
+
     if (path.length() > 1) {
         mFileItem->setName(MediaUtils::getLastToName(path));
     }

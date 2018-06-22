@@ -84,7 +84,7 @@ void MediaDb::insert(int deviceType, int mediaType, QFileInfo file)
 MediaDbEntity* MediaDb::query(QString filePath) {
     QSqlQuery query(m_Private->db);
     //    QString select = "SELECT * FROM scan_files_table where filePath = "+filePath;
-    QString select = "SELECT * FROM scan_files_table where name = '爱恨恢恢 - 周迅'";
+    QString select = "SELECT * FROM scan_files_table where fileName = '" + filePath + "'";
 
     MediaDbEntity *entity = NULL;
     if (query.exec(select)) {

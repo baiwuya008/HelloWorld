@@ -19,7 +19,7 @@ public:
     ~DiskScannerPrivate();
     void scanFinish();
     void startScanThread(const int mediaType, const QString &path);
-    void scanLrcThread(QString &filePath, QString &scanDir, QString &scanName);
+    void scanLrcThread(QString filePath, QString scanDir, QString scanName);
     void scanLrc();
     void decodeLrc(QString &path);
     void handleResults(const QString &);
@@ -115,7 +115,7 @@ void DiskScannerPrivate::destoryScanThread()
     }
 }
 
-void DiskScannerPrivate::scanLrcThread(QString &filePath, QString &scanDir, QString &scanName)
+void DiskScannerPrivate::scanLrcThread(QString filePath, QString scanDir, QString scanName)
 {
     if (isContinueScan) {
         return;
@@ -125,7 +125,7 @@ void DiskScannerPrivate::scanLrcThread(QString &filePath, QString &scanDir, QStr
     isScanLrc = true;
     mPath = filePath;
     mScanDirPath = scanDir;
-    mScanName = scanName;
+    mScanName = scanName.toLocal8Bit().data();
     createScanThread();
     mCustomThread->start();
 }
@@ -138,7 +138,7 @@ void DiskScannerPrivate::closeScanThread()
 }
 
 void DiskScannerPrivate::scanFinish()
-{  
+{
     destoryScanThread();
     if (!isScanLrc) {
         emit m_Parent->scanFilesFinish(mDeviceType, mMediaType, mPath);
@@ -198,7 +198,7 @@ void DiskScannerPrivate::scanLrc()
         file = dirList.at(i);
         suffix = file.suffix().toUpper().toLocal8Bit().data();
         name = file.baseName().toLocal8Bit().data();
-        if (file.isFile() && !suffix.compare("LRC") && name.compare(mScanName)) {
+        if (file.isFile() && !suffix.compare("LRC") && !name.compare(mScanName)) {
             decodeLrc(file.absoluteFilePath());
             break;
         }
