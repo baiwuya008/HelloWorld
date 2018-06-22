@@ -16,7 +16,8 @@ public:
     void updateScanFile(QString path);
     void updateProgress(const qint64 currentPosition, const qint64 duration);
     void updatePlayInfo(const QString &filePath, const QString &title, const QString &artist, const QString &album);
-    void updatePlayFile(QString path, qint64 duration);
+    void preparedPlay(QString path, qint64 duration);
+    void playMusic(QString path, const qint64 duration);
 
     void setPlayStatus(bool isPlay);
     void setPlayMode(int mode);

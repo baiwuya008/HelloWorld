@@ -38,6 +38,7 @@ MultimediaServicePrivate::MultimediaServicePrivate(MultimediaService* parent)
 }
 
 
+
 void MultimediaService::setPlayStatus(const int mediaType, const bool isPlay)
 {
     if (m_Private->mMusicPlayer->isNullData()) {
@@ -49,8 +50,11 @@ void MultimediaService::setPlayStatus(const int mediaType, const bool isPlay)
 
 void MultimediaService::setPlayMode(const int mediaType, const int playMode)
 {
+    qDebug() << "setPlayMode mediaType = " << mediaType
+             << "; playMode = " << playMode;
     switch (mediaType) {
     case MultimediaUtils::MUSIC:
+        m_Private->mMusicPlayer->setMode(playMode);
         break;
     case MultimediaUtils::VIDEO:
         break;
@@ -63,14 +67,28 @@ int MultimediaService::getPlayMode(const int mediaType)
 {
     switch (mediaType) {
     case MultimediaUtils::MUSIC:
-        break;
+        return m_Private->mMusicPlayer->getMode();
     case MultimediaUtils::VIDEO:
         break;
     case MultimediaUtils::BT_MUSIC:
         break;
     }
 
-    return 0;
+    return MultimediaUtils::LOOP;
+}
+
+
+void MultimediaService::setPlayDeviceType(const int deviceType, const int mediaType)
+{
+    switch (mediaType) {
+    case MultimediaUtils::MUSIC:
+        m_Private->mMusicPlayer->setDeviceType(deviceType);
+        break;
+    case MultimediaUtils::VIDEO:
+        break;
+    case MultimediaUtils::BT_MUSIC:
+        break;
+    }
 }
 
 void MultimediaService::setPlayIndex(const int mediaType, const int deviceType, const int index)
@@ -79,8 +97,8 @@ void MultimediaService::setPlayIndex(const int mediaType, const int deviceType, 
     //             << "; deviceType = " << deviceType;
     switch (mediaType) {
     case MultimediaUtils::MUSIC:
+        setPlayDeviceType(deviceType, mediaType);
         m_Private->mMusicPlayer->startPlay(deviceType, index);
-        m_Private->scanLrc(deviceType, m_Private->mMusicPlayer->getPlayPath(deviceType, index));
         break;
     case MultimediaUtils::VIDEO:
         break;
@@ -149,6 +167,7 @@ void MultimediaServicePrivate::connectAllSlots()
     QObject::connect(mMusicPlayer, &MusicPlayer::onResume, m_Parent, &MultimediaService::onResume, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onPause, m_Parent, &MultimediaService::onPause, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onFinish, m_Parent, &MultimediaService::onStop, type);
+    QObject::connect(mMusicPlayer, SIGNAL(requestLrc(int,QString)), m_Parent, SLOT(onScanLrc(int,QString)), type);
 }
 
 
@@ -158,6 +177,7 @@ void MultimediaService::onStartScanFiles(int deviceType, int mediaType)
     case MultimediaUtils::ALL_MEDIA:
         break;
     case MultimediaUtils::MUSIC:
+        setPlayDeviceType(deviceType, mediaType);
         m_Private->mMusicPlayer->clearPathList(deviceType);
         break;
     case MultimediaUtils::VIDEO:
@@ -165,6 +185,11 @@ void MultimediaService::onStartScanFiles(int deviceType, int mediaType)
     case MultimediaUtils::IMAGE:
         break;
     }
+}
+
+void MultimediaService::onScanLrc(int deviceType, QString filePath)
+{
+    m_Private->scanLrc(deviceType, filePath);
 }
 
 void MultimediaService::onScanFilesFinish(int deviceType, int mediaType, QString dirPath)
@@ -214,5 +239,8 @@ MultimediaServicePrivate::~MultimediaServicePrivate()
 MultimediaService::~MultimediaService() {
 
 }
+
+
+
 
 

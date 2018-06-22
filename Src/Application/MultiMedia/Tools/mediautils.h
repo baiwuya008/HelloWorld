@@ -18,6 +18,19 @@ public:
         IMAGE = 6       //图片
     };
 
+    enum DeviceWatcherType {
+        DWT_Undefined  = 0,
+        DWT_SDDisk = 1,
+        DWT_USBDisk = 2,
+    };
+
+    enum PLAY_MODE {
+        ORDER = 1, //顺序播放模式
+        RANDOM = 2, //随机播放模式
+        LOOP = 3, //循环播放模式
+        SINGLE_LOOP = 4 //单曲循环播放模式
+    };
+
 public:
     static QString getLastToName(QString path);
 };

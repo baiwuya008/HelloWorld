@@ -26,6 +26,15 @@ public:
     };
 #define DeviceWatcherType int
 
+
+    typedef enum {
+        ORDER = 1, //顺序播放模式
+        RANDOM = 2, //随机播放模式
+        LOOP = 3, //循环播放模式
+        SINGLE_LOOP = 4 //单曲循环播放模式
+    } PLAY_MODE;
+#define PLAY_MODE int
+
 public:
     static QString getLastToName(QString path);
 };

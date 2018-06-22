@@ -5,6 +5,7 @@
 #include <QDebug>
 #include "Src/CommonUserWidget/BmpButton.h"
 #include "Src/Application/MultiMedia/Tools/mediautils.h"
+#include <QMouseEvent>
 
 
 class MusicProgressWidgetPrivate {
@@ -27,10 +28,12 @@ private:
     void switchPlayModeView();
     void setCurrentProgress(qint64 currentPosition, qint64 duration);
     QString changeDuration(qint64 msec);
+    bool filterSliderClick(QObject *watched, QEvent *event);
 
     bool isOnClick = false;
     bool isDragSlider = false;
     qint64 mDuration = 0;
+    bool isSwitchMode = false;
 
     QHBoxLayout *mainLayout = NULL;
     QSlider *horizontalSlider = NULL;
@@ -38,7 +41,7 @@ private:
     QLabel *endTimeLabel = NULL;
     BmpButton *modeBtn = NULL;
     MediaUtils::MEDIA_TYPE mMediaType;
-    PLAY_MODE mPlayMode = LOOP;
+    int mPlayMode = MediaUtils::LOOP;
 };
 
 
@@ -107,22 +110,26 @@ void MusicProgressWidget::onClick() {
 }
 
 void MusicProgressWidgetPrivate::switchPlayMode() {
+    if (!isSwitchMode) {
+        return;
+    }
+
     switch (mPlayMode) {
-    case ORDER:
-        mPlayMode = LOOP;
+    case MediaUtils::ORDER:
+        mPlayMode = MediaUtils::LOOP;
         break;
 
-    case RANDOM:
+    case MediaUtils::RANDOM:
         //        mPlayMode = ORDER;
-        mPlayMode = LOOP;
+        mPlayMode = MediaUtils::LOOP;
         break;
-    case LOOP:
+    case MediaUtils::LOOP:
         //        mPlayMode = SINGLE_LOOP;
-        mPlayMode = RANDOM;
+        mPlayMode = MediaUtils::RANDOM;
         break;
 
-    case SINGLE_LOOP:
-        mPlayMode = RANDOM;
+    case MediaUtils::SINGLE_LOOP:
+        mPlayMode = MediaUtils::RANDOM;
         break;
     }
 
@@ -135,18 +142,18 @@ void MusicProgressWidgetPrivate::switchPlayMode() {
 
 void MusicProgressWidgetPrivate::switchPlayModeView() {
     switch (mPlayMode) {
-    case ORDER:
+    case MediaUtils::ORDER:
         break;
-    case RANDOM:
+    case MediaUtils::RANDOM:
         modeBtn->setNormalBmpPath(":/Res/drawable/multimedia/music_mode_random_normal.png");
         modeBtn->setPressBmpPath(":/Res/drawable/multimedia/music_mode_random_focus.png");
         break;
-    case LOOP:
+    case MediaUtils::LOOP:
         modeBtn->setNormalBmpPath(":/Res/drawable/multimedia/music_mode_loop_normal.png");
         modeBtn->setPressBmpPath(":/Res/drawable/multimedia/music_mode_loop_focus.png");
         modeBtn->update();
         break;
-    case SINGLE_LOOP:
+    case MediaUtils::SINGLE_LOOP:
         break;
     }
 }
@@ -212,6 +219,7 @@ void MusicProgressWidgetPrivate::initializeSlider(QWidget *parent) {
 
 
     horizontalSlider->setValue(0);
+    horizontalSlider->installEventFilter(parent);
     mainLayout->addWidget(horizontalSlider, Qt::AlignVCenter);
 
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
@@ -222,6 +230,33 @@ void MusicProgressWidgetPrivate::initializeSlider(QWidget *parent) {
     QObject::connect(horizontalSlider, SIGNAL(sliderReleased()), parent, SLOT(onSliderReleased()), type);
 }
 
+bool MusicProgressWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    Q_D(MusicProgressWidget);
+    if (d->filterSliderClick(watched, event)) {
+        return true;
+    }
+    return QObject::eventFilter(watched, event);
+}
+
+bool MusicProgressWidgetPrivate::filterSliderClick(QObject *watched, QEvent *event)
+{
+    if (QEvent::MouseButtonPress == event->type()) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+        int dur = horizontalSlider->maximum() - horizontalSlider->minimum();
+        int pos = horizontalSlider->minimum() + dur * ((double)mouseEvent->x() / horizontalSlider->width());
+        if(pos != horizontalSlider->sliderPosition()) {
+            Q_Q(MusicProgressWidget);
+            emit q->seekTo(pos);
+            horizontalSlider->setValue(pos);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 void MusicProgressWidget::onSliderPressed()
 {
 }
@@ -230,7 +265,7 @@ void MusicProgressWidget::onSliderReleased() {
     Q_D(MusicProgressWidget);
     if (d->isDragSlider) {
         d->isDragSlider = false;
-         emit seekTo(d->horizontalSlider->value());
+        emit seekTo(d->horizontalSlider->value());
     }
 }
 
@@ -256,8 +291,6 @@ void MusicProgressWidget::onActionTriggered(int action){
             emit sliderSwitchStatus(false);
         }
     }
-
-    qDebug() << "onActionTriggered action = " << action;
 }
 
 MusicProgressWidget::~MusicProgressWidget() {
@@ -269,6 +302,14 @@ void MusicProgressWidget::setProgress(qint64 currentPosition, qint64 duration)
     Q_D(MusicProgressWidget);
     d->setCurrentProgress(currentPosition, duration);
 }
+
+void MusicProgressWidget::setPrepare(bool isPrepare)
+{
+    Q_D(MusicProgressWidget);
+    d->isSwitchMode = isPrepare;
+}
+
+
 
 void MusicProgressWidgetPrivate::setCurrentProgress(qint64 currentPosition, qint64 duration)
 {
@@ -315,5 +356,6 @@ QString MusicProgressWidgetPrivate::changeDuration(qint64 msec) {
 
     return min + ":" + seconds;
 }
+
 
 

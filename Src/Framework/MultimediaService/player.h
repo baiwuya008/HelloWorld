@@ -31,12 +31,16 @@ signals:
     void onPause(int mediaType);
     void onFinish(int mediaType, bool isError);
 
+protected:
+    virtual void playFinish(int mediaType) = 0;
+
 private slots:
     void onPrepared(bool available);
     void onError(QMediaPlayer::Error error);
-    void onCompletion();
+    void onCompletion(bool isError);
     void onUpdatePosition(qint64 position);
     void onStatusChanged(QMediaPlayer::State status);
+    void onTimeout();
 
 private:
     friend class PlayerPrivate;

@@ -15,7 +15,7 @@ public:
     explicit MusicListWidget(QWidget *parent,
                              MediaUtils::MEDIA_TYPE type = MediaUtils::MUSIC_LIST);
     ~MusicListWidget();
-    void setPlayIndex(int index);
+    void refreshItem(int index);
     void setPlayNext(bool isNext);
     void updateList(int deviceType, QString &dirPath, QStringList &pathList);
 

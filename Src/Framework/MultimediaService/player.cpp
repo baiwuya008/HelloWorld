@@ -1,4 +1,5 @@
 #include "player.h"
+#include <QTimer>
 
 
 class PlayerPrivate {
@@ -19,7 +20,8 @@ public:
     QString mPath;
     int mCurrentIndex = -1;
     QMediaPlayer::State mCurrentStatus = QMediaPlayer::StoppedState;
-
+    QTimer *mQTimer = NULL;
+    bool isContinuePlay = false;
 
 private:
     Player* m_Parent;
@@ -37,7 +39,12 @@ Player::Player(QObject *parent, MultimediaType type)
 PlayerPrivate::PlayerPrivate(Player *parent, MultimediaType type)
     : m_Parent(parent)
 {
+    this->isContinuePlay = false;
     this->mPlayType = type;
+    this->mQTimer = new QTimer(m_Parent);
+    mQTimer->setSingleShot(true);//这个设置触发单次调用
+    Qt::ConnectionType connectType = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
+    QObject::connect(mQTimer, SIGNAL(timeout()), parent, SLOT(onTimeout()), connectType);
 }
 
 
@@ -47,28 +54,30 @@ void Player::play(int index, QString path)
 }
 
 void PlayerPrivate::startPlay(int index, QString path) {
-    deleteMediaPlayer();
+    isContinuePlay = true;
     mPath = path;
     mCurrentIndex = index;
-    mMediaPlayer = new QMediaPlayer;
-    connectAllSlots();
+    deleteMediaPlayer();
+    if (NULL == mMediaPlayer) {
+        mMediaPlayer = new QMediaPlayer();
+        connectAllSlots();
+    }
+
     mMediaPlayer->setMedia(QUrl::fromLocalFile(path));
     mMediaPlayer->play();
+    mQTimer->start(500);
 }
-
-
-
 
 void Player::play()
 {
-    if (m_Private->mMediaPlayer != NULL) {
+    if (m_Private->mMediaPlayer != NULL && m_Private->mCurrentStatus != QMediaPlayer::StoppedState) {
         m_Private->mMediaPlayer->play();
     }
 }
 
 void Player::pause()
 {
-    if (m_Private->mMediaPlayer != NULL) {
+    if (m_Private->mMediaPlayer != NULL && m_Private->mCurrentStatus != QMediaPlayer::StoppedState) {
         m_Private->mMediaPlayer->pause();
     }
 }
@@ -120,7 +129,7 @@ void PlayerPrivate::connectAllSlots()
 
 
 void Player::onPrepared(bool available) {
-//    qDebug() << "onPrepared available = " << available;
+    //    qDebug() << "onPrepared available = " << available;
     if (available) {
         m_Private->mCurrentStatus = QMediaPlayer::PlayingState;
         m_Private->mDuration = m_Private->mMediaPlayer->duration();
@@ -130,20 +139,29 @@ void Player::onPrepared(bool available) {
 
 
 void Player::onError(QMediaPlayer::Error error) {
-//    qDebug() << "onError -----error = " << error;
-    m_Private->mCurrentStatus = QMediaPlayer::StoppedState;
-    emit onFinish(m_Private->mPlayType, true);
+    //    qDebug() << "onError -----error = " << error;
+    onCompletion(true);
 }
 
-void Player::onCompletion() {
-//    qDebug() << "onCompletion -----";
+void Player::onCompletion(bool isError) {
+    if (!isError && (m_Private->mCurrentStatus == QMediaPlayer::StoppedState
+                     || m_Private->isContinuePlay)) {
+        return;
+    }
+
     m_Private->mCurrentStatus = QMediaPlayer::StoppedState;
-    emit onFinish(m_Private->mPlayType, false);
+    emit onFinish(m_Private->mPlayType, isError);
+    playFinish(m_Private->mPlayType);
+}
+
+void Player::onTimeout()
+{
+    m_Private->isContinuePlay = false;
 }
 
 void PlayerPrivate::switchPlayStatus(bool isPlay)
 {
-    if (NULL == mMediaPlayer) {
+    if (NULL == mMediaPlayer || QMediaPlayer::StoppedState == mCurrentStatus) {
         return;
     }
 
@@ -155,7 +173,8 @@ void PlayerPrivate::switchPlayStatus(bool isPlay)
 }
 
 void Player::onStatusChanged(QMediaPlayer::State status) {
-//    qDebug() << "onStatusChanged status = " << status;
+//    qDebug() << "onStatusChanged status = " << status
+//             << "; m_Private->mCurrentStatus = " << m_Private->mCurrentStatus;
     switch (status) {
     case QMediaPlayer::PlayingState:
         if (m_Private->mCurrentStatus != QMediaPlayer::StoppedState) {
@@ -166,12 +185,14 @@ void Player::onStatusChanged(QMediaPlayer::State status) {
         emit onPause(m_Private->mPlayType);
         break;
     case QMediaPlayer::StoppedState:
-        onCompletion();
+        onCompletion(false);
         break;
     }
 
     m_Private->mCurrentStatus = status;
 }
+
+
 
 void Player::onUpdatePosition(qint64 position) {
     emit onPositionChanged(m_Private->mPlayType, position, m_Private->mDuration);
@@ -181,7 +202,7 @@ void Player::onUpdatePosition(qint64 position) {
 void PlayerPrivate::deleteMediaPlayer()
 {
     if (mMediaPlayer != NULL) {
-        if (mMediaPlayer->isAvailable()) {
+        if (mCurrentStatus != QMediaPlayer::StoppedState) {
             mMediaPlayer->stop();
         }
         delete mMediaPlayer;
@@ -189,14 +210,11 @@ void PlayerPrivate::deleteMediaPlayer()
     }
 }
 
+
 PlayerPrivate::~PlayerPrivate()
 {
-
+    deleteMediaPlayer();
 }
-
-
-
-
 
 Player::~Player()
 {

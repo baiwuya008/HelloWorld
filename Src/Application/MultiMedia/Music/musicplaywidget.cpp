@@ -203,6 +203,7 @@ void MusicPlayWidget::updateScanFile(QString path)
     Q_D(MusicPlayWidget);
     if (d->mCurrentPlayPath.size() < 2) {
         d->updateCurrentPlay(path, 0);
+        d->mMusicProgressWidget->setPrepare(true);
     }
 }
 
@@ -258,10 +259,15 @@ void MusicPlayWidget::updatePlayInfo(const QString &filePath, const QString &tit
     d->updateCurrentInfo(title, artist, album, "");
 }
 
-void MusicPlayWidget::updatePlayFile(QString path, qint64 duration)
+void MusicPlayWidget::preparedPlay(QString path, qint64 duration)
 {
     Q_D(MusicPlayWidget);
+    d->updateCurrentInfo("", "", "", "");
     d->updateCurrentPlay(path, duration);
 }
 
-
+void MusicPlayWidget::playMusic(QString path, const qint64 duration)
+{
+     Q_D(MusicPlayWidget);
+     d->updateCurrentPlay(path, duration);
+}

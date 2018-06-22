@@ -37,6 +37,7 @@ private:
     void flipOver(bool isNext);
     void appendListView(QString path);
     void clearListView();
+    void refreshItemView(int index);
 
     MusicListItem *mDirItem = NULL;
     QListWidget *mListView = NULL;
@@ -349,13 +350,19 @@ void MusicListWidgetPrivate::clearListView()
 }
 
 
-
 void MusicListWidget::itemClick(QModelIndex index)
 {
     Q_D(MusicListWidget);
     d->onItemClick(index.row());
 }
 
+void MusicListWidget::setPlayNext(bool isNext)
+{
+    Q_D(MusicListWidget);
+    int index = d->mSelectItemIndex;
+    index = isNext ? (index+1) : (index-1);
+    d->onItemClick(index);
+}
 
 void MusicListWidgetPrivate::onItemClick(int index) {
     if (index < 0 || index >= mListItem.size()
@@ -363,31 +370,28 @@ void MusicListWidgetPrivate::onItemClick(int index) {
         return;
     }
 
+    refreshItemView(index);
+    Q_Q(MusicListWidget);
+    emit q->selectItem(mDeviceType, mListItem.at(index)->getPath(), index);
+}
+
+void MusicListWidget::refreshItem(int index)
+{
+    Q_D(MusicListWidget);
+    d->refreshItemView(index);
+}
+
+void MusicListWidgetPrivate::refreshItemView(int index)
+{
     if (mSelectItemIndex >= 0) {
         mListItem.at(mSelectItemIndex)->refreshItem(false);
     }
     mSelectItemIndex = index;
     mListItem.at(mSelectItemIndex)->refreshItem(true);
-
-
-    Q_Q(MusicListWidget);
-    emit q->selectItem(mDeviceType, mListItem.at(index)->getPath(), index);
 }
 
 
-void MusicListWidget::setPlayIndex(int index)
-{
-    Q_D(MusicListWidget);
-    d->onItemClick(index);
-}
 
-void MusicListWidget::setPlayNext(bool isNext)
-{
-    Q_D(MusicListWidget);
-    int index = d->mSelectItemIndex;
-    index = isNext ? (isNext+1) : (isNext-1);
-    d->onItemClick(index);
-}
 
 void MusicListWidget::updateList(int deviceType, QString &dirPath, QStringList &pathList)
 {
@@ -427,6 +431,8 @@ MusicListWidgetPrivate::~MusicListWidgetPrivate(){
 MusicListWidget::~MusicListWidget() {
 
 }
+
+
 
 
 

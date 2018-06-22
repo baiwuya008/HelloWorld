@@ -85,7 +85,7 @@ void MusicPrivate::setPlayItem(int deviceType, QString filePath, int index) {
 //             << "; index = " << index
 //             << "; deviceType = " << deviceType;
 
-    mMusicPlayWidget->updatePlayFile(filePath, 0);
+    mMusicPlayWidget->preparedPlay(filePath, 0);
     g_Multimedia->setPlayIndex(MediaUtils::MUSIC, deviceType, index);
 }
 
@@ -124,12 +124,11 @@ void MusicPrivate::playMusic(const int mediaType, const int index, const QString
         return;
     }
 
-
-    qDebug() << " MusicPrivate::setPlayMusic filePath = " << filePath
-             << "; duration = " << duration
-             << "; index = " << index;
-    mMusicListWidget->setPlayIndex(index);
-    mMusicPlayWidget->updatePlayFile(filePath, duration);
+//    qDebug() << " MusicPrivate::setPlayMusic filePath = " << filePath
+//             << "; duration = " << duration
+//             << "; index = " << index;
+    mMusicListWidget->refreshItem(index);
+    mMusicPlayWidget->playMusic(filePath, duration);
 }
 
 void MusicPrivate::pauseMusic(const int mediaType)
