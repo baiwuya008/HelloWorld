@@ -144,8 +144,6 @@ private:
 
     QSettings settings;
 
-
-
     //当前时间格式
     int formats;
 
@@ -154,6 +152,9 @@ private:
     QDate date;
 
     BmpButton* mBmpSetSyTime;
+
+    const int FIX_VALUES = 1;
+
 
 private slots:
     void onBtnTestRelease();
@@ -190,6 +191,19 @@ private slots:
 
     void onResetDialogOkPressed();
     void onResetDialogNoPressed();
+
+    //------------
+    void onLowSoundNumberLeft();
+    void onLowSoundNumberRight();
+
+    void onCenSoundNumberLeft();
+    void onCenSoundNumberRight();
+
+    void onHeightSoundNumberLeft();
+    void onHeightSoundNumberRight();
+
+    void onDisplayNumberLeft();
+    void onDisplayNumberRight();
 };
 
 #endif // SETTINGS_H

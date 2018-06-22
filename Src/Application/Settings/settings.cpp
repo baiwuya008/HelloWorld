@@ -159,12 +159,14 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mLowSoundLeft->setNormalBmpPath(":/img/setting/img_sound_left_a.png");
     mLowSoundLeft->setPressBmpPath(":/img/setting/img_sound_left_b.png");
     mLowSoundLeft->setGeometry(420,110,30,30);
+    connect(mLowSoundLeft,SIGNAL(released()),this,SLOT(onLowSoundNumberLeft()));
 
     //低 右
     mLowSoundRight = new BmpButton(mBmpSound);
     mLowSoundRight->setNormalBmpPath(":/img/setting/img_sound_right_a.png");
     mLowSoundRight->setPressBmpPath(":/img/setting/img_sound_right_b.png");
     mLowSoundRight->setGeometry(710,110,30,30);
+    connect(mLowSoundRight,SIGNAL(released()),this,SLOT(onLowSoundNumberRight()));
 
     //低 面
     //mLowSoundBg= new BmpWidget(mBmpSound);
@@ -197,12 +199,14 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mCenSoundLeft->setNormalBmpPath(":/img/setting/img_sound_left_a.png");
     mCenSoundLeft->setPressBmpPath(":/img/setting/img_sound_left_b.png");
     mCenSoundLeft->setGeometry(420,210,30,30);
+    connect(mCenSoundLeft,SIGNAL(released()),this,SLOT(onCenSoundNumberLeft()));
 
     //中 右
     mCenSoundRight= new BmpButton(mBmpSound);
     mCenSoundRight->setNormalBmpPath(":/img/setting/img_sound_right_a.png");
     mCenSoundRight->setPressBmpPath(":/img/setting/img_sound_right_b.png");
     mCenSoundRight->setGeometry(710,210,30,30);
+    connect(mCenSoundRight,SIGNAL(released()),this,SLOT(onCenSoundNumberRight()));
 
     //中 面
     //mCenSoundBg= new BmpWidget(mBmpSound);
@@ -235,12 +239,14 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mHeightSoundLeft->setNormalBmpPath(":/img/setting/img_sound_left_a.png");
     mHeightSoundLeft->setPressBmpPath(":/img/setting/img_sound_left_b.png");
     mHeightSoundLeft->setGeometry(420,310,30,30);
+    connect(mHeightSoundLeft,SIGNAL(released()),this,SLOT(onHeightSoundNumberLeft()));
 
     //高 右
     mHeightSoundRight= new BmpButton(mBmpSound);
     mHeightSoundRight->setNormalBmpPath(":/img/setting/img_sound_right_a.png");
     mHeightSoundRight->setPressBmpPath(":/img/setting/img_sound_right_b.png");
     mHeightSoundRight->setGeometry(710,310,30,30);
+    connect(mHeightSoundRight,SIGNAL(released()),this,SLOT(onHeightSoundNumberRight()));
 
     //高 面
     //mHeightSoundBg= new BmpWidget(mBmpSound);
@@ -284,12 +290,14 @@ void SettingsPrivate::initializeBasicWidget(QWidget *parent)
     mDisplayLeft->setNormalBmpPath(":/img/setting/img_sound_left_a.png");
     mDisplayLeft->setPressBmpPath(":/img/setting/img_sound_left_b.png");
     mDisplayLeft->setGeometry(233,300,30,30);
+    connect(mDisplayLeft,SIGNAL(released()),this,SLOT(onDisplayNumberLeft()));
 
     //亮度 右
     mDisplayRight= new BmpButton(mBmpBrightness);
     mDisplayRight->setNormalBmpPath(":/img/setting/img_sound_right_a.png");
     mDisplayRight->setPressBmpPath(":/img/setting/img_sound_right_b.png");
     mDisplayRight->setGeometry(566,300,30,30);
+    connect(mDisplayRight,SIGNAL(released()),this,SLOT(onDisplayNumberRight()));
 
     //亮度 面
     //mDisplayBg= new BmpWidget(mBmpBrightness);
@@ -844,6 +852,70 @@ void SettingsPrivate::onResetDialogNoPressed()
         mReSetBtDialog->hide();
     }
     qDebug() << "No";
+}
+
+void SettingsPrivate::onLowSoundNumberLeft()
+{
+    int values = mLowSoundSlider->value();
+    if(values > 5 && values <= 95){
+        mLowSoundSlider->setValue(values-FIX_VALUES);
+    }
+}
+
+void SettingsPrivate::onLowSoundNumberRight()
+{
+    int values = mLowSoundSlider->value();
+    if(values >= 5 && values < 95){
+        mLowSoundSlider->setValue(values+FIX_VALUES);
+    }
+}
+
+void SettingsPrivate::onCenSoundNumberLeft()
+{
+    int values = mCenSoundSlider->value();
+    if(values > 5 && values <= 95){
+        mCenSoundSlider->setValue(values-FIX_VALUES);
+    }
+}
+
+void SettingsPrivate::onCenSoundNumberRight()
+{
+    int values = mCenSoundSlider->value();
+    if(values >= 5 && values < 95){
+        mCenSoundSlider->setValue(values+FIX_VALUES);
+    }
+}
+
+void SettingsPrivate::onHeightSoundNumberLeft()
+{
+    int values = mHeightSoundSlider->value();
+    if(values > 5 && values <= 95){
+        mHeightSoundSlider->setValue(values-FIX_VALUES);
+    }
+}
+
+void SettingsPrivate::onHeightSoundNumberRight()
+{
+    int values = mHeightSoundSlider->value();
+    if(values >= 5 && values < 95){
+        mHeightSoundSlider->setValue(values+FIX_VALUES);
+    }
+}
+
+void SettingsPrivate::onDisplayNumberLeft()
+{
+    int values = mDisplaySlider->value();
+    if(values > 5 && values <= 95){
+        mDisplaySlider->setValue(values-FIX_VALUES);
+    }
+}
+
+void SettingsPrivate::onDisplayNumberRight()
+{
+    int values = mDisplaySlider->value();
+    if(values >= 5 && values < 95){
+        mDisplaySlider->setValue(values+FIX_VALUES);
+    }
 }
 
 //----------------------------------
