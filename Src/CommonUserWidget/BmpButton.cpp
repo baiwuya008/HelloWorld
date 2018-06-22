@@ -34,6 +34,9 @@ BmpButton::BmpButton(QWidget *parent)
     QPalette myPale =palette();
     myPale.setColor(QPalette::ButtonText,Qt::white);
     setPalette(myPale);
+
+    effect.setSource(QUrl::fromLocalFile(":/img/setting/keysound.wav"));
+    effect.setVolume(1.0f);
 }
 
 BmpButton::~BmpButton()
@@ -93,9 +96,9 @@ void BmpButton::setTextColor(Qt::GlobalColor color)
 }
 void BmpButton::setTextColor(const QColor &color)
 {
-   QPalette myPale =palette();
-   myPale.setColor(QPalette::ButtonText,color);
-   setPalette(myPale);
+    QPalette myPale =palette();
+    myPale.setColor(QPalette::ButtonText,color);
+    setPalette(myPale);
 }
 void BmpButton::setFontPointSize(const int pointSize)
 {
@@ -173,6 +176,9 @@ void BmpButton::mouseReleaseEvent(QMouseEvent *event)
             qDebug() << boolKeySound;
             if(boolKeySound){
                 //播放声音 lgl
+                if(!effect.isPlaying()){
+                    effect.play();
+                }
             }
             emit released();
         }

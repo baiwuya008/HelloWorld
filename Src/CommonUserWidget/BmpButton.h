@@ -4,6 +4,7 @@
 #include <QAbstractButton>
 #include <QScopedPointer>
 #include <QSettings>
+#include <QSoundEffect>
 
 class BmpButtonPrivate;
 class BmpButton : public QAbstractButton
@@ -53,6 +54,7 @@ private:
     friend class BmpButtonPrivate;
     QScopedPointer<BmpButtonPrivate> m_Private;
     QSettings settings;
+    QSoundEffect effect;
 };
 
 #endif // BMPBUTTON_H
