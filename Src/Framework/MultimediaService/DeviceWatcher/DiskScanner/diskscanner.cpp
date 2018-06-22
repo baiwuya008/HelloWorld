@@ -21,7 +21,7 @@ public:
     void startScanThread(const int mediaType, const QString &path);
     void scanLrcThread(QString filePath, QString scanDir, QString scanName);
     void scanLrc();
-    void decodeLrc(QString &path);
+    void decodeLrc(QString path);
     void handleResults(const QString &);
     void createScanThread();
     void destoryScanThread();
@@ -205,7 +205,7 @@ void DiskScannerPrivate::scanLrc()
     }
 }
 
-void DiskScannerPrivate::decodeLrc(QString &path)
+void DiskScannerPrivate::decodeLrc(QString path)
 {
     QFile file(path);
     if(file.open(QIODevice::ReadOnly)){
