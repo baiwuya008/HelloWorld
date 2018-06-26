@@ -67,11 +67,11 @@ private slots:
     void stopMusic(const int mediaType, bool isError);
     void setPlayModeMusic(const int mediaType, const int playMode);
     void updateProgressMusic(const int mediaType, const qint64 currentPosition, const qint64 duration);
-    void scanMusicFiles(int deviceType, QString dirPath, QStringList& pathList);
+    void scanMusicFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
 
 
     void setCurrentPageView(int tabIndex);
-    void setPlayItem(int deviceType, QString filePath, int index);
+    void setPlayItem(int deviceType, QString filePath);
     void setPlayStatus(bool isPlay);
     void setPlayMode(int mode);
     void setPlayIndex(bool isNext);

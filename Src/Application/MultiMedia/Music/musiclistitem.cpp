@@ -3,11 +3,12 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QDebug>
 
 
 class MusicListItemPrivate {
 public:
-    explicit MusicListItemPrivate(MusicListItem *parent, MediaUtils::MEDIA_TYPE type);
+    explicit MusicListItemPrivate(MusicListItem *parent, int type);
     ~MusicListItemPrivate();
 private:
     Q_DECLARE_PUBLIC(MusicListItem)
@@ -39,6 +40,7 @@ private:
     int mHeight = 0;
     QString mFilePath;
     QString mFileName;
+    int mMediaType;
 
     QVBoxLayout *mainLayout = NULL;
     QHBoxLayout *infoLayout = NULL;
@@ -46,11 +48,9 @@ private:
     QLabel *name = NULL;
     QLabel *line = NULL;
 
-    MediaUtils::MEDIA_TYPE mMediaType;
-
 };
 
-MusicListItem::MusicListItem(QWidget *parent, MediaUtils::MEDIA_TYPE type)
+MusicListItem::MusicListItem(QWidget *parent, int type)
     : QWidget(parent)
     , d_ptr(new MusicListItemPrivate(this, type))
 {
@@ -58,7 +58,7 @@ MusicListItem::MusicListItem(QWidget *parent, MediaUtils::MEDIA_TYPE type)
 }
 
 
-MusicListItemPrivate::MusicListItemPrivate(MusicListItem *parent, MediaUtils::MEDIA_TYPE type)
+MusicListItemPrivate::MusicListItemPrivate(MusicListItem *parent, int type)
     : q_ptr(parent)
 {
     this->mMediaType = type;
@@ -119,6 +119,7 @@ void MusicListItemPrivate::initItemView(QString title, QString iconPath, bool is
     switch (mMediaType) {
     case MediaUtils::MUSIC_LIST:
     case MediaUtils::VIDEO_LIST:
+    case MediaUtils::DIR_LIST:
         setFilePath(title);
         name->setText(mFileName);
         setIconFocus(isFocus);
@@ -151,8 +152,9 @@ void MusicListItemPrivate::setIconFocus(bool isFocus)
         }else {
             icon->setPixmap(getPixmap(":/Res/drawable/multimedia/music_list_video_icon_normal.png"));
         }
+    }else if (MediaUtils::DIR_LIST == mMediaType) {
+        icon->setPixmap(getPixmap(":/Res/drawable/multimedia/music_file_icon.png"));
     }
-
 }
 
 void MusicListItemPrivate::refreshItemView(bool isFocus)
@@ -190,26 +192,16 @@ void MusicListItemPrivate::initLabText(QLabel *text, int size)
     text->setPalette(pa);
 }
 
-
-
-
-
-
 void MusicListItem::resizeEvent(QResizeEvent *event) {
     Q_D(MusicListItem);
     d->mWidth = event->size().width();
     d->mHeight = event->size().height();
 }
 
-MusicListItem::~MusicListItem() {
-
-}
-
 void MusicListItem::initItem(QString title, QString iconPath, bool isFocus)
 {
     Q_D(MusicListItem);
     d->initItemView(title, iconPath, isFocus);
-
 }
 
 void MusicListItem::refreshItem(bool isFocus)
@@ -218,6 +210,38 @@ void MusicListItem::refreshItem(bool isFocus)
     d->refreshItemView(isFocus);
 }
 
-MusicListItemPrivate::~MusicListItemPrivate() {
+MusicListItem::~MusicListItem() {
+    if (d_ptr != NULL) {
+        d_ptr->~MusicListItemPrivate();
+    }
+}
 
+MusicListItemPrivate::~MusicListItemPrivate() {
+    if (icon != NULL) {
+        delete icon;
+        icon = NULL;
+    }
+
+    if (name != NULL) {
+        delete name;
+        name = NULL;
+    }
+
+    if (line != NULL) {
+        delete line;
+        line = NULL;
+    }
+
+    if (infoLayout != NULL) {
+        delete infoLayout;
+        infoLayout = NULL;
+    }
+
+    if (mainLayout != NULL) {
+        delete mainLayout;
+        mainLayout = NULL;
+    }
+
+    mFilePath = "";
+    mFileName = "";
 }

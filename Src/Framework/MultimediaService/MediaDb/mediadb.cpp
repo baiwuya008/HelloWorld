@@ -6,7 +6,7 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QDir>
-
+#include <QFileInfo>
 
 class MediaDbPrivate {
     Q_DISABLE_COPY(MediaDbPrivate)
@@ -14,6 +14,8 @@ public:
     explicit MediaDbPrivate(MediaDb* parent);
     ~MediaDbPrivate();
     void initialize();
+    void setFileEntity(QSqlQuery &query, MediaDbEntity *entity);
+    void setDirEntity(QSqlQuery &query, MediaDbEntity *entity);
     QSqlDatabase db;
 private:
     MediaDb* m_Parent;
@@ -30,16 +32,28 @@ private:
 void MediaDbPrivate::createTable()
 {
     QSqlQuery query(db);
-    QString table_sql = "create table if not exists scan_files_table "
-                        "(id int primary key, deviceType int, mediaType int, filePath text not null unique,"
-                        " fileName varchar(20), name varchar(20), dirPath text not null,"
-                        " dirName varchar(20), suffix varchar(6), modifiedTime int,"
-                        " scanTime int)";
-    bool result = query.prepare(table_sql);
-    qDebug() << "MediaDbPrivate::createTable prepare result = "<< result;
+    QString table_files_sql = "create table if not exists scan_files_table "
+                              "(id INTEGER PRIMARY KEY AUTOINCREMENT, deviceType int, mediaType int, filePath text not null unique,"
+                              " fileName varchar(20), name varchar(20), dirPath text not null,"
+                              " dirName varchar(20), suffix varchar(6), modifiedTime int,"
+                              " scanTime int)";
+    bool result = query.prepare(table_files_sql);
+    qDebug() << "MediaDbPrivate::createTable table_files_sql prepare result = "<< result;
     result = query.exec();
     if (!result) {
-        qDebug() << "MediaDbPrivate::createTable lastError = " << query.lastError();
+        qDebug() << "MediaDbPrivate::createTable table_files_sql lastError = " << query.lastError();
+    }
+
+
+    QString table_dirs_sql = "create table if not exists scan_dirs_table "
+                             "(id INTEGER PRIMARY KEY AUTOINCREMENT, deviceType int, mediaType int, dirPath text not null,"
+                             " parentPath text not null, dirName varchar(20), modifiedTime int, scanTime int,"
+                             " UNIQUE (deviceType, mediaType, dirPath) ON CONFLICT IGNORE )";
+    result = query.prepare(table_dirs_sql);
+    qDebug() << "MediaDbPrivate::createTable table_dirs_sql prepare result = "<< result;
+    result = query.exec();
+    if (!result) {
+        qDebug() << "MediaDbPrivate::createTable table_dirs_sql lastError = " << query.lastError();
     }
 }
 
@@ -53,15 +67,17 @@ void MediaDb::deleteAll()
 {
     QSqlQuery query(m_Private->db);
     query.exec("delete from scan_files_table");
+    query.exec("delete from scan_dirs_table");
 }
 
 void MediaDb::deleteData(int deviceType)
 {
     QSqlQuery query(m_Private->db);
     query.exec("delete from scan_files_table where deviceType = "+QString::number(deviceType));
+    query.exec("delete from scan_dirs_table where deviceType = "+QString::number(deviceType));
 }
 
-void MediaDb::insert(int deviceType, int mediaType, QFileInfo file)
+void MediaDb::insertFile(int deviceType, int mediaType, QFileInfo file)
 {
     QSqlQuery query(m_Private->db);
     query.prepare("INSERT INTO scan_files_table (deviceType, mediaType, filePath, fileName, "
@@ -81,7 +97,48 @@ void MediaDb::insert(int deviceType, int mediaType, QFileInfo file)
     query.exec();
 }
 
-MediaDbEntity* MediaDb::query(QString filePath) {
+void MediaDb::insertDir(int deviceType, int mediaType, QFileInfo file)
+{
+    if (isDirExist(deviceType, mediaType, file.dir().absolutePath())) {
+        return;
+    }
+
+    QSqlQuery query(m_Private->db);
+    query.prepare("INSERT INTO scan_dirs_table (deviceType, mediaType, dirPath, dirName, "
+                  "modifiedTime, scanTime, parentPath) "
+                  "VALUES (?, ?, ?, ?, ?, ?, ?)");
+
+    query.addBindValue(deviceType);
+    query.addBindValue(mediaType);
+    query.addBindValue(file.dir().absolutePath());
+    query.addBindValue(file.dir().dirName());
+    query.addBindValue(file.lastModified().toTime_t());
+    query.addBindValue(QDateTime::currentMSecsSinceEpoch()/1000);
+
+    QFileInfo dir(file.dir().absolutePath());
+    query.addBindValue(dir.dir().absolutePath());
+
+    query.exec();
+}
+
+bool MediaDb::isDirExist(int deviceType, int mediaType, QString dirPath)
+{
+    QSqlQuery query(m_Private->db);
+    QString select = "SELECT * FROM scan_dirs_table where dirPath = '" + dirPath + "'"
+            +" and deviceType = " + QString::number(deviceType)
+            +" and mediaType = " + QString::number(mediaType);
+    if (query.exec(select)) {
+        while (query.next()) {
+            return true;
+        }
+    }else {
+        qDebug() << "MediaDb::queryData lastError = " << query.lastError();
+    }
+
+    return false;
+}
+
+MediaDbEntity* MediaDb::queryFile(QString filePath) {
     QSqlQuery query(m_Private->db);
     //    QString select = "SELECT * FROM scan_files_table where filePath = "+filePath;
     QString select = "SELECT * FROM scan_files_table where fileName = '" + filePath + "'";
@@ -90,17 +147,7 @@ MediaDbEntity* MediaDb::query(QString filePath) {
     if (query.exec(select)) {
         while (query.next()) {
             entity = new MediaDbEntity();
-            entity->id = query.value(0).toInt();
-            entity->deviceType = query.value(1).toInt();
-            entity->mediaType = query.value(2).toInt();
-            entity->filePath = query.value(3).toString();
-            entity->fileName = query.value(4).toString();
-            entity->name = query.value(5).toString();
-            entity->dirPath = query.value(6).toString();
-            entity->dirName = query.value(7).toString();
-            entity->suffix = query.value(8).toString();
-            entity->modifiedTime = query.value(9).toInt();
-            entity->scanTime = query.value(10).toInt();
+            m_Private->setFileEntity(query, entity);
             break;
         }
     }else {
@@ -110,6 +157,77 @@ MediaDbEntity* MediaDb::query(QString filePath) {
     //    query.clear();
     //    query.finish();
     return entity;
+}
+
+QList<MediaDbEntity*> MediaDb::queryFiles(int deviceType, int mediaType, QString dirPath)
+{
+    QSqlQuery query(m_Private->db);
+    QList<MediaDbEntity*> list;
+    QString select = "SELECT * FROM scan_files_table where dirPath = '" + dirPath + "'"
+            + " and deviceType = " + QString::number(deviceType)
+            + " and mediaType = " + QString::number(mediaType);
+
+    MediaDbEntity *entity = NULL;
+    if (query.exec(select)) {
+        while (query.next()) {
+            entity = new MediaDbEntity();
+            m_Private->setFileEntity(query, entity);
+            list.append(entity);
+        }
+    }else {
+        qDebug() << "MediaDb::queryFiles list lastError = " << query.lastError();
+    }
+
+    return list;
+}
+
+QList<MediaDbEntity *> MediaDb::queryDirs(int deviceType, int mediaType, QString parentPath)
+{
+    QSqlQuery query(m_Private->db);
+    QList<MediaDbEntity*> list;
+
+    QString select = "SELECT * FROM scan_dirs_table where parentPath = '" + parentPath + "'"
+            + " and deviceType = " + QString::number(deviceType)
+            + " and mediaType = " + QString::number(mediaType);
+
+    MediaDbEntity *entity = NULL;
+    if (query.exec(select)) {
+        while (query.next()) {
+            entity = new MediaDbEntity();
+            m_Private->setDirEntity(query, entity);
+            list.append(entity);
+        }
+    }else {
+        qDebug() << "MediaDb::queryDirs list lastError = " << query.lastError();
+    }
+
+    return list;
+}
+
+
+void MediaDbPrivate::setDirEntity(QSqlQuery &query, MediaDbEntity *entity)
+{
+    entity->deviceType = query.value(1).toInt();
+    entity->mediaType = query.value(2).toInt();
+    entity->dirPath = query.value(3).toString();
+    entity->parentPath = query.value(4).toString();
+    entity->dirName = query.value(5).toString();
+    entity->modifiedTime = query.value(6).toInt();
+    entity->scanTime = query.value(7).toInt();
+}
+
+void MediaDbPrivate::setFileEntity(QSqlQuery &query, MediaDbEntity *entity)
+{
+    entity->deviceType = query.value(1).toInt();
+    entity->mediaType = query.value(2).toInt();
+    entity->filePath = query.value(3).toString();
+    entity->fileName = query.value(4).toString();
+    entity->name = query.value(5).toString();
+    entity->dirPath = query.value(6).toString();
+    entity->dirName = query.value(7).toString();
+    entity->suffix = query.value(8).toString();
+    entity->modifiedTime = query.value(9).toInt();
+    entity->scanTime = query.value(10).toInt();
 }
 
 void MediaDb::queryAll(int deviceType) {
@@ -136,6 +254,8 @@ void MediaDb::updateData() {
     bool result = query.exec();
     qDebug() << "updateData result = "<< result;
 }
+
+
 
 void MediaDb::deleteData(QString filePath)
 {
@@ -180,6 +300,10 @@ void MediaDbPrivate::initialize()
 {
     createDb();
 }
+
+
+
+
 
 void MediaDbPrivate::createDb()
 {

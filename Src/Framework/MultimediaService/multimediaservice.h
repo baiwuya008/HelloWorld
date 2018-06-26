@@ -28,7 +28,7 @@ signals:
 
 public slots://提供给外部界面操作的接口
     void setPlayDeviceType(const int deviceType, const int mediaType);
-    void setPlayIndex(const int mediaType, const int deviceType, const int index);
+    void setPlayPath(const int mediaType, const int deviceType, QString filePath);
     void setPlayStatus(const int mediaType, const bool isPlay);
     void seekTo(const int mediaType, const int progress);
     qint64 getCurrentPosition(const int mediaType);
@@ -37,9 +37,11 @@ public slots://提供给外部界面操作的接口
     void setPlayMode(const int mediaType, const int playMode);
     int getPlayMode(const int mediaType);
     void exitPlayer(const int mediaType);
+    QString queyMediaFiles(int deviceType, int mediaType, int queryMode, QString dirPath);
+
 
 private slots:
-    void onScanFilesFinish(int deviceType, int mediaType, QString dirPath);
+    void onScanFilesFinish(int deviceType, int mediaType, int queryMode, QString dirPath);
     void onStartScanFiles(int deviceType, int mediaType);
     void onScanLrc(int deviceType, QString filePath);
 

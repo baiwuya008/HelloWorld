@@ -1,6 +1,6 @@
 #include "player.h"
 #include <QTimer>
-
+#include "Src/Framework/MultimediaService/multimediautils.h"
 
 class PlayerPrivate {
     Q_DISABLE_COPY(PlayerPrivate)
@@ -63,7 +63,7 @@ void PlayerPrivate::startPlay(int index, QString path) {
         connectAllSlots();
     }
 
-    mMediaPlayer->setMedia(QUrl::fromLocalFile(path));
+    mMediaPlayer->setMedia(QUrl::fromLocalFile(MultimediaUtils::changeWindowsPath(path)));
     mMediaPlayer->play();
     mQTimer->start(500);
 }

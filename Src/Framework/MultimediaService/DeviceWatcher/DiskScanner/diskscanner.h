@@ -16,7 +16,7 @@ public:
 
     void setScannerSuffixMap(const QMap<int, QStringList> &mapList);
     void setMinimumScanTime(const int msec);
-    void startScanner(const int mediaType, const QString &path);
+    void startScanner(int mediaType, QString dirPath);
     void stopScanner();
     void scanLrc(QString filePath, QString scanDir, QString scanName);
     void setDeviceType(int deviceType);

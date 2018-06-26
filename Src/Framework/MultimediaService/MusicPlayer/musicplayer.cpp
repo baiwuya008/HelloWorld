@@ -11,11 +11,14 @@ public:
     ~MusicPlayerPrivate();
     void initialize();
     void continuePlay(int count);
+    int computePathIndex(QString path);
+    void playPath(int deviceType, int index);
 
     QStringList* mUsbPathList = NULL;
     int mDeviceType = MultimediaUtils::DWT_Undefined;
     int mPlayMode = MultimediaUtils::LOOP;
     int mCurrentIndex = -1;
+    int mCurrentScanStatus = -1;
 
 private:
     MusicPlayer *m_Parent;
@@ -96,20 +99,49 @@ void MusicPlayerPrivate::continuePlay(int count)
     }
 
     if (isPlay) {
-        m_Parent->startPlay(mDeviceType, mCurrentIndex);
+        playPath(mDeviceType, mCurrentIndex);
     }
 }
 
-void MusicPlayer::startPlay(int deviceType, int index)
+int MusicPlayerPrivate::computePathIndex(QString path)
+{
+    int size = mUsbPathList->size();
+    QString info;
+    for (int i = 0; i < size; i++) {
+        info = mUsbPathList->at(i);
+        if (!info.compare(path)) {
+            return i;
+        }
+    }
+}
+
+void MusicPlayerPrivate::playPath(int deviceType, int index)
 {
     switch (deviceType) {
     case MultimediaUtils::DWT_Undefined:
         break;
     case MultimediaUtils::DWT_USBDisk:
+        if (index >= 0 && index < mUsbPathList->size()) {
+            m_Parent->startPlay(deviceType, mUsbPathList->at(index));
+        }
+        break;
+    case MultimediaUtils::DWT_SDDisk:
+        break;
+    }
+}
+
+void MusicPlayer::startPlay(int deviceType, QString path)
+{
+    int index = -1;
+    switch (deviceType) {
+    case MultimediaUtils::DWT_Undefined:
+        break;
+    case MultimediaUtils::DWT_USBDisk:
+        index = m_Private->computePathIndex(path);
         if (index >= 0 && index < m_Private->mUsbPathList->size()) {
             m_Private->mCurrentIndex = index;
-            play(index, m_Private->mUsbPathList->at(index));
-            emit requestLrc(m_Private->mDeviceType, m_Private->mUsbPathList->at(index));
+            play(index, path);
+            emit requestLrc(m_Private->mDeviceType, path);
         }
         break;
     case MultimediaUtils::DWT_SDDisk:
@@ -134,15 +166,6 @@ QString MusicPlayer::getPlayPath(int deviceType, int index)
     return "";
 }
 
-bool MusicPlayer::isNullData()
-{
-    if (m_Private->mUsbPathList->size() < 1) {
-        return true;
-    }
-
-    return false;
-}
-
 void MusicPlayer::setDeviceType(int deviceType)
 {
     m_Private->mDeviceType = deviceType;
@@ -156,6 +179,16 @@ int MusicPlayer::getMode()
 void MusicPlayer::setMode(int mode)
 {
     m_Private->mPlayMode = mode;
+}
+
+int MusicPlayer::getScanStatus()
+{
+    return m_Private->mCurrentScanStatus;
+}
+
+void MusicPlayer::setScanStatus(int status)
+{
+    m_Private->mCurrentScanStatus = status;
 }
 
 QStringList* MusicPlayer::getPathList(int deviceType)
@@ -193,7 +226,6 @@ MusicPlayerPrivate::~MusicPlayerPrivate()
         mUsbPathList = NULL;
     }
 }
-
 
 MusicPlayer::~MusicPlayer() {
 

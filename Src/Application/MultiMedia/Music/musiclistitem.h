@@ -13,8 +13,7 @@ class MusicListItem : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MusicListItem(QWidget *parent = NULL,
-                           MediaUtils::MEDIA_TYPE type = MediaUtils::MUSIC);
+    explicit MusicListItem(QWidget *parent = NULL, int type = MediaUtils::MUSIC);
     ~MusicListItem();
     void initItem(QString title, QString iconPath = "", bool isFocus = false);
     void refreshItem(bool isFocus);

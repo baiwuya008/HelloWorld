@@ -2,6 +2,8 @@
 #define MULTIMEDIAUTILS_H
 
 #include <QString>
+#include <QStringList>
+#include <qDebug>
 
 class MultimediaUtils
 {
@@ -15,7 +17,8 @@ public:
         BT_MUSIC = 3, //播放蓝牙音乐
         MUSIC_LIST = 4, //音乐文件列表
         VIDEO_LIST = 5,  //视频文件列表
-        IMAGE = 6       //图片
+        IMAGE = 6,       //图片
+        DIR_LIST         //文件夹列表
     } MultimediaType;
 #define MultimediaType int
 
@@ -35,8 +38,23 @@ public:
     } PLAY_MODE;
 #define PLAY_MODE int
 
+    typedef enum {
+        SCAN_Undefined = -1,
+        SCAN_Busy = 1,
+        SCAN_Finish = 2,
+    } SCAN_STATUS;
+#define SCAN_STATUS int
+
+    typedef enum {
+        QUERY_All_Files = 1, //查询所有文件
+        QUERY_Main_Dir = 2, //查询主文件夹
+        QUERY_Current_Dir = 3,//查询当前文件夹
+    } QUERY_MODE;
+#define QUERY_MODE int
+
 public:
     static QString getLastToName(QString path);
+    static QString changeWindowsPath(QString filePath);
 };
 
 #endif // MULTIMEDIAUTILS_H

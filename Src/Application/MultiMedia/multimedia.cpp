@@ -73,8 +73,9 @@ void Multimedia::readFilesPathXml(QString xml)
 
     int deviceType = root.attribute("DeviceType").toInt();
     int mediaType = root.attribute("MediaType").toInt();
+    int queryMode = root.attribute("QueryMode").toInt();
     QString dirPath = root.attribute("dirPath");
-    if (-1 == deviceType || -1 == mediaType) {
+    if (-1 == deviceType || -1 == mediaType || -1 == queryMode) {
         return;
     }
 
@@ -91,13 +92,13 @@ void Multimedia::readFilesPathXml(QString xml)
 
     switch (mediaType) {
     case MediaUtils::MUSIC:
-        emit onScanMusicFiles(deviceType, dirPath, pathList);
+        emit onScanMusicFiles(deviceType, queryMode, dirPath, pathList);
         break;
     case MediaUtils::VIDEO:
-        emit onScanVideoFiles(deviceType, dirPath, pathList);
+        emit onScanVideoFiles(deviceType, queryMode, dirPath, pathList);
         break;
     case MediaUtils::IMAGE:
-        emit onScanImageFiles(deviceType, dirPath, pathList);
+        emit onScanImageFiles(deviceType, queryMode, dirPath, pathList);
         break;
     }
 }
@@ -117,9 +118,9 @@ int Multimedia::getPlayMode(const int mediaType)
     return m_Private->mMultimediaService->getPlayMode(mediaType);
 }
 
-void Multimedia::setPlayIndex(const int mediaType, const int deviceType, const int index)
+void Multimedia::setPlayPath(const int mediaType, const int deviceType, QString filePath)
 {
-    return m_Private->mMultimediaService->setPlayIndex(mediaType, deviceType, index);
+    m_Private->mMultimediaService->setPlayPath(mediaType, deviceType, filePath);
 }
 
 void Multimedia::seekTo(const int mediaType, const int progress)
@@ -140,6 +141,11 @@ qint64 Multimedia::getDuration(const int mediaType)
 bool Multimedia::isPlaying(const int mediaType)
 {
     return m_Private->mMultimediaService->isPlaying(mediaType);
+}
+
+void Multimedia::queryMediaFiles(int deviceType, int mediaType, int queryMode, QString dirPath)
+{
+    m_Private->mMultimediaService->queyMediaFiles(deviceType, mediaType, queryMode, dirPath);
 }
 
 void Multimedia::exitPlayer(const int mediaType)

@@ -15,12 +15,14 @@ public:
 
     QStringList* getPathList(int deviceType);
     void clearPathList(int deviceType);
-    void startPlay(int deviceType, int index);
+    void startPlay(int deviceType, QString path);
     QString getPlayPath(int deviceType, int index);
-    bool isNullData();
     void setDeviceType(int deviceType);
     int getMode();
     void setMode(int mode);
+    int getScanStatus();
+    void setScanStatus(int status);
+
 
 signals:
     void requestLrc(int deviceType, QString filePath);

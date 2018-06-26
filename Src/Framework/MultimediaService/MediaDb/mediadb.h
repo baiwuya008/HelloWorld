@@ -23,10 +23,14 @@ public:
     void deleteAll();
     void deleteData(QString filePath);
     void deleteData(int deviceType);
-    void insert(int deviceType, int mediaType, QFileInfo file);
-    MediaDbEntity* query(QString filePath);
+    void insertFile(int deviceType, int mediaType, QFileInfo file);
+    void insertDir(int deviceType, int mediaType, QFileInfo file);
+    bool isDirExist(int deviceType, int mediaType, QString dirPath);
+    MediaDbEntity* queryFile(QString filePath);
     void queryAll(int deviceType);
     void updateData();
+    QList<MediaDbEntity*> queryFiles(int deviceType, int mediaType, QString dirPath);
+     QList<MediaDbEntity*> queryDirs(int deviceType, int mediaType, QString parentPath);
 
 
 signals:

@@ -8,7 +8,6 @@ class MediaDbEntity
 public:
     MediaDbEntity();
     ~MediaDbEntity();
-    int id;
     int deviceType;
     int mediaType;
     QString filePath;
@@ -19,6 +18,7 @@ public:
     QString suffix;
     int modifiedTime;
     int scanTime;
+    QString parentPath;
 
 };
 

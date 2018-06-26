@@ -12,15 +12,16 @@ class MusicListWidget : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY(MusicListWidget)
 public:
-    explicit MusicListWidget(QWidget *parent,
-                             MediaUtils::MEDIA_TYPE type = MediaUtils::MUSIC_LIST);
+    explicit MusicListWidget(QWidget *parent, int type = MediaUtils::MUSIC_LIST);
     ~MusicListWidget();
     void refreshItem(int index);
     void setPlayNext(bool isNext);
-    void updateList(int deviceType, QString &dirPath, QStringList &pathList);
+    void updateList(int deviceType, int queryMode, QString &dirPath, QStringList &pathList);
+    void showAllList();
 
 signals:
-    void selectItem(int deviceType, QString path, int index);
+    void selectItem(int deviceType, QString path);
+    void queryFiles(int deviceType, int mediaType, int queryMode, QString dirPath);
 
 public slots:
 private slots:
