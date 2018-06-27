@@ -2,6 +2,9 @@
 #define MEDIAUTILS_H
 
 #include <QString>
+#include <QLabel>
+#include <QWidget>
+#include <QFileInfo>
 
 class MediaUtils
 {
@@ -39,9 +42,33 @@ public:
     };
 
 public:
-    static QString getLastToName(QString path);
-    static QString getUpperPath(QString path);
+    static inline QString getLastToName(QString path) {
+         return path.mid(path.lastIndexOf('/')+1);
+    }
+    static inline QString getUpperPath(QString path) {
+         return path.left(path.lastIndexOf('/'));
+    }
+
     static bool isDirPath(QString path);
+    static void setLabText(QWidget *text, int size);
+    static void setWidgetBackground(QWidget *widget, QString path);
+
+    static inline QPixmap getPixmap(QString path) {
+        QImage image;
+        image.load(path);
+        return QPixmap::fromImage(image);
+    }
+    static inline QPixmap getPixmap(QString path, int width, int height) {
+        QImage image;
+        image.load(path);
+        return QPixmap::fromImage(image.scaled(QSize(width, height),
+                                               Qt::KeepAspectRatio,Qt::SmoothTransformation));
+    }
+    static inline QPixmap getPixmap(QString path, QSize size) {
+        QImage image;
+        image.load(path);
+        return  QPixmap::fromImage(image.scaled(size));
+    }
 };
 
 #endif // MEDIAUTILS_H

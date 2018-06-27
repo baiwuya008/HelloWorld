@@ -2,6 +2,7 @@
 #define LAUNCHER_H
 #include "Src/Framework/Base/Core/activity.h"
 #include "Src/Application/MultiMedia/Tools/mediatoolswidget.h"
+#include "Src/Application/MultiMedia/multimedia.h"
 #include "viewpagerwidget.h"
 #include <QList>
 #include <QLabel>
@@ -45,22 +46,15 @@ public:
 private slots:
     void setCurrentPageView(int tabIndex);
     void onItemClick(int index);
+    void setCurrentViewPager(int index);
 
 private:
     Q_DECLARE_PUBLIC(Launcher)
     Launcher* const q_ptr;
 
-    void setWidgetBackground(QWidget *widget, QString path);
     void initializeToolsWidget(QWidget *parent);
     void initializeViewPager(QWidget *parent);
     void initializeViewPagerPoint(QWidget *parent, int number);
-    void setCurrentViewPager(int index);
-
-    inline QPixmap getPixmap(QString path) {
-        QImage image;
-        image.load(path);
-        return QPixmap::fromImage(image);
-    }
 
 
     MediaToolsWidget *mMediaToolsWidget = NULL;

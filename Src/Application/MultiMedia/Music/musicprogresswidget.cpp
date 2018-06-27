@@ -22,7 +22,6 @@ private:
     MusicProgressWidget* const q_ptr;
     void initializeBasicWidget(QWidget *parent);
     void initializeSlider(QWidget *parent);
-    void initLabText(QLabel *text);
     void switchSliderMode();
     void switchPlayMode();
     void switchPlayModeView();
@@ -64,11 +63,9 @@ void MusicProgressWidgetPrivate::initializeBasicWidget(QWidget *parent) {
     mainLayout->setContentsMargins(0, 0, 0, 0);
     parent->setLayout(mainLayout);
 
-
-
     startTimeLabel = new QLabel(parent);
     startTimeLabel->setText("00:00");
-    initLabText(startTimeLabel);
+    MediaUtils::setLabText(startTimeLabel, 15);
     startTimeLabel->setFixedSize(QSize(55, 15));
     mainLayout->addWidget(startTimeLabel, Qt::AlignVCenter);
 
@@ -77,7 +74,7 @@ void MusicProgressWidgetPrivate::initializeBasicWidget(QWidget *parent) {
 
     endTimeLabel = new QLabel(parent);
     endTimeLabel->setText("00:00/00:00");
-    initLabText(endTimeLabel);
+    MediaUtils::setLabText(endTimeLabel, 15);
     mainLayout->addWidget(endTimeLabel, Qt::AlignVCenter);
     endTimeLabel->setContentsMargins(5, 0, 0, 0);
 
@@ -90,8 +87,6 @@ void MusicProgressWidgetPrivate::initializeBasicWidget(QWidget *parent) {
     modeBtn->setGeometry(680, 8, 0, 0);
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
     QObject::connect(modeBtn, SIGNAL(released()), parent, SLOT(onClick()), type);
-
-
 
     switchSliderMode();
 }
@@ -178,17 +173,6 @@ void MusicProgressWidgetPrivate::switchSliderMode() {
         break;
     }
 
-}
-
-void MusicProgressWidgetPrivate::initLabText(QLabel *text) {
-    //设置字号
-    QFont ft("Microsoft YaHei");
-    ft.setPointSize(15);
-    text->setFont(ft);
-    //设置颜色
-    QPalette pa;
-    pa.setColor(QPalette::WindowText,Qt::white);
-    text->setPalette(pa);
 }
 
 void MusicProgressWidgetPrivate::initializeSlider(QWidget *parent) {

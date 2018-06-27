@@ -7,17 +7,6 @@ LauncherPrivate::LauncherPrivate(Launcher *parent)
 {
 }
 
-void LauncherPrivate::setWidgetBackground(QWidget *widget, QString path) {
-    //设置背景图片
-    widget->setAutoFillBackground(true); // 这句要加上, 否则可能显示不出背景图.
-    QPalette palette = widget->palette();
-    palette.setBrush(QPalette::Window,
-                     QBrush(QPixmap(path).scaled(widget->size(),
-                                                 Qt::IgnoreAspectRatio,
-                                                 Qt::SmoothTransformation)));
-    widget->setPalette(palette);
-}
-
 void LauncherPrivate::initializeToolsWidget(QWidget *parent)
 {
     QList<QString> list;
@@ -29,7 +18,7 @@ void LauncherPrivate::initializeToolsWidget(QWidget *parent)
 void LauncherPrivate::initializeBasicWidget(QWidget *parent)
 {
     parent->setFixedSize(QSize(800, 435));
-    setWidgetBackground(parent, ":/img/Common/img_wap_bg.png");
+    MediaUtils::setWidgetBackground(parent, ":/img/Common/img_wap_bg.png");
     initializeToolsWidget(parent);
 
     initializeViewPager(parent);

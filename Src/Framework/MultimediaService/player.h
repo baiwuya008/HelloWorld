@@ -23,6 +23,7 @@ public:
     qint64 getDuration();
     bool isPlaying();
     void setPlayStatus(bool isPlay);
+    void setVideoWidget(QVideoWidget *videoWidget);
 
 signals:
     void onPositionChanged(int mediaType, qint64 position, qint64 duration);
@@ -30,9 +31,6 @@ signals:
     void onResume(int mediaType);
     void onPause(int mediaType);
     void onFinish(int mediaType, bool isError);
-
-protected:
-    virtual void playFinish(int mediaType) = 0;
 
 private slots:
     void onPrepared(bool available);

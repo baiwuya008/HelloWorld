@@ -33,7 +33,6 @@ private:
     void initializeDirView(QWidget *parent);
     void initializeClickView(QWidget *parent);
     void initializeListView(QWidget *parent);
-    void setTextSize(QWidget *text);
     void addItemList();
     void flipOver(bool isNext);
     void flipOverIndex(int moveIndex);
@@ -123,7 +122,7 @@ void MusicListWidgetPrivate::initializeClickView(QWidget *parent) {
 
     BmpButton *mainDirBtn = new BmpButton(mClickListWidget);
     mainDirBtn->setFixedSize(QSize(200, 60));
-    setTextSize(mainDirBtn);
+    MediaUtils::setLabText(mainDirBtn, 18);
     mainDirBtn->setText(QString::fromLocal8Bit("主文件夹"));
     mainDirBtn->setNormalBmpPath(":/Res/drawable/multimedia/music_list_click_normal.png");
     mainDirBtn->setPressBmpPath(":/Res/drawable/multimedia/music_list_click_focus.png");
@@ -131,7 +130,7 @@ void MusicListWidgetPrivate::initializeClickView(QWidget *parent) {
 
     BmpButton *upDirBtn = new BmpButton(mClickListWidget);
     upDirBtn->setFixedSize(QSize(200, 60));
-    setTextSize(upDirBtn);
+    MediaUtils::setLabText(upDirBtn, 18);
     upDirBtn->setText(QString::fromLocal8Bit("上一文件夹"));
     upDirBtn->setNormalBmpPath(":/Res/drawable/multimedia/music_list_click_normal.png");
     upDirBtn->setPressBmpPath(":/Res/drawable/multimedia/music_list_click_focus.png");
@@ -534,22 +533,6 @@ void MusicListWidget::updateList(int deviceType, int queryMode, QString &dirPath
 
     d->computeItemIndex();
 }
-
-
-
-void MusicListWidgetPrivate::setTextSize(QWidget *text) {
-    //设置字号
-    QFont ft("Microsoft YaHei");
-    ft.setPointSize(18);
-    text->setFont(ft);
-
-    //设置颜色
-    QPalette pa;
-    pa.setColor(QPalette::WindowText,Qt::white);
-    text->setPalette(pa);
-}
-
-
 
 
 MusicListWidgetPrivate::~MusicListWidgetPrivate(){

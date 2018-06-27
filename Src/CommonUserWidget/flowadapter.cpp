@@ -43,6 +43,15 @@ void FlowAdapter::notifyDataSetChanged() {
     emit notifyData();
 }
 
+void FlowAdapter::setCenterPosition(int position)
+{
+    if (position >= 0 && position < getTotalLength()) {
+        this->mCenterPosition = position;
+        this->mSelectionPosition = position;
+        notifyDataSetChanged();
+    }
+}
+
 int FlowAdapter::getCenterPosition() {
     return this->mCenterPosition;
 }

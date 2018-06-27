@@ -1,6 +1,7 @@
 #include "mediatoolswidget.h"
 #include <QDebug>
 #include <QPushButton>
+#include "Src/Application/MultiMedia/multimedia.h"
 
 class MediaToolsWidgetPrivate {
     Q_DISABLE_COPY(MediaToolsWidgetPrivate)
@@ -11,8 +12,6 @@ private slots:
 private:
     Q_DECLARE_PUBLIC(MediaToolsWidget)
     MediaToolsWidget* const q_ptr;
-    void setWidgetBackground(QWidget *widget, QString path);
-    void initText(QPushButton *text);
     void setBtnStyleSheet(QPushButton *text, bool isFocus);
     QList<QPushButton *> mBtnList;
     int mCurrentIndex = 0;
@@ -31,7 +30,7 @@ MediaToolsWidgetPrivate::MediaToolsWidgetPrivate(MediaToolsWidget *parent, QList
     : q_ptr(parent)
 {
     parent->setFixedSize(QSize(800, 50));
-    setWidgetBackground(parent, ":/Res/drawable/multimedia/main_second_line.png");
+    MediaUtils::setWidgetBackground(parent, ":/Res/drawable/multimedia/main_second_line.png");
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
     mCurrentIndex = 0;
 
@@ -52,7 +51,7 @@ MediaToolsWidgetPrivate::MediaToolsWidgetPrivate(MediaToolsWidget *parent, QList
             setBtnStyleSheet(btn, false);
         }
 
-        initText(btn);
+        MediaUtils::setLabText(btn, 18);
         btn->setGeometry(left, 0, 0, 0);
         QObject::connect(btn, SIGNAL(clicked(bool)), parent, SLOT(onClick(bool)), type);
 
@@ -111,25 +110,6 @@ void MediaToolsWidgetPrivate::setBtnStyleSheet(QPushButton *btn, bool isFocus)
 
 }
 
-
-void MediaToolsWidgetPrivate::initText(QPushButton *text) {
-    //设置字号
-    QFont ft("Microsoft YaHei");
-    ft.setPointSize(18);
-    text->setFont(ft);
-}
-
-
-void MediaToolsWidgetPrivate::setWidgetBackground(QWidget *widget, QString path) {
-    //设置背景图片
-    widget->setAutoFillBackground(true); // 这句要加上, 否则可能显示不出背景图.
-    QPalette palette = widget->palette();
-    palette.setBrush(QPalette::Window,
-                     QBrush(QPixmap(path).scaled(widget->size(),
-                                                 Qt::IgnoreAspectRatio,
-                                                 Qt::SmoothTransformation)));
-    widget->setPalette(palette);
-}
 
 MediaToolsWidget::~MediaToolsWidget()
 {

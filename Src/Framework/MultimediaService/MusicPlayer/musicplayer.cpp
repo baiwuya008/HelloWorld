@@ -11,7 +11,7 @@ public:
     ~MusicPlayerPrivate();
     void initialize();
     void continuePlay(int count);
-    int computePathIndex(QString path);
+    int computePathIndex(QStringList *list, QString path);
     void playPath(int deviceType, int index);
 
     QStringList* mUsbPathList = NULL;
@@ -41,9 +41,9 @@ MusicPlayerPrivate::MusicPlayerPrivate(MusicPlayer *parent)
 
 void MusicPlayerPrivate::initialize() {
     mUsbPathList = new QStringList();
+    Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
+    QObject::connect(m_Parent, SIGNAL(onFinish(int,bool)), m_Parent, SLOT(playFinish(int,bool)), type);
 }
-
-
 
 void MusicPlayer::scanMusicFilePath(int deviceType, const QString &filePath)
 {
@@ -58,7 +58,7 @@ void MusicPlayer::scanMusicFilePath(int deviceType, const QString &filePath)
     }
 }
 
-void MusicPlayer::playFinish(int mediaType)
+void MusicPlayer::playFinish(int mediaType, bool isError)
 {
     if (MultimediaUtils::MUSIC == mediaType) {
         switch (m_Private->mDeviceType) {
@@ -103,12 +103,12 @@ void MusicPlayerPrivate::continuePlay(int count)
     }
 }
 
-int MusicPlayerPrivate::computePathIndex(QString path)
+int MusicPlayerPrivate::computePathIndex(QStringList *list, QString path)
 {
-    int size = mUsbPathList->size();
+    int size = list->size();
     QString info;
     for (int i = 0; i < size; i++) {
-        info = mUsbPathList->at(i);
+        info = list->at(i);
         if (!info.compare(path)) {
             return i;
         }
@@ -137,7 +137,7 @@ void MusicPlayer::startPlay(int deviceType, QString path)
     case MultimediaUtils::DWT_Undefined:
         break;
     case MultimediaUtils::DWT_USBDisk:
-        index = m_Private->computePathIndex(path);
+        index = m_Private->computePathIndex(m_Private->mUsbPathList, path);
         if (index >= 0 && index < m_Private->mUsbPathList->size()) {
             m_Private->mCurrentIndex = index;
             play(index, path);

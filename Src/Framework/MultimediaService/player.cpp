@@ -13,7 +13,9 @@ public:
     void deleteMediaPlayer();
     void startPlay(int index, QString path);
     void switchPlayStatus(bool isPlay);
+    void setVideoWidget(QVideoWidget *videoWidget);
 
+    QVideoWidget *mVideoWidget = NULL;
     QMediaPlayer *mMediaPlayer = NULL;
     MultimediaType mPlayType;
     qint64 mDuration = 0;
@@ -64,6 +66,10 @@ void PlayerPrivate::startPlay(int index, QString path) {
     }
 
     mMediaPlayer->setMedia(QUrl::fromLocalFile(MultimediaUtils::changeWindowsPath(path)));
+    if (mVideoWidget != NULL) {
+        mMediaPlayer->setVideoOutput(mVideoWidget);
+    }
+
     mMediaPlayer->play();
     mQTimer->start(500);
 }
@@ -118,6 +124,15 @@ void Player::setPlayStatus(bool isPlay)
     m_Private->switchPlayStatus(isPlay);
 }
 
+void Player::setVideoWidget(QVideoWidget *videoWidget)
+{
+    m_Private->setVideoWidget(videoWidget);
+}
+
+void PlayerPrivate::setVideoWidget(QVideoWidget *videoWidget) {
+    this->mVideoWidget = videoWidget;
+}
+
 void PlayerPrivate::connectAllSlots()
 {
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
@@ -151,7 +166,6 @@ void Player::onCompletion(bool isError) {
 
     m_Private->mCurrentStatus = QMediaPlayer::StoppedState;
     emit onFinish(m_Private->mPlayType, isError);
-    playFinish(m_Private->mPlayType);
 }
 
 void Player::onTimeout()
@@ -172,9 +186,10 @@ void PlayerPrivate::switchPlayStatus(bool isPlay)
     }
 }
 
+
 void Player::onStatusChanged(QMediaPlayer::State status) {
-//    qDebug() << "onStatusChanged status = " << status
-//             << "; m_Private->mCurrentStatus = " << m_Private->mCurrentStatus;
+    //    qDebug() << "onStatusChanged status = " << status
+    //             << "; m_Private->mCurrentStatus = " << m_Private->mCurrentStatus;
     switch (status) {
     case QMediaPlayer::PlayingState:
         if (m_Private->mCurrentStatus != QMediaPlayer::StoppedState) {

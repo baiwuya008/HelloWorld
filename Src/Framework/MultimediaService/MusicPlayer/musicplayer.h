@@ -27,10 +27,9 @@ public:
 signals:
     void requestLrc(int deviceType, QString filePath);
 
-protected slots:
+private slots:
     void scanMusicFilePath(int deviceType, const QString &filePath);
-private:
-    void playFinish(int mediaType) override;
+    void playFinish(int mediaType, bool isError);
 
 private:
     friend class MusicPlayerPrivate;

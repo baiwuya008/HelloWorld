@@ -1,7 +1,10 @@
 #include "multimediaservice.h"
 #include "multimediautils.h"
+
 #include "Src/Framework/MultimediaService/DeviceWatcher/devicewatcher.h"
 #include "Src/Framework/MultimediaService/MusicPlayer/musicplayer.h"
+#include "Src/Framework/MultimediaService/VideoPlayer/videoplayer.h"
+#include "Src/Framework/MultimediaService/ImagePlayer/imageplayer.h"
 #include <QDebug>
 #include <QDomDocument>
 
@@ -17,7 +20,8 @@ public:
 
     DeviceWatcher *mDeviceWatcher = NULL;
     MusicPlayer *mMusicPlayer = NULL;
-//    const QString USB_ROOT_DIR = "D:\\QT\\DA_project\\res";
+    VideoPlayer *mVideoPlayer = NULL;
+    ImagePlayer *mImagePlayer = NULL;
     const QString USB_ROOT_DIR = "D:/QT/DA_project/res";
 
 private:
@@ -44,11 +48,29 @@ MultimediaServicePrivate::MultimediaServicePrivate(MultimediaService* parent)
 
 void MultimediaService::setPlayStatus(const int mediaType, const bool isPlay)
 {
-    if (MultimediaUtils::SCAN_Undefined == m_Private->mMusicPlayer->getScanStatus()) {
-        m_Private->mDeviceWatcher->startScan(MultimediaUtils::DWT_USBDisk, mediaType,
-                                             m_Private->USB_ROOT_DIR);
-    }else {
-        m_Private->mMusicPlayer->setPlayStatus(isPlay);
+    switch (mediaType) {
+    case MultimediaUtils::MUSIC:
+        if (MultimediaUtils::SCAN_Undefined == m_Private->mMusicPlayer->getScanStatus()) {
+            m_Private->mDeviceWatcher->startScan(MultimediaUtils::DWT_USBDisk, mediaType,
+                                                 m_Private->USB_ROOT_DIR);
+        }else {
+            m_Private->mMusicPlayer->setPlayStatus(isPlay);
+        }
+        break;
+    case MultimediaUtils::VIDEO:
+        if (MultimediaUtils::SCAN_Undefined == m_Private->mVideoPlayer->getScanStatus()) {
+            m_Private->mDeviceWatcher->startScan(MultimediaUtils::DWT_USBDisk, mediaType,
+                                                 m_Private->USB_ROOT_DIR);
+        }
+        break;
+    case MultimediaUtils::IMAGE:
+        if (MultimediaUtils::SCAN_Undefined == m_Private->mImagePlayer->getScanStatus()) {
+            m_Private->mDeviceWatcher->startScan(MultimediaUtils::DWT_USBDisk, mediaType,
+                                                 m_Private->USB_ROOT_DIR);
+        }
+        break;
+    case MultimediaUtils::BT_MUSIC:
+        break;
     }
 }
 
@@ -87,6 +109,10 @@ void MultimediaService::setPlayDeviceType(const int deviceType, const int mediaT
         m_Private->mMusicPlayer->setDeviceType(deviceType);
         break;
     case MultimediaUtils::VIDEO:
+        m_Private->mVideoPlayer->setDeviceType(deviceType);
+        break;
+    case MultimediaUtils::IMAGE:
+        m_Private->mImagePlayer->setDeviceType(deviceType);
         break;
     case MultimediaUtils::BT_MUSIC:
         break;
@@ -95,14 +121,16 @@ void MultimediaService::setPlayDeviceType(const int deviceType, const int mediaT
 
 void MultimediaService::setPlayPath(const int mediaType, const int deviceType, QString filePath)
 {
-    //    qDebug() << "MultimediaService::setPlayIndex index = " << index
-    //             << "; deviceType = " << deviceType;
+    setPlayDeviceType(deviceType, mediaType);
     switch (mediaType) {
     case MultimediaUtils::MUSIC:
-        setPlayDeviceType(deviceType, mediaType);
         m_Private->mMusicPlayer->startPlay(deviceType, filePath);
         break;
     case MultimediaUtils::VIDEO:
+        m_Private->mVideoPlayer->startPlay(deviceType, filePath);
+        break;
+    case MultimediaUtils::IMAGE:
+        m_Private->mImagePlayer->startPlay(deviceType, filePath);
         break;
     case MultimediaUtils::BT_MUSIC:
         break;
@@ -124,6 +152,8 @@ void MultimediaService::exitPlayer(const int mediaType)
         break;
     case MultimediaUtils::VIDEO:
         break;
+    case MultimediaUtils::IMAGE:
+        break;
     case MultimediaUtils::BT_MUSIC:
         break;
     }
@@ -136,6 +166,7 @@ QString MultimediaService::queyMediaFiles(int deviceType, int mediaType, int que
 
 QString MultimediaServicePrivate::queryFileList(int deviceType, int mediaType, int queryMode, QString dirPath)
 {
+    bool isOtherSan = false;
     switch (mediaType) {
     case MultimediaUtils::MUSIC:
         if (MultimediaUtils::SCAN_Finish == mMusicPlayer->getScanStatus()) {
@@ -143,24 +174,47 @@ QString MultimediaServicePrivate::queryFileList(int deviceType, int mediaType, i
                 emit m_Parent->onScanFilesPath(createFilesPathXml(deviceType, mediaType, queryMode, dirPath,
                                                                   mMusicPlayer->getPathList(deviceType)));
             }else {
-                if (MultimediaUtils::QUERY_Main_Dir == queryMode) {
-                    dirPath = USB_ROOT_DIR;
-                }
-                QStringList *pathList = mDeviceWatcher->queryFileList(deviceType, mediaType, dirPath);
-                emit m_Parent->onScanFilesPath(createFilesPathXml(deviceType, mediaType, queryMode, dirPath, pathList));
-                if (pathList != NULL) {
-                    pathList->clear();
-                    delete pathList;
-                    pathList = NULL;
-                }
+                isOtherSan = true;
             }
         }
         break;
     case MultimediaUtils::VIDEO:
+        if (MultimediaUtils::SCAN_Finish == mVideoPlayer->getScanStatus()) {
+            if (MultimediaUtils::QUERY_All_Files == queryMode) {
+                emit m_Parent->onScanFilesPath(createFilesPathXml(deviceType, mediaType, queryMode, dirPath,
+                                                                  mVideoPlayer->getPathList(deviceType)));
+            }else {
+                isOtherSan = true;
+            }
+        }
+        break;
+    case MultimediaUtils::IMAGE:
+        if (MultimediaUtils::SCAN_Finish == mImagePlayer->getScanStatus()) {
+            if (MultimediaUtils::QUERY_All_Files == queryMode) {
+                emit m_Parent->onScanFilesPath(createFilesPathXml(deviceType, mediaType, queryMode, dirPath,
+                                                                  mImagePlayer->getPathList(deviceType)));
+            }else {
+                isOtherSan = true;
+            }
+        }
         break;
     case MultimediaUtils::BT_MUSIC:
         break;
     }
+
+    if (isOtherSan) {
+        if (MultimediaUtils::QUERY_Main_Dir == queryMode) {
+            dirPath = USB_ROOT_DIR;
+        }
+        QStringList *pathList = mDeviceWatcher->queryFileList(deviceType, mediaType, dirPath);
+        emit m_Parent->onScanFilesPath(createFilesPathXml(deviceType, mediaType, queryMode, dirPath, pathList));
+        if (pathList != NULL) {
+            pathList->clear();
+            delete pathList;
+            pathList = NULL;
+        }
+    }
+
 
     return "";
 }
@@ -176,6 +230,10 @@ void MultimediaService::seekTo(const int mediaType, const int progress)
         }
         break;
     case MultimediaUtils::VIDEO:
+//        m_Private->mVideoPlayer->seekTo(progress);
+//        if (!m_Private->mVideoPlayer->isPlaying()) {
+//            m_Private->mVideoPlayer->play();
+//        }
         break;
     case MultimediaUtils::BT_MUSIC:
         break;
@@ -188,7 +246,7 @@ qint64 MultimediaService::getCurrentPosition(const int mediaType)
     case MultimediaUtils::MUSIC:
         return m_Private->mMusicPlayer->getCurrentPosition();
     case MultimediaUtils::VIDEO:
-        break;
+//        return m_Private->mVideoPlayer->getCurrentPosition();
     case MultimediaUtils::BT_MUSIC:
         break;
     }
@@ -201,7 +259,7 @@ qint64 MultimediaService::getDuration(const int mediaType)
     case MultimediaUtils::MUSIC:
         return m_Private->mMusicPlayer->getDuration();
     case MultimediaUtils::VIDEO:
-        break;
+//        return m_Private->mVideoPlayer->getDuration();
     case MultimediaUtils::BT_MUSIC:
         break;
     }
@@ -214,7 +272,7 @@ bool MultimediaService::isPlaying(const int mediaType)
     case MultimediaUtils::MUSIC:
         return m_Private->mMusicPlayer->isPlaying();
     case MultimediaUtils::VIDEO:
-        break;
+//        return m_Private->mVideoPlayer->isPlaying();
     case MultimediaUtils::BT_MUSIC:
         break;
     }
@@ -224,8 +282,15 @@ bool MultimediaService::isPlaying(const int mediaType)
 void MultimediaServicePrivate::initialize()
 {
     mDeviceWatcher = new DeviceWatcher();
+
     mMusicPlayer = new MusicPlayer();
     mMusicPlayer->setScanStatus(MultimediaUtils::SCAN_Undefined);
+
+    mVideoPlayer = new VideoPlayer();
+    mVideoPlayer->setScanStatus(MultimediaUtils::SCAN_Undefined);
+
+    mImagePlayer = new ImagePlayer();
+    mImagePlayer->setScanStatus(MultimediaUtils::SCAN_Undefined);
 }
 
 void MultimediaServicePrivate::connectAllSlots()
@@ -233,14 +298,23 @@ void MultimediaServicePrivate::connectAllSlots()
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
     QObject::connect(mDeviceWatcher, SIGNAL(onStartScanFiles(int,int)), m_Parent, SLOT(onStartScanFiles(int,int)), type);
     QObject::connect(mDeviceWatcher, SIGNAL(onMusicFilePath(int,QString)), mMusicPlayer, SLOT(scanMusicFilePath(int,QString)), type);
+    QObject::connect(mDeviceWatcher, SIGNAL(onVideoFilePath(int,QString)), mVideoPlayer, SLOT(scanVideoFilePath(int,QString)), type);
+    QObject::connect(mDeviceWatcher, SIGNAL(onImageFilePath(int,QString)), mImagePlayer, SLOT(scanImageFilePath(int,QString)), type);
     QObject::connect(mDeviceWatcher, SIGNAL(onScanFilesFinish(int,int,int,QString)), m_Parent, SLOT(onScanFilesFinish(int,int,int,QString)), type);
     QObject::connect(mDeviceWatcher, &DeviceWatcher::onScanLrcInfo, m_Parent, &MultimediaService::onUpdateMusic, type);
+
     QObject::connect(mMusicPlayer, &MusicPlayer::onPositionChanged, m_Parent, &MultimediaService::onUpdateProgress, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onPlay, m_Parent, &MultimediaService::onPlay, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onResume, m_Parent, &MultimediaService::onResume, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onPause, m_Parent, &MultimediaService::onPause, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onFinish, m_Parent, &MultimediaService::onStop, type);
     QObject::connect(mMusicPlayer, SIGNAL(requestLrc(int,QString)), m_Parent, SLOT(onScanLrc(int,QString)), type);
+
+//    QObject::connect(mVideoPlayer, &VideoPlayer::onPositionChanged, m_Parent, &MultimediaService::onUpdateProgress, type);
+//    QObject::connect(mVideoPlayer, &VideoPlayer::onPlay, m_Parent, &MultimediaService::onPlay, type);
+//    QObject::connect(mVideoPlayer, &VideoPlayer::onResume, m_Parent, &MultimediaService::onResume, type);
+//    QObject::connect(mVideoPlayer, &VideoPlayer::onPause, m_Parent, &MultimediaService::onPause, type);
+//    QObject::connect(mVideoPlayer, &VideoPlayer::onFinish, m_Parent, &MultimediaService::onStop, type);
 }
 
 
@@ -255,8 +329,14 @@ void MultimediaService::onStartScanFiles(int deviceType, int mediaType)
         m_Private->mMusicPlayer->clearPathList(deviceType);
         break;
     case MultimediaUtils::VIDEO:
+        m_Private->mVideoPlayer->setScanStatus(MultimediaUtils::SCAN_Busy);
+        setPlayDeviceType(deviceType, mediaType);
+        m_Private->mVideoPlayer->clearPathList(deviceType);
         break;
     case MultimediaUtils::IMAGE:
+        m_Private->mImagePlayer->setScanStatus(MultimediaUtils::SCAN_Busy);
+        setPlayDeviceType(deviceType, mediaType);
+        m_Private->mImagePlayer->clearPathList(deviceType);
         break;
     }
 }
@@ -277,8 +357,14 @@ void MultimediaService::onScanFilesFinish(int deviceType, int mediaType, int que
         m_Private->mMusicPlayer->setScanStatus(MultimediaUtils::SCAN_Finish);
         break;
     case MultimediaUtils::VIDEO:
+        emit onScanFilesPath(m_Private->createFilesPathXml(deviceType, mediaType, queryMode, dirPath,
+                                                           m_Private->mVideoPlayer->getPathList(deviceType)));
+        m_Private->mVideoPlayer->setScanStatus(MultimediaUtils::SCAN_Finish);
         break;
     case MultimediaUtils::IMAGE:
+        emit onScanFilesPath(m_Private->createFilesPathXml(deviceType, mediaType, queryMode, dirPath,
+                                                           m_Private->mImagePlayer->getPathList(deviceType)));
+        m_Private->mImagePlayer->setScanStatus(MultimediaUtils::SCAN_Finish);
         break;
     }
 }
@@ -307,9 +393,6 @@ QString MultimediaServicePrivate::createFilesPathXml(int deviceType, int mediaTy
     return doc.toString();
 }
 
-
-
-
 MultimediaServicePrivate::~MultimediaServicePrivate()
 {
 }
@@ -317,8 +400,4 @@ MultimediaServicePrivate::~MultimediaServicePrivate()
 MultimediaService::~MultimediaService() {
 
 }
-
-
-
-
 
