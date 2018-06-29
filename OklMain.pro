@@ -9,7 +9,7 @@ QT       += core gui
 QT       += xml
 
 #greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia multimediawidgets sql axcontainer
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia multimediawidgets sql
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia multimediawidgets sql xml
 
 TARGET = OklMain
 TEMPLATE = app
@@ -48,6 +48,10 @@ SOURCES += main.cpp\
     Src/Framework/Base/Core/simulation.cpp \
     Src/Simulation/simulationda.cpp \
     Src/Application/Radio/radio_am.cpp \
+    Src/Hardware/SerialPort.cpp \
+    Src/Hardware/SerialPortService.cpp \
+    Src/Framework/Manager/BluetoothManager.cpp \
+    Src/Framework/Manager/BluetoothManagerGoc.cpp
     Src/Application/MultiMedia/Music/musicplaywidget.cpp \
     Src/Application/MultiMedia/Music/musiclistwidget.cpp \
     Src/Application/MultiMedia/Music/musiclistitem.cpp \
@@ -68,6 +72,11 @@ SOURCES += main.cpp\
     Src/Framework/MultimediaService/DeviceWatcher/DiskScanner/diskscanner.cpp \
     Src/Framework/MultimediaService/CustomThread/customthread.cpp \
     Src/Framework/MultimediaService/MusicPlayer/musicplayer.cpp \
+    Src/Framework/MultimediaService/MediaDb/mediadb.cpp \
+    Src/Framework/MultimediaService/MediaDb/mediadbentity.cpp \
+    Src/Framework/MultimediaService/VideoPlayer/videoplayer.cpp \
+    Src/Framework/MultimediaService/ImagePlayer/imageplayer.cpp \
+    Src/Application/Launcher/viewpagerwidget.cpp \
     Src/Application/Radio/radio_unit.cpp \
     Src/Application/Radio/radio_data.cpp \
     Src/Application/Radio/radio_process.cpp \
@@ -77,11 +86,7 @@ SOURCES += main.cpp\
     Src/Application/BlueTooth/Phone/phonerecordwidget.cpp \
     Src/Application/BlueTooth/Phone/listitembean.cpp \
     Src/Application/BlueTooth/Phone/customwidget.cpp \
-    Src/Application/BlueTooth/Phone/phonedialwidget.cpp \
-    Src/Hardware/SerialPort.cpp \
-    Src/Hardware/SerialPortService.cpp \
-    Src/Framework/Manager/BluetoothManager.cpp \
-    Src/Framework/Manager/BluetoothManagerGoc.cpp
+    Src/Application/BlueTooth/Phone/phonedialwidget.cpp
 
 HEADERS  += mainwindow.h \
     configuration.h \
@@ -118,6 +123,11 @@ HEADERS  += mainwindow.h \
     Src/Framework/Base/Core/simulation.h \
     Src/Simulation/simulationda.h \
     Src/Application/Radio/radio_am.h \
+    Src/Hardware/SerialPort.h \
+    Src/Hardware/okl_errorno.h \
+    Src/Hardware/SerialPortService.h \
+    Src/Framework/Manager/BluetoothManager.h \
+    Src/Framework/Manager/BluetoothManagerGoc.h \
     Src/Application/MultiMedia/Music/musicplaywidget.h \
     Src/Application/MultiMedia/Music/musiclistwidget.h \
     Src/Application/MultiMedia/Music/musiclistitem.h \
@@ -138,6 +148,11 @@ HEADERS  += mainwindow.h \
     Src/Framework/MultimediaService/DeviceWatcher/DiskScanner/diskscanner.h \
     Src/Framework/MultimediaService/CustomThread/customthread.h \
     Src/Framework/MultimediaService/MusicPlayer/musicplayer.h \
+    Src/Framework/MultimediaService/MediaDb/mediadb.h \
+    Src/Framework/MultimediaService/MediaDb/mediadbentity.h \
+    Src/Framework/MultimediaService/VideoPlayer/videoplayer.h \
+    Src/Framework/MultimediaService/ImagePlayer/imageplayer.h \
+    Src/Application/Launcher/viewpagerwidget.h \
     Src/Application/Radio/radio_unit.h \
     Src/Application/Radio/radio_data.h \
     Src/Application/Radio/radio_process.h \
@@ -147,12 +162,7 @@ HEADERS  += mainwindow.h \
     Src/Application/BlueTooth/Phone/phonerecordwidget.h \
     Src/Application/BlueTooth/Phone/listitembean.h \
     Src/Application/BlueTooth/Phone/customwidget.h \
-    Src/Application/BlueTooth/Phone/phonedialwidget.h \
-    Src/Hardware/SerialPort.h \
-    Src/Hardware/okl_errorno.h \
-    Src/Hardware/SerialPortService.h \
-    Src/Framework/Manager/BluetoothManager.h \
-    Src/Framework/Manager/BluetoothManagerGoc.h
+    Src/Application/BlueTooth/Phone/phonedialwidget.h
 
 
 

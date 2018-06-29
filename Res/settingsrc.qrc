@@ -27,5 +27,6 @@
         <file>setting/img_display_bg.png</file>
         <file>setting/img_setting_list_line.png</file>
         <file>setting/img_setting_time_setting_bg.png</file>
+        <file>setting/keysound.wav</file>
     </qresource>
 </RCC>

@@ -16,7 +16,7 @@
 class MusicListWidgetPrivate {
     Q_DISABLE_COPY(MusicListWidgetPrivate)
 public:
-    explicit MusicListWidgetPrivate(MusicListWidget *parent, MediaUtils::MEDIA_TYPE type);
+    explicit MusicListWidgetPrivate(MusicListWidget *parent, int type);
     ~MusicListWidgetPrivate();
 private slots:
     void onItemClick(int index);
@@ -24,40 +24,50 @@ private slots:
     void onNext();
     void onMainDir();
     void onUpDir();
+    void onAllList();
 
 private:
     Q_DECLARE_PUBLIC(MusicListWidget)
     MusicListWidget* const q_ptr;
-    void initializeBasicWidget(QWidget *parent, MediaUtils::MEDIA_TYPE type);
+    void initializeBasicWidget(QWidget *parent, int type);
     void initializeDirView(QWidget *parent);
     void initializeClickView(QWidget *parent);
     void initializeListView(QWidget *parent);
-    void setTextSize(QWidget *text);
     void addItemList();
     void flipOver(bool isNext);
+    void flipOverIndex(int moveIndex);
     void appendListView(QString path);
     void clearListView();
+    void refreshItemView(int index);
+    void computeItemIndex();
+    void scanBaseFiles(int queryMode, QString dirPath);
 
     MusicListItem *mDirItem = NULL;
     QListWidget *mListView = NULL;
     QList<MusicListItem*> mListItem;
+
     int mSelectItemIndex = -1;
     int mDeviceType = -1;
-    MediaUtils::MEDIA_TYPE mType;
+    int mQueryMode = -1;
+    int mMediaType = -1;
+
+    QString mDirPath;
+    QString mRootPath;
+    QString mCurrentPlayPath;
     const int PAGE_MAX_SIZE = 5;
     const int ITEM_WIDTH = 600;
     const int ITEM_HEIGHT = 46;
 };
 
 
-MusicListWidgetPrivate::MusicListWidgetPrivate(MusicListWidget *parent,  MediaUtils::MEDIA_TYPE type)
+MusicListWidgetPrivate::MusicListWidgetPrivate(MusicListWidget *parent, int type)
     : q_ptr(parent)
 {
     initializeBasicWidget(parent, type);
 }
 
 
-MusicListWidget::MusicListWidget(QWidget *parent, MediaUtils::MEDIA_TYPE type)
+MusicListWidget::MusicListWidget(QWidget *parent, int type)
     : QWidget(parent)
     , d_ptr(new MusicListWidgetPrivate(this, type))
 {
@@ -65,8 +75,8 @@ MusicListWidget::MusicListWidget(QWidget *parent, MediaUtils::MEDIA_TYPE type)
 }
 
 
-void MusicListWidgetPrivate::initializeBasicWidget(QWidget *parent, MediaUtils::MEDIA_TYPE type) {
-    this->mType = type;
+void MusicListWidgetPrivate::initializeBasicWidget(QWidget *parent, int type) {
+    this->mMediaType = type;
     initializeDirView(parent);
     initializeClickView(parent);
     initializeListView(parent);
@@ -112,7 +122,7 @@ void MusicListWidgetPrivate::initializeClickView(QWidget *parent) {
 
     BmpButton *mainDirBtn = new BmpButton(mClickListWidget);
     mainDirBtn->setFixedSize(QSize(200, 60));
-    setTextSize(mainDirBtn);
+    MediaUtils::setLabText(mainDirBtn, 18);
     mainDirBtn->setText(QString::fromLocal8Bit("主文件夹"));
     mainDirBtn->setNormalBmpPath(":/Res/drawable/multimedia/music_list_click_normal.png");
     mainDirBtn->setPressBmpPath(":/Res/drawable/multimedia/music_list_click_focus.png");
@@ -120,7 +130,7 @@ void MusicListWidgetPrivate::initializeClickView(QWidget *parent) {
 
     BmpButton *upDirBtn = new BmpButton(mClickListWidget);
     upDirBtn->setFixedSize(QSize(200, 60));
-    setTextSize(upDirBtn);
+    MediaUtils::setLabText(upDirBtn, 18);
     upDirBtn->setText(QString::fromLocal8Bit("上一文件夹"));
     upDirBtn->setNormalBmpPath(":/Res/drawable/multimedia/music_list_click_normal.png");
     upDirBtn->setPressBmpPath(":/Res/drawable/multimedia/music_list_click_focus.png");
@@ -192,23 +202,94 @@ void MusicListWidgetPrivate::flipOver(bool isNext)
         moveIndex = currentFirstIndex - PAGE_MAX_SIZE;
     }
 
+    flipOverIndex(moveIndex);
+}
+
+void MusicListWidgetPrivate::flipOverIndex(int moveIndex)
+{
     moveIndex = moveIndex >= (mListView->count()-1) ?
                 (mListView->count()-1) : moveIndex;
     moveIndex = moveIndex < 0 ? 0 : moveIndex;
 
+    if (mListView->currentRow() == moveIndex) {//防止滑动后currentRow没变无法导致翻页功能
+        mListView->setCurrentRow(-1, QItemSelectionModel::Select);
+    }
     mListView->setCurrentRow(moveIndex, QItemSelectionModel::Select);
 }
 
-
-
 void MusicListWidgetPrivate::onMainDir()
 {
-
+    if (mDirPath.length() < 1) {
+        return;
+    }
+    scanBaseFiles(MediaUtils::QUERY_Main_Dir, "");
 }
+
+void MusicListWidget::showAllList()
+{
+    Q_D(MusicListWidget);
+    d->onAllList();
+}
+
 
 void MusicListWidgetPrivate::onUpDir()
 {
+    if (mDirPath.length() < 1) {
+        return;
+    }
 
+    scanBaseFiles(MediaUtils::QUERY_Current_Dir, MediaUtils::getUpperPath(mDirPath));
+}
+
+void MusicListWidgetPrivate::onAllList()
+{
+    if (mDirPath.length() < 1) {
+        return;
+    }
+    scanBaseFiles(MediaUtils::QUERY_All_Files, mRootPath);
+}
+
+void MusicListWidgetPrivate::scanBaseFiles(int queryMode, QString dirPath)
+{
+    if (mRootPath.length() < 2) {
+        return;
+    }
+
+    if (MediaUtils::QUERY_All_Files == queryMode
+            && MediaUtils::QUERY_All_Files == mQueryMode) {
+        return;
+    }
+
+    if (MediaUtils::QUERY_Main_Dir == queryMode
+            &&  MediaUtils::QUERY_Main_Dir == mQueryMode) {
+        return;
+    }
+
+    if (MediaUtils::QUERY_Current_Dir == queryMode
+            && MediaUtils::QUERY_All_Files == mQueryMode) {
+        return;
+    }
+
+    if (MediaUtils::QUERY_Current_Dir == queryMode
+            && dirPath.length() < mRootPath.length()) {
+        queryMode = MediaUtils::QUERY_All_Files;
+        dirPath = mRootPath;
+    }
+
+    if (MediaUtils::QUERY_Current_Dir == queryMode
+            && !mRootPath.compare(dirPath)) {
+        queryMode = MediaUtils::QUERY_Main_Dir;
+    }
+
+    Q_Q(MusicListWidget);
+    int type = mMediaType;
+    if (MediaUtils::MUSIC_LIST == mMediaType || MediaUtils::MUSIC == mMediaType) {
+        type = MediaUtils::MUSIC;
+    }else if (MediaUtils::VIDEO_LIST == mMediaType || MediaUtils::VIDEO == mMediaType) {
+        type = MediaUtils::VIDEO;
+    }
+
+    emit q->queryFiles(mDeviceType, type, queryMode, dirPath);
 }
 
 
@@ -312,7 +393,7 @@ void MusicListWidgetPrivate::addItemList()
         item = new QListWidgetItem;
         item->setSizeHint(QSize(ITEM_WIDTH, ITEM_HEIGHT));
 
-        infoItem = new MusicListItem(NULL, mType);
+        infoItem = new MusicListItem(NULL, mMediaType);
         infoItem->setFixedSize(QSize(ITEM_WIDTH, ITEM_HEIGHT));
         infoItem->initItem("fileName_" + QString::number(i));
 
@@ -331,7 +412,13 @@ void MusicListWidgetPrivate::appendListView(QString path)
     QListWidgetItem *item = new QListWidgetItem;
     item->setSizeHint(QSize(ITEM_WIDTH, ITEM_HEIGHT));
 
-    MusicListItem *infoItem = new MusicListItem(NULL, mType);
+    MusicListItem *infoItem = NULL;
+    if (MediaUtils::isDirPath(path)) {
+        infoItem = new MusicListItem(NULL, MediaUtils::DIR_LIST);
+    }else {
+        infoItem = new MusicListItem(NULL, mMediaType);
+    }
+
     infoItem->setFixedSize(QSize(ITEM_WIDTH, ITEM_HEIGHT));
     infoItem->initItem(path);
 
@@ -342,9 +429,16 @@ void MusicListWidgetPrivate::appendListView(QString path)
 
 void MusicListWidgetPrivate::clearListView()
 {
+    mSelectItemIndex = -1;
+    mDeviceType = -1;
+    mDirPath = "";
     mListView->clear();
+    int size = mListItem.size();
+    for (int i = 0; i < size; i++) {
+        delete mListItem.at(i);
+    }
+    mListItem.clear();
 }
-
 
 
 void MusicListWidget::itemClick(QModelIndex index)
@@ -353,72 +447,92 @@ void MusicListWidget::itemClick(QModelIndex index)
     d->onItemClick(index.row());
 }
 
+void MusicListWidget::setPlayNext(bool isNext)
+{
+    Q_D(MusicListWidget);
+    int index = d->mSelectItemIndex;
+    index = isNext ? (index+1) : (index-1);
+    d->onItemClick(index);
+}
 
 void MusicListWidgetPrivate::onItemClick(int index) {
-    qDebug() << "onitemClick index = " << index
-             << "; mSelectItemIndex = " << mSelectItemIndex;
-
     if (index < 0 || index >= mListItem.size()
             || index == mSelectItemIndex) {
         return;
     }
 
+    if (MediaUtils::isDirPath(mListItem.at(index)->getPath())) {
+        scanBaseFiles(false, mListItem.at(index)->getPath());
+    }else {
+        Q_Q(MusicListWidget);
+        mCurrentPlayPath = mListItem.at(index)->getPath();
+        emit q->selectItem(mDeviceType, mCurrentPlayPath);
+        refreshItemView(index);
+        onAllList();
+    }
+}
+
+void MusicListWidget::refreshItem(int index)
+{
+    Q_D(MusicListWidget);
+    d->refreshItemView(index);
+}
+
+void MusicListWidgetPrivate::refreshItemView(int index)
+{
     if (mSelectItemIndex >= 0) {
         mListItem.at(mSelectItemIndex)->refreshItem(false);
     }
     mSelectItemIndex = index;
     mListItem.at(mSelectItemIndex)->refreshItem(true);
-
-
-    Q_Q(MusicListWidget);
-    emit q->selectItem(mDeviceType, mListItem.at(index)->getPath(), index);
 }
 
-
-void MusicListWidget::setPlayIndex(int index)
+void MusicListWidgetPrivate::computeItemIndex()
 {
-    Q_D(MusicListWidget);
-    d->onItemClick(index);
-}
+    if (mSelectItemIndex >= 0 && mSelectItemIndex < mListItem.size()) {
+        mListItem.at(mSelectItemIndex)->refreshItem(false);
+    }
 
-void MusicListWidget::setPlayNext(bool isNext)
-{
-    Q_D(MusicListWidget);
-    int index = d->mSelectItemIndex;
-    index = isNext ? (isNext+1) : (isNext-1);
-    d->onItemClick(index);
-}
+    if (mCurrentPlayPath.length() < 2) {
+        mSelectItemIndex = -1;
+        return;
+    }
 
-void MusicListWidget::updateList(int deviceType, QStringList &pathList)
-{
-    Q_D(MusicListWidget);
-    if (pathList.size() > 0) {
-        d->mDeviceType = deviceType;
-        QString path = pathList.at(0);
-        d->mDirItem->setName(MediaUtils::getDirName(path));
-        int size = pathList.size();
-        for (int i = 0; i < size; i++) {
-            d->appendListView(pathList.at(i));
+    int size = mListItem.size();
+    for (int i = 0; i < size; i++) {
+        if (!mCurrentPlayPath.compare(mListItem.at(i)->getPath())) {
+            mSelectItemIndex = i;
+            mListItem.at(mSelectItemIndex)->refreshItem(true);
+            flipOverIndex(i);
+            return;
         }
-    }else {
-        d->clearListView();
     }
 }
 
 
-void MusicListWidgetPrivate::setTextSize(QWidget *text) {
-    //设置字号
-    QFont ft("Microsoft YaHei");
-    ft.setPointSize(18);
-    text->setFont(ft);
+void MusicListWidget::updateList(int deviceType, int queryMode, QString &dirPath, QStringList &pathList)
+{
+    Q_D(MusicListWidget);
 
-    //设置颜色
-    QPalette pa;
-    pa.setColor(QPalette::WindowText,Qt::white);
-    text->setPalette(pa);
+    d->clearListView();
+    d->mDeviceType = deviceType;
+    d->mQueryMode = queryMode;
+    d->mDirPath = dirPath;
+    d->mDirItem->setName(dirPath);
+
+    if (MediaUtils::QUERY_All_Files == queryMode) {
+        d->mRootPath = dirPath;
+    }
+
+    if (pathList.size() > 0) {
+        int size = pathList.size();
+        for (int i = 0; i < size; i++) {
+            d->appendListView(pathList.at(i));
+        }
+    }
+
+    d->computeItemIndex();
 }
-
-
 
 
 MusicListWidgetPrivate::~MusicListWidgetPrivate(){
@@ -428,6 +542,8 @@ MusicListWidgetPrivate::~MusicListWidgetPrivate(){
 MusicListWidget::~MusicListWidget() {
 
 }
+
+
 
 
 

@@ -55,6 +55,7 @@ void MultimediaPrivate::connectAllSlots()
     QObject::connect(mMultimediaService, &MultimediaService::onSetPlayMode, m_Parent, &Multimedia::onSetPlayMode, type);
     QObject::connect(mMultimediaService, &MultimediaService::onUpdateProgress, m_Parent, &Multimedia::onUpdateProgress, type);
     QObject::connect(mMultimediaService, SIGNAL(onScanFilesPath(QString)), m_Parent, SLOT(readFilesPathXml(QString)), type);
+    QObject::connect(mMultimediaService, &MultimediaService::onUpdateMusic, m_Parent, &Multimedia::onUpdateMusicInfo, type);
 }
 
 
@@ -72,7 +73,9 @@ void Multimedia::readFilesPathXml(QString xml)
 
     int deviceType = root.attribute("DeviceType").toInt();
     int mediaType = root.attribute("MediaType").toInt();
-    if (-1 == deviceType || -1 == mediaType) {
+    int queryMode = root.attribute("QueryMode").toInt();
+    QString dirPath = root.attribute("dirPath");
+    if (-1 == deviceType || -1 == mediaType || -1 == queryMode) {
         return;
     }
 
@@ -89,13 +92,13 @@ void Multimedia::readFilesPathXml(QString xml)
 
     switch (mediaType) {
     case MediaUtils::MUSIC:
-        emit onScanMusicFiles(deviceType, pathList);
+        emit onScanMusicFiles(deviceType, queryMode, dirPath, pathList);
         break;
     case MediaUtils::VIDEO:
-        emit onScanVideoFiles(deviceType, pathList);
+        emit onScanVideoFiles(deviceType, queryMode, dirPath, pathList);
         break;
     case MediaUtils::IMAGE:
-        emit onScanImageFiles(deviceType, pathList);
+        emit onScanImageFiles(deviceType, queryMode, dirPath, pathList);
         break;
     }
 }
@@ -115,14 +118,14 @@ int Multimedia::getPlayMode(const int mediaType)
     return m_Private->mMultimediaService->getPlayMode(mediaType);
 }
 
-void Multimedia::setPlayIndex(const int mediaType, const int deviceType, const int index)
+void Multimedia::setPlayPath(const int mediaType, const int deviceType, QString filePath)
 {
-    return m_Private->mMultimediaService->setPlayIndex(mediaType, deviceType, index);
+    m_Private->mMultimediaService->setPlayPath(mediaType, deviceType, filePath);
 }
 
-void Multimedia::seekTo(const int mediaType, const int msec )
+void Multimedia::seekTo(const int mediaType, const int progress)
 {
-    return m_Private->mMultimediaService->seekTo(mediaType, msec);
+    return m_Private->mMultimediaService->seekTo(mediaType, progress);
 }
 
 qint64 Multimedia::getCurrentPosition(const int mediaType)
@@ -138,6 +141,11 @@ qint64 Multimedia::getDuration(const int mediaType)
 bool Multimedia::isPlaying(const int mediaType)
 {
     return m_Private->mMultimediaService->isPlaying(mediaType);
+}
+
+void Multimedia::queryMediaFiles(int deviceType, int mediaType, int queryMode, QString dirPath)
+{
+    m_Private->mMultimediaService->queyMediaFiles(deviceType, mediaType, queryMode, dirPath);
 }
 
 void Multimedia::exitPlayer(const int mediaType)

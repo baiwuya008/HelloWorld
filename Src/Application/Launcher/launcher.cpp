@@ -1,212 +1,108 @@
 #include "launcher.h"
 
+
 LauncherPrivate::LauncherPrivate(Launcher *parent)
     :QObject(),q_ptr(parent)
 
 {
-    mBackground = NULL;
+}
+
+void LauncherPrivate::initializeToolsWidget(QWidget *parent)
+{
+    QList<QString> list;
+    list.append("media");
+    mMediaToolsWidget = new MediaToolsWidget(parent, list);
+    connect(mMediaToolsWidget, SIGNAL(onItemClick(int)), this, SLOT(setCurrentPageView(int)));
 }
 
 void LauncherPrivate::initializeBasicWidget(QWidget *parent)
 {
-    Q_Q(Launcher);
+    parent->setFixedSize(QSize(800, 435));
+    MediaUtils::setWidgetBackground(parent, ":/img/Common/img_wap_bg.png");
+    initializeToolsWidget(parent);
 
-    const int icon_first = 88;
-    const int icon_step = 175;
-    const int first_line_y = 80;
-    const int second_line_y = 254;
-    const int icon_size = 100;
+    initializeViewPager(parent);
 
-    const int title_text_x =28;
-    const int title_text_y =70;
-
-    mBackTitle = new BmpWidget(parent);
-    mBackTitle->setBackgroundBmpPath(QString(":/img/setting/img_btn_tab_bg.png"));
-    mBackTitle->setFixedSize(QSize(800, 50));
-
-    QFont font("Microsoft YaHei");
-    font.setPointSize(18);
-
-    QPalette pa;
-    pa.setColor(QPalette::WindowText,Qt::white);
-
-    mBmpMultimedia = new BmpButton(parent);
-    mBmpMultimedia->setText(tr("多媒体"));
-    mBmpMultimedia->setNormalBmpPath(":/img/setting/img_btn_tab_b.png");
-    mBmpMultimedia->setPressBmpPath(":/img/setting/img_btn_tab_b.png");
-    mBmpMultimedia->setGeometry(0,0,126,50);
-    mBmpMultimedia->setVisible(true);
-    mBmpMultimedia->setFont(font);
-
-    //mBackground = new BmpWidget(parent);
-    //mBackground->setBackgroundBmpPath(QString(":/img/Common/img_wap_bg.png"));
-    //mBackground->setFixedSize(QSize(800, 435));
-
-    //---------------------------------------------------------
-    mHomePagerOne = new BmpWidget(parent);
-    mHomePagerOne->setBackgroundBmpPath(":/img/Common/img_wap_bg.png");
-    mHomePagerOne->setGeometry(0,50,800,480);
-
-    mBtnFm = new BmpButton(parent);
-    mBtnFm->setNormalBmpPath(QString(":/img/Launcher/img_launcher_fm_a.png"));
-    mBtnFm->setPressBmpPath(QString(":/img/Launcher/img_launcher_fm_b.png"));
-    mBtnFm->setGeometry(icon_first,first_line_y,icon_size,icon_size);
-    q->connect(mBtnFm,SIGNAL(released()),this,SLOT(onBtnFmRelease()));
-
-    mLabelFm = new QLabel(parent);
-    mLabelFm->setFont(font);
-    mLabelFm->setPalette(pa);
-    mLabelFm->setGeometry(icon_first + title_text_x,first_line_y + title_text_y,icon_size,icon_size);
-    mLabelFm->setText(tr("FM"));
-
-    mBtnAm = new BmpButton(parent);
-    mBtnAm->setNormalBmpPath(QString(":/img/Launcher/img_launcher_am_a.png"));
-    mBtnAm->setPressBmpPath(QString(":/img/Launcher/img_launcher_am_b.png"));
-    mBtnAm->setGeometry(icon_first+icon_step,first_line_y,icon_size,icon_size);
-    q->connect(mBtnAm,SIGNAL(released()),this,SLOT(onBtnAmRelease()));
-
-    mLabelAm = new QLabel(parent);
-    mLabelAm->setFont(font);
-    mLabelAm->setPalette(pa);
-    mLabelAm->setGeometry(icon_first+icon_step+title_text_x,first_line_y+title_text_y,icon_size,icon_size);
-    mLabelAm->setText(tr("AM"));
-
-    mBtnMusic = new BmpButton(parent);
-    mBtnMusic->setNormalBmpPath(QString(":/img/Launcher/img_launcher_music_a.png"));
-    mBtnMusic->setPressBmpPath(QString(":/img/Launcher/img_launcher_music_b.png"));
-    mBtnMusic->setGeometry(icon_first+icon_step*2,first_line_y,icon_size,icon_size);
-    q->connect(mBtnMusic,SIGNAL(released()),this,SLOT(onBtnMusicRelease()));
-
-    mLabelMusic = new QLabel(parent);
-    mLabelMusic->setFont(font);
-    mLabelMusic->setPalette(pa);
-    mLabelMusic->setGeometry(icon_first+icon_step*2+title_text_x,first_line_y+title_text_y,icon_size,icon_size);
-    mLabelMusic->setText(tr("音乐"));
-
-    mBtnVideo = new BmpButton(parent);
-    mBtnVideo->setNormalBmpPath(QString(":/img/Launcher/img_launcher_video_a.png"));
-    mBtnVideo->setPressBmpPath(QString(":/img/Launcher/img_launcher_video_b.png"));
-    mBtnVideo->setGeometry(icon_first+icon_step*3,first_line_y,icon_size,icon_size);
-    q->connect(mBtnVideo,SIGNAL(released()),this,SLOT(onBtnVideoRelease()));
-
-    mLabelVideo = new QLabel(parent);
-    mLabelVideo->setFont(font);
-    mLabelVideo->setPalette(pa);
-    mLabelVideo->setGeometry(icon_first+icon_step*3+title_text_x,first_line_y+title_text_y,icon_size,icon_size);
-    mLabelVideo->setText(tr("视频"));
-
-    mBtnElink = new BmpButton(parent);
-    mBtnElink->setNormalBmpPath(QString(":/img/Launcher/img_launcher_elink_a.png"));
-    mBtnElink->setPressBmpPath(QString(":/img/Launcher/img_launcher_elink_b.png"));
-    mBtnElink->setGeometry(icon_first,second_line_y,icon_size,icon_size);
-    q->connect(mBtnElink,SIGNAL(released()),this,SLOT(onBtnElinkRelease()));
-
-    mLabelElink = new QLabel(parent);
-    mLabelElink->setFont(font);
-    mLabelElink->setPalette(pa);
-    mLabelElink->setGeometry(icon_first+title_text_x-10,second_line_y+title_text_y,icon_size,icon_size);
-    mLabelElink->setText(tr("E-Link"));
-
-    mBtnBlueTooth = new BmpButton(parent);
-    mBtnBlueTooth->setNormalBmpPath(QString(":/img/Launcher/img_launcher_bt_music_a.png"));
-    mBtnBlueTooth->setPressBmpPath(QString(":/img/Launcher/img_launcher_bt_music_b.png"));
-    mBtnBlueTooth->setGeometry(icon_first+icon_step,second_line_y,icon_size,icon_size);
-    q->connect(mBtnBlueTooth,SIGNAL(released()),this,SLOT(onBtnBlueToothRelease()));
-
-    mLabelBlueTooth = new QLabel(parent);
-    mLabelBlueTooth->setFont(font);
-    mLabelBlueTooth->setPalette(pa);
-    mLabelBlueTooth->setGeometry(icon_first+icon_step+title_text_x,second_line_y+title_text_y,icon_size,icon_size);
-    mLabelBlueTooth->setText(tr("蓝牙"));
-
-    mBtnImage = new BmpButton(parent);
-    mBtnImage->setNormalBmpPath(QString(":/img/Launcher/img_launcher_img_a.png"));
-    mBtnImage->setPressBmpPath(QString(":/img/Launcher/img_launcher_img_b.png"));
-    mBtnImage->setGeometry(icon_first+icon_step*2,second_line_y,icon_size,icon_size);
-    q->connect(mBtnImage,SIGNAL(released()),this,SLOT(onBtnImagetRelease()));
-
-    mLabelImage = new QLabel(parent);
-    mLabelImage->setFont(font);
-    mLabelImage->setPalette(pa);
-    mLabelImage->setGeometry(icon_first+icon_step*2+title_text_x,second_line_y+title_text_y,icon_size,icon_size);
-    mLabelImage->setText(tr("图片"));
-
-    mBtnSettings = new BmpButton(parent);
-    mBtnSettings->setNormalBmpPath(QString(":/img/Launcher/img_launcher_setting_a.png"));
-    mBtnSettings->setPressBmpPath(QString(":/img/Launcher/img_launcher_setting_b.png"));
-    mBtnSettings->setGeometry(icon_first+icon_step*3,second_line_y,icon_size,icon_size);
-    q->connect(mBtnSettings,SIGNAL(released()),this,SLOT(onBtnSettingsRelease()));
-
-    mLabelSetting = new QLabel(parent);
-    mLabelSetting->setFont(font);
-    mLabelSetting->setPalette(pa);
-    mLabelSetting->setGeometry(icon_first+icon_step*3+title_text_x,second_line_y+title_text_y,icon_size,icon_size);
-    mLabelSetting->setText(tr("设置"));
-
-    //   mBtnAvin = new BmpButton(parent);
-    //   mBtnAvin->setNormalBmpPath(QString(":/Res/drawable/test/btn_n.png"));
-    //   mBtnAvin->setPressBmpPath(QString(":/Res/drawable/test/btn_p.png"));
-    //   mBtnAvin->setGeometry(600,425,90,90);
-    //   q->connect(mBtnAvin,SIGNAL(released()),this,SLOT(onBtnAvinRelease()));
+    setCurrentViewPager(0);
 }
 
-void LauncherPrivate::onBtnFmRelease()
+void LauncherPrivate::initializeViewPager(QWidget *parent)
 {
-    Q_Q(Launcher);
-    q->startApplication(T_Radio);
+    mViewPaperWidget = new ViewPagerWidget(parent);
+    mViewPaperWidget->setFixedSize(800, 384);
+    mViewPaperWidget->setGeometry(0, 50, 0, 0);
+    connect(mViewPaperWidget, SIGNAL(itemClick(int)), this, SLOT(onItemClick(int)));
+    connect(mViewPaperWidget, SIGNAL(changeViewPager(int)), this, SLOT(setCurrentViewPager(int)));
+
+    initializeViewPagerPoint(parent, 2);
 }
 
-void LauncherPrivate::onBtnAmRelease()
+void LauncherPrivate::initializeViewPagerPoint(QWidget *parent, int number)
 {
+    QLabel *icon = NULL;
+    mPointList.clear();
+    int left = 800/2 - (POINT_WIDTH*number+(number-1)*POINT_SPACE_WIDTH)/2;
+    int top = 414;
+    for (int i = 0; i < number; i++) {
+        icon = new QLabel(parent);
+        icon->setFixedSize(POINT_WIDTH, POINT_HEIGHT);
+        icon->setGeometry(left, top, 0, 0);
+
+        left += POINT_WIDTH + POINT_SPACE_WIDTH;
+
+        mPointList.append(icon);
+    }
+
+    mPressPointPixmap = new QPixmap(":/img/Launcher/img_launcher_point_a.png");
+    mNormalPointPixmap = new QPixmap(":/img/Launcher/img_launcher_point_b.png");
+}
+
+void LauncherPrivate::setCurrentViewPager(int index) {
+    int count = mPointList.size();
+    for (int i = 0; i < count; i++) {
+        if (i == index) {
+            mPointList.at(i)->setPixmap(*mPressPointPixmap);
+        }else {
+            mPointList.at(i)->setPixmap(*mNormalPointPixmap);
+        }
+    }
+}
+
+void LauncherPrivate::onItemClick(int index) {
     Q_Q(Launcher);
-    q->startApplication(T_RadioAm);
+    switch (index) {
+    case 0:
+        q->startApplication(T_Radio);
+        break;
+    case 1:
+        q->startApplication(T_RadioAm);
+        break;
+    case 2:
+         q->startApplication(T_USBDiskMusic);
+        break;
+    case 3:
+         q->startApplication(T_USBDiskVideo);
+        break;
+    case 4:
+//         q->startApplication(T_Link);
+        break;
+    case 5:
+         q->startApplication(T_Bluetooth);
+        break;
+    case 6:
+         q->startApplication(T_USBDiskImage);
+        break;
+    case 7:
+         q->startApplication(T_Setting);
+        break;
+    }
 }
 
-void LauncherPrivate::onBtnMusicRelease()
+
+void LauncherPrivate::setCurrentPageView(int tabIndex)
 {
-    Q_Q(Launcher);
-    q->startApplication(T_USBDiskMusic);
+
 }
-
-void LauncherPrivate::onBtnVideoRelease()
-{
-    Q_Q(Launcher);
-    q->startApplication(T_USBDiskVideo);
-}
-
-void LauncherPrivate::onBtnElinkRelease()
-{
-    //Q_Q(Launcher);
-    //q->startApplication(T_Link);
-}
-
-void LauncherPrivate::onBtnBlueToothRelease()
-{
-    Q_Q(Launcher);
-    q->startApplication(T_Bluetooth);
-}
-
-void LauncherPrivate::onBtnImagetRelease()
-{
-    Q_Q(Launcher);
-    q->startApplication(T_USBDiskImage);
-}
-
-void LauncherPrivate::onBtnSettingsRelease()
-{
-    Q_Q(Launcher);
-    q->startApplication(T_Setting);
-}
-
-void LauncherPrivate::onBtnAvinRelease()
-{
-    Q_Q(Launcher);
-    q->startApplication(T_AVIN);
-}
-
-//----------------------------------
-
-
 
 Launcher::Launcher(QObject *parent):
     Activity(parent),

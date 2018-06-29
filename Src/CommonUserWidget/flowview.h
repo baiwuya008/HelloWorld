@@ -35,7 +35,7 @@ protected:
 
 signals:
     void itemClick(int position, QString path);
-    void switchCenterView(int position);
+    void switchCenterView(int position, int totalLength);
 private slots:
     void clickTimeout();
     void onFinished();

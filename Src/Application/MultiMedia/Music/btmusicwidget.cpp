@@ -117,16 +117,7 @@ void BtMusicWidgetPrivate::initializeSongView(QWidget *parent)
 
 
     mSongName = new QLabel(parent);
-
-    //设置字号
-    QFont ft("Microsoft YaHei");
-    ft.setPointSize(24);
-    mSongName->setFont(ft);
-    //设置颜色
-    QPalette pa;
-    pa.setColor(QPalette::WindowText,Qt::white);
-    mSongName->setPalette(pa);
-
+    MediaUtils::setLabText(mSongName, 24);
     mSongName->setText("歌曲名称");
 
     songLayout->addWidget(mSongName, 0, Qt::AlignCenter);

@@ -1,6 +1,7 @@
 #include "devicewatcher.h"
 #include "Src/Framework/MultimediaService/DeviceWatcher/DiskScanner/diskscanner.h"
 #include "Src/Framework/MultimediaService/multimediautils.h"
+#include "Src/Framework/MultimediaService/MediaDb/mediadb.h"
 #include <QDebug>
 
 class DeviceWatcherPrivate {
@@ -10,11 +11,9 @@ public:
     ~DeviceWatcherPrivate();
     void initialize();
 
-
     DiskScanner *mUSBDiskScanner = NULL;
 private:
     DeviceWatcher* m_Parent;
-
 };
 
 
@@ -37,6 +36,8 @@ DeviceWatcherPrivate::~DeviceWatcherPrivate()
 
 void DeviceWatcherPrivate::initialize()
 {
+    g_MediaDb->initialize();
+
     QStringList m_MusicSuffix;
     m_MusicSuffix.clear();
     m_MusicSuffix.append(QString(".MP2"));
@@ -93,8 +94,9 @@ void DeviceWatcherPrivate::initialize()
     mUSBDiskScanner->setDeviceType(MultimediaUtils::DWT_USBDisk);
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
     QObject::connect(mUSBDiskScanner, SIGNAL(scanFilePath(int,int,QString)), m_Parent, SLOT(onScanFilePath(int,int,QString)), type);
-    QObject::connect(mUSBDiskScanner, &DiskScanner::scanFilesFinish, m_Parent, &DeviceWatcher::onScanFilesFinish, type);
+    QObject::connect(mUSBDiskScanner, SIGNAL(scanFilesFinish(int,int,QString)), m_Parent, SLOT(onScanFilesFinish(int,int,QString)), type);
     QObject::connect(mUSBDiskScanner, &DiskScanner::startScanFiles, m_Parent, &DeviceWatcher::onStartScanFiles, type);
+    QObject::connect(mUSBDiskScanner, &DiskScanner::scanLrcInfo, m_Parent, &DeviceWatcher::onScanLrcInfo, type);
 }
 
 DeviceWatcher::~DeviceWatcher()
@@ -117,11 +119,10 @@ void DeviceWatcher::onScanFilePath(int deviceType, int mediaType, const QString 
     }
 }
 
-void DeviceWatcher::startScan(int deviceType, int mediaType)
+void DeviceWatcher::onScanFilesFinish(int deviceType, int mediaType, QString path)
 {
-    startScan(deviceType, mediaType, "D:\\QT\\DA_project\\res");
+    emit onScanFilesFinish(deviceType, mediaType, MultimediaUtils::QUERY_All_Files, path);
 }
-
 
 void DeviceWatcher::startScan(int deviceType, int mediaType, QString dir)
 {
@@ -132,8 +133,55 @@ void DeviceWatcher::startScan(int deviceType, int mediaType, QString dir)
     }
 }
 
+void DeviceWatcher::scanLrc(int deviceType, QString filePath)
+{
+    MediaDbEntity *entity = g_MediaDb->queryFile(MultimediaUtils::getLastToName(filePath));
+    if (entity != NULL) {
+        switch (deviceType) {
+        case MultimediaUtils::DWT_USBDisk:
+            m_Private->mUSBDiskScanner->scanLrc(filePath, entity->dirPath, entity->name);
+            break;
+        }
+        delete entity;
+        entity = NULL;
+    }
+}
+
+QStringList *DeviceWatcher::queryFileList(int deviceType, int mediaType, QString dirPath)
+{
+    QList<MediaDbEntity*> fileList = g_MediaDb->queryFiles(deviceType, mediaType, dirPath);
+    QList<MediaDbEntity*> dirList = g_MediaDb->queryDirs(deviceType, mediaType, dirPath);
+    QStringList *pathList = new QStringList();
+    int size = 0;
+    MediaDbEntity *entity = NULL;
+
+    size = dirList.size();
+    for (int i = 0; i < size; i++) {
+        entity = dirList.at(i);
+        pathList->append(entity->dirPath);
+        delete entity;
+        entity = NULL;
+    }
+    dirList.clear();
+
+    size = fileList.size();
+    for (int i = 0; i < size; i++) {
+        entity = fileList.at(i);
+        pathList->append(entity->filePath);
+        delete entity;
+        entity = NULL;
+    }
+    fileList.clear();
+
+    return pathList;
+}
+
 
 void DeviceWatcher::stopScan()
 {
     m_Private->mUSBDiskScanner->stopScanner();
 }
+
+
+
+

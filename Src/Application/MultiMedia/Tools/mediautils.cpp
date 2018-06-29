@@ -1,23 +1,45 @@
 #include "mediautils.h"
 
+
 MediaUtils::MediaUtils()
 {
 
 }
 
-
-QString MediaUtils::changePathToName(QString path)
-{
-    return path.mid(path.lastIndexOf('\\')+1);
+void MediaUtils::setWidgetBackground(QWidget *widget, QString path) {
+    //设置背景图片
+    widget->setAutoFillBackground(true); // 这句要加上, 否则可能显示不出背景图.
+    QPalette palette = widget->palette();
+    palette.setBrush(QPalette::Window,
+                     QBrush(QPixmap(path).scaled(widget->size(),
+                                                 Qt::IgnoreAspectRatio,
+                                                 Qt::SmoothTransformation)));
+    widget->setPalette(palette);
 }
 
-QString MediaUtils::changeDirPath(QString path)
+
+void MediaUtils::setLabText(QWidget *text, int size)
 {
-    return path.left(path.lastIndexOf('\\'));
+    //设置字号
+    QFont ft("Microsoft YaHei");
+    ft.setPointSize(size);
+    text->setFont(ft);
+    //设置颜色
+    QPalette pa;
+    pa.setColor(QPalette::WindowText,Qt::white);
+    text->setPalette(pa);
 }
 
-QString MediaUtils::getDirName(QString path)
+bool MediaUtils::isDirPath(QString path)
 {
-    return changePathToName(changeDirPath(path));
+    if (path.length() < 1) {
+        return false;
+    }
+    QFileInfo file(path);
+    if (file.exists() && file.isDir()) {
+        return true;
+    }
+
+    return false;
 }
 

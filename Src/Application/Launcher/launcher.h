@@ -1,9 +1,11 @@
 #ifndef LAUNCHER_H
 #define LAUNCHER_H
 #include "Src/Framework/Base/Core/activity.h"
-
-#include <QMouseEvent>
-#include <QFont>
+#include "Src/Application/MultiMedia/Tools/mediatoolswidget.h"
+#include "Src/Application/MultiMedia/multimedia.h"
+#include "viewpagerwidget.h"
+#include <QList>
+#include <QLabel>
 
 class LauncherPrivate;
 
@@ -26,67 +28,44 @@ public:
     void onReceiveBroadcast(AppType appType,OMessage &msg);
     void onReceiveCmd(AppType appType,OMessage &msg);
 
-
 private:
     Q_DECLARE_PRIVATE(Launcher)
-    LauncherPrivate* const d_ptr; 
+    LauncherPrivate* const d_ptr;
+
+
 };
 
 class LauncherPrivate :public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(LauncherPrivate)
-
 public:
     explicit LauncherPrivate(Launcher* parent);
     ~LauncherPrivate(){delete q_ptr;}
     void initializeBasicWidget(QWidget *parent);
+private slots:
+    void setCurrentPageView(int tabIndex);
+    void onItemClick(int index);
+    void setCurrentViewPager(int index);
 
 private:
     Q_DECLARE_PUBLIC(Launcher)
     Launcher* const q_ptr;
 
-    //----------
-    BmpWidget *mBackground;
+    void initializeToolsWidget(QWidget *parent);
+    void initializeViewPager(QWidget *parent);
+    void initializeViewPagerPoint(QWidget *parent, int number);
 
-    BmpButton *mBtnFm;
-    BmpButton *mBtnAm;
-    BmpButton *mBtnMusic;
-    BmpButton *mBtnVideo;
-    BmpButton *mBtnElink;
-    BmpButton *mBtnBlueTooth;
-    BmpButton *mBtnImage;
-    BmpButton *mBtnSettings;
-    BmpButton *mBtnAvin; //Aux
 
-    BmpWidget *mBackTitle;
-    BmpButton *mBmpMultimedia;
+    MediaToolsWidget *mMediaToolsWidget = NULL;
+    ViewPagerWidget *mViewPaperWidget = NULL;
+    QList<QLabel*> mPointList;
+    QPixmap *mNormalPointPixmap = NULL;
+    QPixmap *mPressPointPixmap = NULL;
 
-    BmpWidget *mHomePagerOne;
-    BmpWidget *mHomePagerTwo;
-
-    QLabel * mLabelFm;
-    QLabel * mLabelAm;
-    QLabel * mLabelMusic;
-    QLabel * mLabelVideo;
-    QLabel * mLabelElink;
-    QLabel * mLabelBlueTooth;
-    QLabel * mLabelImage;
-    QLabel * mLabelSetting;
-
-    //----------
-
-private slots:
-    void onBtnFmRelease();
-    void onBtnAmRelease();
-    void onBtnMusicRelease();
-    void onBtnVideoRelease();
-    void onBtnElinkRelease();
-    void onBtnBlueToothRelease();
-    void onBtnImagetRelease();
-    void onBtnSettingsRelease();
-    void onBtnAvinRelease();
-
+    const int POINT_SPACE_WIDTH = 38;
+    const int POINT_WIDTH = 12;
+    const int POINT_HEIGHT = 12;
 
 };
 

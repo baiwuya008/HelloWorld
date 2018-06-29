@@ -61,28 +61,27 @@ private slots:
     void playMusic(const int mediaType, const int index,
                    const QString &filePath, const qint64 duration);
     void pauseMusic(const int mediaType);
-    void updateMusic(const int mediaType, const QString& title,
-                     const QString& artist, const QString& album);
+    void updateMusicInfo(const QString filePath, const QString title,
+                           const QString artist, const QString album);
     void resumeMusic(const int mediaType);
-    void stopMusic(const int mediaType);
+    void stopMusic(const int mediaType, bool isError);
     void setPlayModeMusic(const int mediaType, const int playMode);
     void updateProgressMusic(const int mediaType, const qint64 currentPosition, const qint64 duration);
-    void scanMusicFiles(int deviceType, QStringList& pathList);
+    void scanMusicFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
 
 
     void setCurrentPageView(int tabIndex);
-    void setPlayItem(int deviceType, QString filePath, int index);
+    void setPlayItem(int deviceType, QString filePath);
     void setPlayStatus(bool isPlay);
     void setPlayMode(int mode);
     void setPlayIndex(bool isNext);
-    void setPlaySeek(int value);
+    void setPlaySeek(int progress);
 
 
 private:
     Q_DECLARE_PUBLIC(Music)
     Music* const q_ptr;
 
-    void setWidgetBackground(QWidget *widget, QString path);
     void initializeToolsWidget(QWidget *parent);
     void initializePlayView(QWidget *parent);
     void initializeListView(QWidget *parent);
@@ -93,6 +92,7 @@ private:
 
 
     void connectAllSlots();
+    int mCurrentDeviceType = -1;
 
     //----------
     BmpWidget *mBackground;

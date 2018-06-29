@@ -11,7 +11,7 @@ MusicPrivate::MusicPrivate(Music *parent)
 void MusicPrivate::initializeBasicWidget(QWidget *parent)
 {
     Q_Q(Music);
-    setWidgetBackground(parent, ":/img/Common/img_wap_bg.png");
+    MediaUtils::setWidgetBackground(parent, ":/img/Common/img_wap_bg.png");
 
     mStackedWidget = new QStackedWidget(parent);
     mStackedWidget->setFixedSize(QSize(800, 435));
@@ -26,17 +26,6 @@ void MusicPrivate::initializeBasicWidget(QWidget *parent)
     setCurrentPageView(0);
 }
 
-void MusicPrivate::setWidgetBackground(QWidget *widget, QString path) {
-    //设置背景图片
-    widget->setAutoFillBackground(true); // 这句要加上, 否则可能显示不出背景图.
-    QPalette palette = widget->palette();
-    palette.setBrush(QPalette::Window,
-                     QBrush(QPixmap(path).scaled(widget->size(),
-                                                 Qt::IgnoreAspectRatio,
-                                                 Qt::SmoothTransformation)));
-    widget->setPalette(palette);
-}
-
 
 void MusicPrivate::initializeToolsWidget(QWidget *parent) {
     QList<QString> list;
@@ -47,6 +36,10 @@ void MusicPrivate::initializeToolsWidget(QWidget *parent) {
 }
 
 void MusicPrivate::setCurrentPageView(int tabIndex) {
+    if (1 == tabIndex) {
+        mMusicListWidget->showAllList();
+    }
+
     mStackedWidget->setCurrentIndex(tabIndex);
 }
 
@@ -64,11 +57,12 @@ void MusicPrivate::connectAllSlots()
 {
     connect(g_Multimedia, SIGNAL(onPlay(int, int, QString, qint64)), this, SLOT(playMusic(int, int, QString, qint64)));
     connect(g_Multimedia, SIGNAL(onPause(int)), this, SLOT(pauseMusic(int)));
-    connect(g_Multimedia, SIGNAL(onUpdateMusic(int,QString,QString,QString)), this, SLOT(updateMusic(int,QString,QString,QString)));
     connect(g_Multimedia, SIGNAL(onResume(int)), this, SLOT(resumeMusic(int)));
+    connect(g_Multimedia, SIGNAL(onStop(int,bool)), this, SLOT(stopMusic(int,bool)));
     connect(g_Multimedia, SIGNAL(onSetPlayMode(int,int)), this, SLOT(setPlayModeMusic(int,int)));
     connect(g_Multimedia, SIGNAL(onUpdateProgress(int,qint64,qint64)), this, SLOT(updateProgressMusic(int,qint64,qint64)));
-    connect(g_Multimedia, SIGNAL(onScanMusicFiles(int,QStringList&)), this, SLOT(scanMusicFiles(int,QStringList&)));
+    connect(g_Multimedia, SIGNAL(onScanMusicFiles(int,int,QString,QStringList&)), this, SLOT(scanMusicFiles(int,int,QString,QStringList&)));
+    connect(g_Multimedia, SIGNAL(onUpdateMusicInfo(QString,QString,QString,QString)), this, SLOT(updateMusicInfo(QString,QString,QString,QString)));
 
 
 
@@ -76,16 +70,14 @@ void MusicPrivate::connectAllSlots()
     connect(mMusicPlayWidget, SIGNAL(onSwitchMode(int)), this, SLOT(setPlayMode(int)));
     connect(mMusicPlayWidget, SIGNAL(onSwitchIndex(bool)), this, SLOT(setPlayIndex(bool)));
     connect(mMusicPlayWidget, SIGNAL(onSeekTo(int)), this, SLOT(setPlaySeek(int)));
-    connect(mMusicListWidget, SIGNAL(selectItem(int,QString,int)), this, SLOT(setPlayItem(int,QString,int)));
+    connect(mMusicListWidget, SIGNAL(selectItem(int,QString)), this, SLOT(setPlayItem(int,QString)));
+
+    connect(mMusicListWidget, &MusicListWidget::queryFiles, g_Multimedia, &Multimedia::queryMediaFiles);
 }
 
-void MusicPrivate::setPlayItem(int deviceType, QString filePath, int index) {
-    qDebug() << "MusicPrivate setPlayItem filePath = " << filePath
-             << "; index = " << index
-             << "; deviceType = " << deviceType;
-
-    mMusicPlayWidget->updatePlayFile(filePath, 0);
-    g_Multimedia->setPlayIndex(MediaUtils::MUSIC, deviceType, index);
+void MusicPrivate::setPlayItem(int deviceType, QString filePath) {
+    mMusicPlayWidget->preparedPlay(filePath, 0);
+    g_Multimedia->setPlayPath(MediaUtils::MUSIC, deviceType, filePath);
 }
 
 void MusicPrivate::setPlayIndex(bool isNext)
@@ -93,9 +85,9 @@ void MusicPrivate::setPlayIndex(bool isNext)
     mMusicListWidget->setPlayNext(isNext);
 }
 
-void MusicPrivate::setPlaySeek(int value)
+void MusicPrivate::setPlaySeek(int progress)
 {
-    g_Multimedia->seekTo(MediaUtils::MUSIC, value);
+    g_Multimedia->seekTo(MediaUtils::MUSIC, progress);
 }
 
 void MusicPrivate::setPlayStatus(bool isPlay)
@@ -108,9 +100,10 @@ void MusicPrivate::setPlayMode(int mode)
     g_Multimedia->setPlayMode(MediaUtils::MUSIC, mode);
 }
 
-void MusicPrivate::scanMusicFiles(int deviceType, QStringList& pathList)
+void MusicPrivate::scanMusicFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList)
 {
-    mMusicListWidget->updateList(deviceType, pathList);
+    this->mCurrentDeviceType = deviceType;
+    mMusicListWidget->updateList(deviceType, queryMode, dirPath, pathList);
     if (pathList.size() > 0) {
         mMusicPlayWidget->updateScanFile(pathList.at(0));
     }
@@ -122,12 +115,8 @@ void MusicPrivate::playMusic(const int mediaType, const int index, const QString
         return;
     }
 
-
-    qDebug() << " MusicPrivate::setPlayMusic filePath = " << filePath
-             << "; duration = " << duration
-             << "; index = " << index;
-    mMusicListWidget->setPlayIndex(index);
-    mMusicPlayWidget->updatePlayFile(filePath, duration);
+    mMusicListWidget->refreshItem(index);
+    mMusicPlayWidget->playMusic(filePath, duration);
 }
 
 void MusicPrivate::pauseMusic(const int mediaType)
@@ -139,13 +128,10 @@ void MusicPrivate::pauseMusic(const int mediaType)
     mMusicPlayWidget->setPlayStatus(false);
 }
 
-void MusicPrivate::updateMusic(const int mediaType, const QString &title, const QString &artist, const QString &album)
+void MusicPrivate::updateMusicInfo(const QString filePath, const QString title, const QString artist, const QString album)
 {
-    if (mediaType != MediaUtils::MUSIC) {
-        return;
-    }
+    mMusicPlayWidget->updatePlayInfo(filePath, title, artist, album);
 
-    mMusicPlayWidget->updatePlayInfo(title, artist, album);
 }
 
 void MusicPrivate::resumeMusic(const int mediaType)
@@ -156,7 +142,7 @@ void MusicPrivate::resumeMusic(const int mediaType)
     mMusicPlayWidget->setPlayStatus(true);
 }
 
-void MusicPrivate::stopMusic(const int mediaType)
+void MusicPrivate::stopMusic(const int mediaType, bool isError)
 {
     if (mediaType != MediaUtils::MUSIC) {
         return;

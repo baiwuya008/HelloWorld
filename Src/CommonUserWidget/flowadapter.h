@@ -29,6 +29,7 @@ public:
     void setSelection(int position);
     void setInfoList(QList<QString> &list);
     void notifyDataSetChanged();
+    void setCenterPosition(int position);
 
 signals:
     void notifyData();

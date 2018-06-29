@@ -18,11 +18,12 @@ public:
     void play(int index, QString path);
     void play();
     void pause();
-    void seekTo(int position);
+    void seekTo(int progress);
     qint64 getCurrentPosition();
     qint64 getDuration();
     bool isPlaying();
     void setPlayStatus(bool isPlay);
+    void setVideoWidget(QVideoWidget *videoWidget);
 
 signals:
     void onPositionChanged(int mediaType, qint64 position, qint64 duration);
@@ -34,9 +35,10 @@ signals:
 private slots:
     void onPrepared(bool available);
     void onError(QMediaPlayer::Error error);
-    void onCompletion();
+    void onCompletion(bool isError);
     void onUpdatePosition(qint64 position);
     void onStatusChanged(QMediaPlayer::State status);
+    void onTimeout();
 
 private:
     friend class PlayerPrivate;

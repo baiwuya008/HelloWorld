@@ -60,12 +60,13 @@ private:
     void startCheckClick(QPoint p);
     bool computeClickPosition(QPoint &p);
     void stopCheckClick();
+    void refreshCenterView();
 
 
 
     const int MOVE_MIN_X = 5;//最小移动间距
     const int ON_CLICK_TIME_OUT = 500;//按下的超时时间
-    const int MOV_ANI_TIME = 500;//移动动画的时间
+    const int MOV_ANI_TIME = 200;//移动动画的时间
     const int PICTURE_WIDTH = 250;//图片的宽度
     const int PICTURE_HEIGHT = 200;//图片的高度
     const float SIZE_SCALE = 0.2f;//控件大小等比缩放的比例
@@ -109,10 +110,10 @@ void FlowViewPrivate::initializeParent() {
     Q_Q(FlowView);
 
     //设置背景色
-//    QPalette pal = q->palette();
-//    pal.setColor(QPalette::Background, Qt::gray);
-//    q->setAutoFillBackground(true); //不继承父组件的背景色
-//    q->setPalette(pal);
+    //    QPalette pal = q->palette();
+    //    pal.setColor(QPalette::Background, Qt::gray);
+    //    q->setAutoFillBackground(true); //不继承父组件的背景色
+    //    q->setPalette(pal);
 
     mClickTimer = new QTimer(q);
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
@@ -122,8 +123,17 @@ void FlowViewPrivate::initializeParent() {
 
 void FlowView::refreshView() {
     update();
+    Q_D(FlowView);
+    d->refreshCenterView();
 }
 
+void FlowViewPrivate::refreshCenterView()
+{
+    Q_Q(FlowView);
+    if (mAdapter != NULL) {
+        q->switchCenterView(mAdapter->getCenterPosition(), mAdapter->getTotalLength());
+    }
+}
 
 void FlowView::onFinished() {
     Q_D(FlowView);
@@ -237,6 +247,8 @@ void FlowViewPrivate::stopCheckClick() {
     }
 }
 
+
+
 void FlowViewPrivate::onClickTimeout() {
     stopCheckClick();
     mClickPosition = -1;
@@ -287,7 +299,7 @@ void FlowView::stopAni() {
 
 
 void FlowViewPrivate::setMoveAni(int moveX, bool isFinish) {
-     Q_Q(FlowView);
+    Q_Q(FlowView);
     if (isFinish) {
         if (currentMoveX > 0 && currentMoveX >= currentMoveScaleWidth/2) {
             mAdapter->movePosition(1);
@@ -296,14 +308,14 @@ void FlowViewPrivate::setMoveAni(int moveX, bool isFinish) {
         }
 
         initMoveMark();
-        emit q->switchCenterView(mAdapter->getCenterPosition());
+        refreshCenterView();
     }else {
         if (moveX == currentMoveScaleWidth) {
             mAdapter->movePosition(-1);
-            emit q->switchCenterView(mAdapter->getCenterPosition());
+            refreshCenterView();
         }else if (moveX == -currentMoveScaleWidth) {
             mAdapter->movePosition(1);
-            emit q->switchCenterView(mAdapter->getCenterPosition());
+            refreshCenterView();
         }
         setMoveX(moveX);
     }
@@ -595,7 +607,7 @@ void FlowViewPrivate::paintLeft(QPainter &painter, float moveScale) {
                     left = boundsLeft - moveXOffset;
                 }
             }else {
-                 moveXOffset = (1.0*nextDisplayWidth/currentMoveScaleWidth)*currentMoveX;
+                moveXOffset = (1.0*nextDisplayWidth/currentMoveScaleWidth)*currentMoveX;
                 left = startX + moveXOffset;
             }
         }else {//往右边滑动, 是放大
@@ -697,9 +709,7 @@ void FlowViewPrivate::mouseMoveEvent(QMouseEvent *event)
         int moveRow = moveX < 0 ? 1 : -1;
         mAdapter->movePosition(moveRow);
         initMoveMark();
-
-        Q_Q(FlowView);
-        emit q->switchCenterView(mAdapter->getCenterPosition());
+        refreshCenterView();
     }
 
     Q_Q(FlowView);

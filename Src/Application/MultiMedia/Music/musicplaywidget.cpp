@@ -36,9 +36,9 @@ private:
     void updateCurrentProgress(qint64 currentPosition, qint64 duration);
 
     MusicListItem *mFileItem = NULL;
+    MusicListItem *mTitleItem = NULL;
+    MusicListItem *mArtistItem = NULL;
     MusicListItem *mAlbumItem = NULL;
-    MusicListItem *mSingerItem = NULL;
-    MusicListItem *mSongItem = NULL;
     RotateWidget *mMusicPlayIcon =NULL;
     RotateWidget *mMusicPlayAni = NULL;
 
@@ -67,29 +67,31 @@ MusicPlayWidget::MusicPlayWidget(QWidget *parent)
 void MusicPlayWidgetPrivate::initializeListView(QWidget *parent) {
     int top = 59;
     mFileItem = new MusicListItem(parent);
-    mFileItem->setFixedSize(QSize(300, 30));
+    mFileItem->setFixedSize(QSize(400, 30));
     mFileItem->initItem("nothing", ":/Res/drawable/multimedia/music_file_icon.png");
     mFileItem->setGeometry(41, top, 0, 0);
     top += 30 + 20;
 
+    mTitleItem = new MusicListItem(parent);
+    mTitleItem->setFixedSize(QSize(400, 30));
+    mTitleItem->initItem("unknown", ":/Res/drawable/multimedia/music_album_icon.png");
+    mTitleItem->setGeometry(41, top, 0, 0);
+    top += 30 + 20;
+
+
+    mArtistItem = new MusicListItem(parent);
+    mArtistItem->setFixedSize(QSize(400, 30));
+    mArtistItem->initItem("unknown", ":/Res/drawable/multimedia/music_singer_icon.png");
+    mArtistItem->setGeometry(41, top, 0, 0);
+    top += 30 + 20;
+
+
     mAlbumItem = new MusicListItem(parent);
-    mAlbumItem->setFixedSize(QSize(300, 30));
-    mAlbumItem->initItem("未知", ":/Res/drawable/multimedia/music_album_icon.png");
+    mAlbumItem->setFixedSize(QSize(400, 30));
+    mAlbumItem->initItem("unknown", ":/Res/drawable/multimedia/music_song_icon.png");
     mAlbumItem->setGeometry(41, top, 0, 0);
-    top += 30 + 20;
 
-
-    mSingerItem = new MusicListItem(parent);
-    mSingerItem->setFixedSize(QSize(300, 30));
-    mSingerItem->initItem("未知", ":/Res/drawable/multimedia/music_singer_icon.png");
-    mSingerItem->setGeometry(41, top, 0, 0);
-    top += 30 + 20;
-
-
-    mSongItem = new MusicListItem(parent);
-    mSongItem->setFixedSize(QSize(300, 30));
-    mSongItem->initItem("未知", ":/Res/drawable/multimedia/music_song_icon.png");
-    mSongItem->setGeometry(41, top, 0, 0);
+    updateCurrentInfo("","","","");
 }
 
 
@@ -161,6 +163,7 @@ void MusicPlayWidgetPrivate::connectAllSlots()
     QObject::connect(mMusicClickWidget, &MusicClickWidget::switchIndex, q, &MusicPlayWidget::onSwitchIndex, type);
     QObject::connect(mMusicProgressWidget, &MusicProgressWidget::switchPlayMode, q, &MusicPlayWidget::onSwitchMode, type);
     QObject::connect(mMusicProgressWidget, &MusicProgressWidget::seekTo, q, &MusicPlayWidget::onSeekTo, type);
+    QObject::connect(mMusicProgressWidget, &MusicProgressWidget::sliderSwitchStatus, q, &MusicPlayWidget::onSwitchStatus, type);
 }
 
 void MusicPlayWidget::setPlayStatus(bool isPlay)
@@ -200,23 +203,39 @@ void MusicPlayWidget::updateScanFile(QString path)
     Q_D(MusicPlayWidget);
     if (d->mCurrentPlayPath.size() < 2) {
         d->updateCurrentPlay(path, 0);
+        d->mMusicProgressWidget->setPrepare(true);
     }
 }
 
 void MusicPlayWidgetPrivate::updateCurrentInfo(QString title, QString artist, QString album, QString path)
 {
-    mAlbumItem->setName(album);
-    mSingerItem->setName(title);
-    mSongItem->setName(artist);
+    if (title.length() > 0) {
+        mTitleItem->setName(title);
+    }else {
+        mTitleItem->setName("未知");
+    }
+
+    if (artist.length() > 0) {
+        mArtistItem->setName(artist);
+    }else {
+        mArtistItem->setName("未知");
+    }
+
+    if (album.length() > 0) {
+        mAlbumItem->setName(album);
+    }else {
+        mAlbumItem->setName("未知");
+    }
+
     if (path.length() > 1) {
-        mFileItem->setName(MediaUtils::getDirName(path));
+        mFileItem->setName(MediaUtils::getLastToName(path));
     }
 }
 
 void MusicPlayWidgetPrivate::updateCurrentPlay(QString path, qint64 duration)
 {
     mCurrentPlayPath = path;
-    mFileItem->setName(MediaUtils::changePathToName(path));
+    mFileItem->setName(MediaUtils::getLastToName(path));
     updateCurrentProgress(0, duration);
     if (duration > 0) {
         onPlay();
@@ -234,16 +253,21 @@ void MusicPlayWidget::updateProgress(const qint64 currentPosition, const qint64 
     d->updateCurrentProgress(currentPosition, duration);
 }
 
-void MusicPlayWidget::updatePlayInfo(const QString &title, const QString &artist, const QString &album)
+void MusicPlayWidget::updatePlayInfo(const QString &filePath, const QString &title, const QString &artist, const QString &album)
 {
     Q_D(MusicPlayWidget);
     d->updateCurrentInfo(title, artist, album, "");
 }
 
-void MusicPlayWidget::updatePlayFile(QString path, qint64 duration)
+void MusicPlayWidget::preparedPlay(QString path, qint64 duration)
 {
     Q_D(MusicPlayWidget);
+    d->updateCurrentInfo("", "", "", "");
     d->updateCurrentPlay(path, duration);
 }
 
-
+void MusicPlayWidget::playMusic(QString path, const qint64 duration)
+{
+     Q_D(MusicPlayWidget);
+     d->updateCurrentPlay(path, duration);
+}
