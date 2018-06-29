@@ -1,5 +1,5 @@
 #include "viewpagerwidget.h"
-#include <qDebug>
+#include <QDebug>
 #include <QStandardItemModel>
 #include <QList>
 #include <QPainter>

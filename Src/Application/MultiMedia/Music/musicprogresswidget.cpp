@@ -6,7 +6,7 @@
 #include "Src/CommonUserWidget/BmpButton.h"
 #include "Src/Application/MultiMedia/Tools/mediautils.h"
 #include <QMouseEvent>
-
+#include <qmath.h>
 
 class MusicProgressWidgetPrivate {
     Q_DISABLE_COPY(MusicProgressWidgetPrivate)
