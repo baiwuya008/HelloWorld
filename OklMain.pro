@@ -51,7 +51,7 @@ SOURCES += main.cpp\
     Src/Hardware/SerialPort.cpp \
     Src/Hardware/SerialPortService.cpp \
     Src/Framework/Manager/BluetoothManager.cpp \
-    Src/Framework/Manager/BluetoothManagerGoc.cpp
+    Src/Framework/Manager/BluetoothManagerGoc.cpp \
     Src/Application/MultiMedia/Music/musicplaywidget.cpp \
     Src/Application/MultiMedia/Music/musiclistwidget.cpp \
     Src/Application/MultiMedia/Music/musiclistitem.cpp \
