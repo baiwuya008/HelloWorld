@@ -1,6 +1,7 @@
 #include "simulationda.h"
 #include <QDebug>
 
+#include "Src/Framework/Manager/BluetoothManagerGoc.h"
 
 
 //-----------------
@@ -105,11 +106,11 @@ void SimulationDaPrivate::onBtnFM_AM_Release()
 }
 void SimulationDaPrivate::onBtnVOL_UP_Release()
 {
-
+ gBluetoothManager->openBluetooth();
 }
 void SimulationDaPrivate::onBtnVOL_DOWN_Release()
 {
-
+ gBluetoothManager->closeBluetooth();
 }
 void SimulationDaPrivate::onBtnPHONE_Release()
 {

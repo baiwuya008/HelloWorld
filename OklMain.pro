@@ -77,7 +77,11 @@ SOURCES += main.cpp\
     Src/Application/BlueTooth/Phone/phonerecordwidget.cpp \
     Src/Application/BlueTooth/Phone/listitembean.cpp \
     Src/Application/BlueTooth/Phone/customwidget.cpp \
-    Src/Application/BlueTooth/Phone/phonedialwidget.cpp
+    Src/Application/BlueTooth/Phone/phonedialwidget.cpp \
+    Src/Hardware/SerialPort.cpp \
+    Src/Hardware/SerialPortService.cpp \
+    Src/Framework/Manager/BluetoothManager.cpp \
+    Src/Framework/Manager/BluetoothManagerGoc.cpp
 
 HEADERS  += mainwindow.h \
     configuration.h \
@@ -143,7 +147,12 @@ HEADERS  += mainwindow.h \
     Src/Application/BlueTooth/Phone/phonerecordwidget.h \
     Src/Application/BlueTooth/Phone/listitembean.h \
     Src/Application/BlueTooth/Phone/customwidget.h \
-    Src/Application/BlueTooth/Phone/phonedialwidget.h
+    Src/Application/BlueTooth/Phone/phonedialwidget.h \
+    Src/Hardware/SerialPort.h \
+    Src/Hardware/okl_errorno.h \
+    Src/Hardware/SerialPortService.h \
+    Src/Framework/Manager/BluetoothManager.h \
+    Src/Framework/Manager/BluetoothManagerGoc.h
 
 
 
