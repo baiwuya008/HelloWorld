@@ -4,8 +4,13 @@
 #include <unistd.h>
 #include <QThread>
 
+#if(QT_IN_WINDOWS == 0)
+  #include <termios.h>
+  #include <sys/ioctl.h>
+
 const static int speed_arr[] = {B115200, B57600, B38400, B19200, B9600, B4800, B2400, B1200, B300};
 const static int name_arr[]  = {115200, 57600, 38400, 19200, 9600, 4800, 2400, 1200, 300};
+#endif
 
 #define    DEBUG_SERIAL_MSG        1
 #define    SERIAL_DEVICE_PREFIX    "/dev/ttymxc"
@@ -69,9 +74,10 @@ RETURN_LABEL:
 
 int SerialPort::Setup(int fd,int baudrate,int nbits,char parary,int stopbits){
 
-    struct termios newtio, oldtio;
-    int  speed = 0x00;
     int  iret = 0x00;
+#if(QT_IN_WINDOWS == 0)
+    struct termios newtio, oldtio;
+    int  speed = 0x00; 
     int  status;
 
     memset(&newtio, 0x00, sizeof(newtio));
@@ -239,12 +245,15 @@ int SerialPort::Setup(int fd,int baudrate,int nbits,char parary,int stopbits){
             #endif
 
   RETURN_LABEL:
+#endif
   return iret;
 }
 
 int SerialPort::ReadData(int fd,unsigned char *data_buff,int len,int rcv_wait){
-    int retval = 0x00;
+
+#if(QT_IN_WINDOWS == 0)
     int ret = 0x00;
+    int retval = 0x00;
     int ret_more = 0x00;
     int pos = 0x00;
 
@@ -294,7 +303,9 @@ int SerialPort::ReadData(int fd,unsigned char *data_buff,int len,int rcv_wait){
                  return -1;
             }
      }
-
+#else
+    return -1;
+#endif
 }
 
 int SerialPort::WriteData(int fd,unsigned char *data_buff,int s_num){
