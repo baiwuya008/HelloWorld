@@ -12,7 +12,7 @@ void VideoPrivate::initializeBasicWidget(QWidget *parent)
 {
     MediaUtils::setWidgetBackground(parent, ":/img/Common/img_wap_bg.png");
     mStackedWidget = new QStackedWidget(parent);
-    mStackedWidget->setFixedSize(QSize(800, 435));
+    mStackedWidget->setFixedSize(QSize(800, 384));
     mStackedWidget->setGeometry(0, 50, 0, 0);
 
     initializeToolsWidget(parent);

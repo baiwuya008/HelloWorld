@@ -20,6 +20,8 @@ signals:
     void seekTo(int progress);
     void switchPlayMode(int mode);
     void sliderSwitchStatus(bool isPlay);
+    void sliderMousePress();
+    void sliderMouseRelease();
 
 protected:
    bool eventFilter(QObject *watched, QEvent *event);

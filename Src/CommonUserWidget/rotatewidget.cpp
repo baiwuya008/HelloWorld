@@ -1,6 +1,7 @@
 #include "rotatewidget.h"
 #include <QTransform>
 #include <QDebug>
+#include <QBitmap>
 
 class RotateWidgetPrivate {
     Q_DISABLE_COPY(RotateWidgetPrivate)
@@ -30,11 +31,14 @@ private:
     int currentHeight = 0;
     void rotatePicture(QPainter &painter, int angle);
     QPixmap getPixmap(QString path);
+    QPixmap pixmapToRound(int radius);
     QTimer* mRotateTimer = NULL;
 
 
     QList<QString> mList;
     bool isList = false;
+    bool isPixmap = false;
+    QPixmap *mPixmap = NULL;
     int position = 0;
     int aniTime = 100;
 };
@@ -66,8 +70,11 @@ void RotateWidget::paintEvent(QPaintEvent *event)
         return;
     }
 
+    if (d->isPixmap && NULL == d->mPixmap) {
+        return;
+    }
 
-    if (!d->isList && d->mPath.length() < 2) {
+    if (!d->isList && !d->isPixmap && d->mPath.length() < 2) {
         return;
     }
 
@@ -91,7 +98,27 @@ void RotateWidgetPrivate::paintEvent(QPainter &painter, QPaintEvent *event)
 
 
     rotatePicture(painter, currentRotateAngle);
-    painter.drawPixmap(0, 0, getPixmap(mPath));
+    if (isPixmap && mPixmap != NULL) {
+        painter.drawPixmap(0, 0, pixmapToRound(currentWidth/2));
+    }else {
+        painter.drawPixmap(0, 0, getPixmap(mPath));
+    }
+}
+
+
+QPixmap RotateWidgetPrivate::pixmapToRound(int radius)
+{
+    QSize size(2*radius, 2*radius);
+    QBitmap mask(size);
+    QPainter painter(&mask);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    painter.fillRect(0, 0, size.width(), size.height(), Qt::white);
+    painter.setBrush(QColor(0, 0, 0));
+    painter.drawRoundedRect(0, 0, size.width(), size.height(), 180, 180);
+
+    QPixmap image = mPixmap->scaled(size);
+    image.setMask(mask);
+    return image;
 }
 
 void RotateWidget::resizeEvent(QResizeEvent *event)
@@ -111,6 +138,7 @@ void RotateWidget::init(QList<QString> list)
 void RotateWidgetPrivate::initList(QList<QString> list) {
     mList = list;
     isList = true;
+    isPixmap = false;
     position = 0;
 }
 
@@ -118,6 +146,21 @@ void RotateWidgetPrivate::initList(QList<QString> list) {
 void RotateWidget::init(QString path) {
     Q_D(RotateWidget);
     d->mPath = path;
+    d->isPixmap = false;
+    d->isList = false;
+    if (d->mPixmap != NULL) {
+        d->mPixmap = NULL;
+    }
+    stop();
+}
+
+void RotateWidget::setPixmap(QPixmap *pixmap)
+{
+    Q_D(RotateWidget);
+    d->isPixmap = true;
+    d->isList = false;
+    d->mPath = "";
+    d->mPixmap = pixmap;
     stop();
 }
 
@@ -140,7 +183,7 @@ void RotateWidget::stop() {
 
 void RotateWidget::setAniTime(int time)
 {
-     Q_D(RotateWidget);
+    Q_D(RotateWidget);
     d->aniTime = time;
 }
 
@@ -158,7 +201,7 @@ bool RotateWidgetPrivate::rotate() {
     if (isStart) {
         position += 1;
         if (mList.size() > 0) {
-             position = position % (mList.size());
+            position = position % (mList.size());
         }
 
         currentRotateAngle += 3;

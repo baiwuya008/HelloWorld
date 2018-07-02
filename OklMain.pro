@@ -76,6 +76,7 @@ SOURCES += main.cpp\
     Src/Framework/MultimediaService/MediaDb/mediadbentity.cpp \
     Src/Framework/MultimediaService/VideoPlayer/videoplayer.cpp \
     Src/Framework/MultimediaService/ImagePlayer/imageplayer.cpp \
+    Src/Application/MultiMedia/Music/musicid3.cpp \
     Src/Application/Launcher/viewpagerwidget.cpp \
     Src/Application/Radio/radio_unit.cpp \
     Src/Application/Radio/radio_data.cpp \
@@ -152,6 +153,7 @@ HEADERS  += mainwindow.h \
     Src/Framework/MultimediaService/MediaDb/mediadbentity.h \
     Src/Framework/MultimediaService/VideoPlayer/videoplayer.h \
     Src/Framework/MultimediaService/ImagePlayer/imageplayer.h \
+    Src/Application/MultiMedia/Music/musicid3.h \
     Src/Application/Launcher/viewpagerwidget.h \
     Src/Application/Radio/radio_unit.h \
     Src/Application/Radio/radio_data.h \

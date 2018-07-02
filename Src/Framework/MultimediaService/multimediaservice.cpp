@@ -343,7 +343,7 @@ void MultimediaService::onStartScanFiles(int deviceType, int mediaType)
 
 void MultimediaService::onScanLrc(int deviceType, QString filePath)
 {
-    m_Private->scanLrc(deviceType, filePath);
+//    m_Private->scanLrc(deviceType, filePath);
 }
 
 void MultimediaService::onScanFilesFinish(int deviceType, int mediaType, int queryMode, QString dirPath)

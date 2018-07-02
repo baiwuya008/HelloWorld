@@ -37,7 +37,7 @@ signals:
 
 public slots:
 private:
-    explicit MediaDb(QObject *parent = NULL);
+    explicit MediaDb(QObject *parent = nullptr);
     ~MediaDb();
     void initializePrivate();
     friend class MediaDbPrivate;

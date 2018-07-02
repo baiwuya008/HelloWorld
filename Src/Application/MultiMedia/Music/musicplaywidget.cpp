@@ -9,6 +9,7 @@
 #include "Src/CommonUserWidget/rotatewidget.h"
 #include <QDebug>
 #include <QList>
+#include "musicid3.h"
 
 
 class MusicPlayWidgetPrivate {
@@ -34,6 +35,7 @@ private:
     void updateCurrentInfo(QString title, QString artist, QString album, QString path);
     void updateCurrentPlay(QString path, qint64 duration);
     void updateCurrentProgress(qint64 currentPosition, qint64 duration);
+    void updateMusicInfo(QString path);
 
     MusicListItem *mFileItem = NULL;
     MusicListItem *mTitleItem = NULL;
@@ -41,6 +43,7 @@ private:
     MusicListItem *mAlbumItem = NULL;
     RotateWidget *mMusicPlayIcon =NULL;
     RotateWidget *mMusicPlayAni = NULL;
+    MusicId3 *mMusicId3 = NULL;
 
     MusicProgressWidget *mMusicProgressWidget = NULL;
     MusicClickWidget *mMusicClickWidget = NULL;
@@ -98,7 +101,7 @@ void MusicPlayWidgetPrivate::initializeListView(QWidget *parent) {
 void MusicPlayWidgetPrivate::initializeRightView(QWidget *parent) {
     mMusicPlayIcon = new RotateWidget(parent);
     mMusicPlayIcon->setFixedSize(QSize(219, 219));
-    mMusicPlayIcon->setGeometry(528, 48, 0, 0);
+    mMusicPlayIcon->setGeometry(524, 48, 0, 0);
     mMusicPlayIcon->init(":/Res/drawable/multimedia/music_play_icon.png");
 
 
@@ -183,6 +186,7 @@ void MusicPlayWidget::setPlayMode(int mode)
 }
 
 void MusicPlayWidgetPrivate::initializeBasicWidget(QWidget *parent) {
+    mMusicId3 = new MusicId3();
     initializeListView(parent);
     initializeRightView(parent);
     initializeProgressView(parent);
@@ -247,6 +251,27 @@ void MusicPlayWidgetPrivate::updateCurrentProgress(qint64 currentPosition, qint6
     mMusicProgressWidget->setProgress(currentPosition, duration);
 }
 
+void MusicPlayWidgetPrivate::updateMusicInfo(QString path)
+{
+    if (mMusicId3 != NULL && path.length() > 2) {
+        mMusicId3->decodeMusic(path);
+        if (mMusicId3->isDecodeV1) {
+            updateCurrentInfo(mMusicId3->m_ID3V1.title,
+                              mMusicId3->m_ID3V1.artist,
+                              mMusicId3->m_ID3V1.album,
+                              "");
+        }
+
+        if (mMusicId3->isDecodeImage) {
+            mMusicPlayIcon->setPixmap(mMusicId3->image);
+        }else {
+            mMusicPlayIcon->init(":/Res/drawable/multimedia/music_play_icon.png");
+            mMusicId3->destoryImage();
+        }
+        mMusicId3->clear();
+    }
+}
+
 void MusicPlayWidget::updateProgress(const qint64 currentPosition, const qint64 duration)
 {
     Q_D(MusicPlayWidget);
@@ -264,10 +289,11 @@ void MusicPlayWidget::preparedPlay(QString path, qint64 duration)
     Q_D(MusicPlayWidget);
     d->updateCurrentInfo("", "", "", "");
     d->updateCurrentPlay(path, duration);
+    d->updateMusicInfo(path);
 }
 
 void MusicPlayWidget::playMusic(QString path, const qint64 duration)
 {
-     Q_D(MusicPlayWidget);
-     d->updateCurrentPlay(path, duration);
+    Q_D(MusicPlayWidget);
+    d->updateCurrentPlay(path, duration);
 }
