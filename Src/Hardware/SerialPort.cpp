@@ -56,7 +56,12 @@ int SerialPort::Open(int port,char* prefix){
      }else{
         snprintf(device_name, slen-1, "%s%d", SERIAL_DEVICE_PREFIX, port);
      }
+#if(QT_IN_WINDOWS == 0)
      serial_fd = open(device_name, O_RDWR | O_NOCTTY | O_NDELAY,  660);
+#else
+     serial_fd = open(device_name, O_RDWR,  660);
+#endif
+
      if (serial_fd < 0x00)
          {
           #if DEBUG_SERIAL_MSG
