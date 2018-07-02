@@ -301,7 +301,6 @@ void MultimediaServicePrivate::connectAllSlots()
     QObject::connect(mDeviceWatcher, SIGNAL(onVideoFilePath(int,QString)), mVideoPlayer, SLOT(scanVideoFilePath(int,QString)), type);
     QObject::connect(mDeviceWatcher, SIGNAL(onImageFilePath(int,QString)), mImagePlayer, SLOT(scanImageFilePath(int,QString)), type);
     QObject::connect(mDeviceWatcher, SIGNAL(onScanFilesFinish(int,int,int,QString)), m_Parent, SLOT(onScanFilesFinish(int,int,int,QString)), type);
-    QObject::connect(mDeviceWatcher, &DeviceWatcher::onScanLrcInfo, m_Parent, &MultimediaService::onUpdateMusic, type);
 
     QObject::connect(mMusicPlayer, &MusicPlayer::onPositionChanged, m_Parent, &MultimediaService::onUpdateProgress, type);
     QObject::connect(mMusicPlayer, &MusicPlayer::onPlay, m_Parent, &MultimediaService::onPlay, type);

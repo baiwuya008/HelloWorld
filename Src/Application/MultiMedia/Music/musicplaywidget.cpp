@@ -278,12 +278,6 @@ void MusicPlayWidget::updateProgress(const qint64 currentPosition, const qint64 
     d->updateCurrentProgress(currentPosition, duration);
 }
 
-void MusicPlayWidget::updatePlayInfo(const QString &filePath, const QString &title, const QString &artist, const QString &album)
-{
-    Q_D(MusicPlayWidget);
-    d->updateCurrentInfo(title, artist, album, "");
-}
-
 void MusicPlayWidget::preparedPlay(QString path, qint64 duration)
 {
     Q_D(MusicPlayWidget);

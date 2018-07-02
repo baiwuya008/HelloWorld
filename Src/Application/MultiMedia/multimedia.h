@@ -45,7 +45,6 @@ signals:
     void onScanMusicFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
     void onScanVideoFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
     void onScanImageFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
-    void onUpdateMusicInfo(const QString filePath, const QString title, const QString artist, const QString album);
 
 private slots:
     void readFilesPathXml(QString xml);

@@ -62,8 +62,6 @@ void MusicPrivate::connectAllSlots()
     connect(g_Multimedia, SIGNAL(onSetPlayMode(int,int)), this, SLOT(setPlayModeMusic(int,int)));
     connect(g_Multimedia, SIGNAL(onUpdateProgress(int,qint64,qint64)), this, SLOT(updateProgressMusic(int,qint64,qint64)));
     connect(g_Multimedia, SIGNAL(onScanMusicFiles(int,int,QString,QStringList&)), this, SLOT(scanMusicFiles(int,int,QString,QStringList&)));
-    connect(g_Multimedia, SIGNAL(onUpdateMusicInfo(QString,QString,QString,QString)), this, SLOT(updateMusicInfo(QString,QString,QString,QString)));
-
 
 
     connect(mMusicPlayWidget, SIGNAL(onSwitchStatus(bool)), this, SLOT(setPlayStatus(bool)));
@@ -126,12 +124,6 @@ void MusicPrivate::pauseMusic(const int mediaType)
     }
 
     mMusicPlayWidget->setPlayStatus(false);
-}
-
-void MusicPrivate::updateMusicInfo(const QString filePath, const QString title, const QString artist, const QString album)
-{
-    mMusicPlayWidget->updatePlayInfo(filePath, title, artist, album);
-
 }
 
 void MusicPrivate::resumeMusic(const int mediaType)

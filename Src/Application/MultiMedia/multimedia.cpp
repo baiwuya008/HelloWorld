@@ -55,7 +55,6 @@ void MultimediaPrivate::connectAllSlots()
     QObject::connect(mMultimediaService, &MultimediaService::onSetPlayMode, m_Parent, &Multimedia::onSetPlayMode, type);
     QObject::connect(mMultimediaService, &MultimediaService::onUpdateProgress, m_Parent, &Multimedia::onUpdateProgress, type);
     QObject::connect(mMultimediaService, SIGNAL(onScanFilesPath(QString)), m_Parent, SLOT(readFilesPathXml(QString)), type);
-    QObject::connect(mMultimediaService, &MultimediaService::onUpdateMusic, m_Parent, &Multimedia::onUpdateMusicInfo, type);
 }
 
 
