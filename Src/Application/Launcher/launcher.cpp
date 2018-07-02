@@ -10,7 +10,7 @@ LauncherPrivate::LauncherPrivate(Launcher *parent)
 void LauncherPrivate::initializeToolsWidget(QWidget *parent)
 {
     QList<QString> list;
-    list.append("media");
+    list.append(tr("多媒体"));
     mMediaToolsWidget = new MediaToolsWidget(parent, list);
     connect(mMediaToolsWidget, SIGNAL(onItemClick(int)), this, SLOT(setCurrentPageView(int)));
 }
