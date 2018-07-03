@@ -7,6 +7,7 @@
 #include <QString>
 #include "phonelistwidgetitem.h"
 #include <QDialog>
+#include "Src/Framework/Manager/BluetoothManagerGoc.h"
 
 class PhoneRecordWidgetPrivate;
 class PhoneRecordWidget : public QWidget
