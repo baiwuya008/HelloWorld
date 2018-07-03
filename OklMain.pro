@@ -57,10 +57,10 @@ SOURCES += main.cpp\
     Src/Application/MultiMedia/Music/musiclistitem.cpp \
     Src/Application/MultiMedia/Music/musicprogresswidget.cpp \
     Src/Application/MultiMedia/Music/musicclickwidget.cpp \
-    Src/CommonUserWidget/rotatewidget.cpp \
-    Src/Application/MultiMedia/Music/btmusicwidget.cpp \
-    Src/CommonUserWidget/flowview.cpp \
-    Src/CommonUserWidget/flowadapter.cpp \
+    Src/Application/MultiMedia/Image/flowadapter.cpp \
+    Src/Application/MultiMedia/Image/flowview.cpp \
+    Src/Application/MultiMedia/Music/rotatewidget.cpp \
+    Src/Application/MultiMedia/BtMusic/btmusicwidget.cpp \
     Src/Application/MultiMedia/Video/videoplaywidget.cpp \
     Src/Application/MultiMedia/Tools/mediatoolswidget.cpp \
     Src/Application/MultiMedia/Tools/mediautils.cpp \
@@ -134,10 +134,10 @@ HEADERS  += mainwindow.h \
     Src/Application/MultiMedia/Music/musiclistitem.h \
     Src/Application/MultiMedia/Music/musicprogresswidget.h \
     Src/Application/MultiMedia/Music/musicclickwidget.h \
-    Src/CommonUserWidget/rotatewidget.h \
-    Src/Application/MultiMedia/Music/btmusicwidget.h \
-    Src/CommonUserWidget/flowview.h \
-    Src/CommonUserWidget/flowadapter.h \
+    Src/Application/MultiMedia/Image/flowadapter.h \
+    Src/Application/MultiMedia/Image/flowview.h \
+    Src/Application/MultiMedia/Music/rotatewidget.h \
+    Src/Application/MultiMedia/BtMusic/btmusicwidget.h \
     Src/Application/MultiMedia/Video/videoplaywidget.h \
     Src/Application/MultiMedia/Tools/mediatoolswidget.h \
     Src/Application/MultiMedia/Tools/mediautils.h \

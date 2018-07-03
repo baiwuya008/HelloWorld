@@ -1,8 +1,8 @@
 #include "btmusicwidget.h"
 #include <QDebug>
-#include "musicclickwidget.h"
-#include "musicprogresswidget.h"
-#include "Src/CommonUserWidget/rotatewidget.h"
+#include "Src/Application/MultiMedia/Music/musicclickwidget.h"
+#include "Src/Application/MultiMedia/Music/musicprogresswidget.h"
+#include "Src/Application/MultiMedia/Music/rotatewidget.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QFont>
