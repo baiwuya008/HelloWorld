@@ -6,12 +6,12 @@
 #include <QScopedPointer>
 
 class VideoPlayerPrivate;
-class VideoPlayer : public QObject
+class VideoPlayer : public Player
 {
     Q_OBJECT
     Q_DISABLE_COPY(VideoPlayer)
 public:
-    explicit VideoPlayer(QObject *parent = NULL);
+    explicit VideoPlayer(QObject *parent = NULL, int type = MultimediaUtils::VIDEO);
     ~VideoPlayer();
 
     QStringList* getPathList(int deviceType);

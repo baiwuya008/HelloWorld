@@ -9,7 +9,7 @@ VideoPlayWidget::VideoPlayWidget(QWidget *parent)
 }
 
 VideoPlayWidgetPrivate::VideoPlayWidgetPrivate(VideoPlayWidget *parent)
-    : Player(parent)
+    : QObject(parent)
     , q_ptr(parent)
 {
     initializeBasicWidget(parent);
@@ -54,8 +54,6 @@ void VideoPlayWidgetPrivate::initializeVideoView(QWidget *parent) {
     mVideoWidget = new QVideoWidget(parent);
     mVideoWidget->setFixedSize(800, 280);
     mVideoLayout->addWidget(mVideoWidget, 0, Qt::AlignCenter);
-
-    setVideoWidget(mVideoWidget);
 }
 
 void VideoPlayWidgetPrivate::initializeTimer()
@@ -80,11 +78,6 @@ void VideoPlayWidgetPrivate::onSliderRelease()
     startTimerOut(TIME_OUT);
 }
 
-void VideoPlayWidgetPrivate::onSeekTo(int progress)
-{
-    seekTo(progress);
-}
-
 void VideoPlayWidgetPrivate::stopTimerOut()
 {
     if (mQTimer != NULL && mQTimer->isActive()) {
@@ -106,7 +99,7 @@ void VideoPlayWidgetPrivate::startTimerOut(int msec)
 
 void VideoPlayWidgetPrivate::showFullView(bool isFull)
 {
-    if (isFull && !isFullShow && isPlaying()) {
+    if (isFull && !isFullShow && mVideoClickWidget->isPlaying()) {
         isFullShow = true;
         mVideoWidget->setFixedSize(800, 384);
         mVideoContainer->setFixedSize(800, 384);
@@ -123,21 +116,16 @@ void VideoPlayWidgetPrivate::showFullView(bool isFull)
 
 void VideoPlayWidgetPrivate::connectAllSlots()
 {
+    connect(mVideoProgressWidget, SIGNAL(sliderMousePress()), this, SLOT(onSliderPress()));
+    connect(mVideoProgressWidget, SIGNAL(sliderMouseRelease()), this, SLOT(onSliderRelease()));
+
+
     Q_Q(VideoPlayWidget);
     Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
     QObject::connect(mVideoClickWidget, &MusicClickWidget::switchStatus, q, &VideoPlayWidget::onSwitchStatus, type);
     QObject::connect(mVideoClickWidget, &MusicClickWidget::switchIndex, q, &VideoPlayWidget::onSwitchIndex, type);
+    QObject::connect(mVideoProgressWidget, &MusicProgressWidget::seekTo, q, &VideoPlayWidget::onSeekTo, type);
     QObject::connect(mVideoProgressWidget, &MusicProgressWidget::sliderSwitchStatus, q, &VideoPlayWidget::onSwitchStatus, type);
-
-    connect(mVideoProgressWidget, SIGNAL(seekTo(int)), this, SLOT(onSeekTo(int)));
-    connect(mVideoProgressWidget, SIGNAL(sliderMousePress()), this, SLOT(onSliderPress()));
-    connect(mVideoProgressWidget, SIGNAL(sliderMouseRelease()), this, SLOT(onSliderRelease()));
-
-    connect(this, SIGNAL(onPlay(int,int,QString,qint64)), this, SLOT(backPlay(int,int,QString,qint64)));
-    connect(this, SIGNAL(onResume(int)), this, SLOT(backResume(int)));
-    connect(this, SIGNAL(onPause(int)), this, SLOT(backPause(int)));
-    connect(this, SIGNAL(onFinish(int,bool)), this, SLOT(backFinish(int,bool)));
-    connect(this, SIGNAL(onPositionChanged(int,qint64,qint64)), this, SLOT(backPositionChanged(int,qint64,qint64)));
 }
 
 void VideoPlayWidgetPrivate::updatePlayStatus(bool play)
@@ -151,16 +139,16 @@ void VideoPlayWidgetPrivate::updatePlayStatus(bool play)
     }
 }
 
-void VideoPlayWidgetPrivate::updateCurrentPlay(QString path, qint64 duration)
+void VideoPlayWidgetPrivate::updatePlayPath(QString path, qint64 duration)
 {
     mCurrentPlayPath = path;
-    updateCurrentProgress(0, duration);
+    updateProgress(0, duration);
     if (duration > 0) {
         updatePlayStatus(true);
     }
 }
 
-void VideoPlayWidgetPrivate::updateCurrentProgress(qint64 currentPosition, qint64 duration)
+void VideoPlayWidgetPrivate::updateProgress(qint64 currentPosition, qint64 duration)
 {
     mVideoProgressWidget->setProgress(currentPosition, duration);
 }
@@ -168,26 +156,25 @@ void VideoPlayWidgetPrivate::updateCurrentProgress(qint64 currentPosition, qint6
 void VideoPlayWidget::setPlayStatus(bool isPlay)
 {
     Q_D(VideoPlayWidget);
-    d->setPlayStatus(isPlay);
+    d->mVideoClickWidget->setPlayStatus(isPlay);
 }
 
-void VideoPlayWidget::playVideo(QString path, const qint64 duration)
+void VideoPlayWidget::setPlayPath(QString path, const qint64 duration)
 {
     Q_D(VideoPlayWidget);
-    d->updateCurrentPlay(path, duration);
+    d->updatePlayPath(path, duration);
 }
 
-void VideoPlayWidget::preparedPlay(QString path, qint64 duration)
+void VideoPlayWidget::setProgress(const qint64 currentPosition, const qint64 duration)
 {
     Q_D(VideoPlayWidget);
-    d->updateCurrentPlay(path, duration);
-    d->play(0, path);
+    d->updateProgress(currentPosition, duration);
 }
 
-void VideoPlayWidget::updateProgress(const qint64 currentPosition, const qint64 duration)
+QVideoWidget *VideoPlayWidget::getVideoWidget()
 {
     Q_D(VideoPlayWidget);
-    d->updateCurrentProgress(currentPosition, duration);
+    return d->mVideoWidget;
 }
 
 void VideoPlayWidget::resizeEvent(QResizeEvent *event)
@@ -208,32 +195,7 @@ void VideoPlayWidget::mouseReleaseEvent(QMouseEvent *event)
     d->startTimerOut(d->TIME_OUT);
 }
 
-void VideoPlayWidgetPrivate::backPositionChanged(int mediaType, qint64 position, qint64 duration)
-{
-    updateCurrentProgress(position, duration);
-}
 
-void VideoPlayWidgetPrivate::backPlay(int mediaType, int index, QString path, qint64 duration)
-{
-    updateCurrentPlay(path, duration);
-}
-
-void VideoPlayWidgetPrivate::backResume(int mediaType)
-{
-    updatePlayStatus(true);
-}
-
-void VideoPlayWidgetPrivate::backPause(int mediaType)
-{
-    updatePlayStatus(false);
-}
-
-void VideoPlayWidgetPrivate::backFinish(int mediaType, bool isError)
-{
-    updatePlayStatus(false);
-    Q_Q(VideoPlayWidget);
-    emit q->onBackFinish();
-}
 
 VideoPlayWidget::~VideoPlayWidget()
 {

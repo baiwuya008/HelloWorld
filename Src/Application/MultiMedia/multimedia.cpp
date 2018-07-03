@@ -147,6 +147,12 @@ void Multimedia::queryMediaFiles(int deviceType, int mediaType, int queryMode, Q
     m_Private->mMultimediaService->queyMediaFiles(deviceType, mediaType, queryMode, dirPath);
 }
 
+void Multimedia::setVideoWidget(QVideoWidget *videoWidget)
+{
+
+    m_Private->mMultimediaService->setVideoWidget(videoWidget);
+}
+
 void Multimedia::exitPlayer(const int mediaType)
 {
     m_Private->mMultimediaService->exitPlayer(mediaType);

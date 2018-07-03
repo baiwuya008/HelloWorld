@@ -18,10 +18,6 @@ public:
     explicit MusicPlayWidgetPrivate(MusicPlayWidget *parent);
     ~MusicPlayWidgetPrivate();
 
-private slots:
-    void onPlay();
-    void onPause();
-
 private:
     Q_DECLARE_PUBLIC(MusicPlayWidget)
     MusicPlayWidget* const q_ptr;
@@ -32,10 +28,12 @@ private:
     void initializeProgressView(QWidget *parent);
     void initializeClickView(QWidget *parent);
 
-    void updateCurrentInfo(QString title, QString artist, QString album, QString path);
-    void updateCurrentPlay(QString path, qint64 duration);
-    void updateCurrentProgress(qint64 currentPosition, qint64 duration);
-    void updateMusicInfo(QString path);
+    void decodeMusicInfo(QString path);
+
+    void updatePlayInfo(QString title, QString artist, QString album);
+    void updatePlayPath(QString path, qint64 duration);
+    void updateProgress(qint64 currentPosition, qint64 duration);
+    void updatePlayStatus(bool isPlay);
 
     MusicListItem *mFileItem = NULL;
     MusicListItem *mTitleItem = NULL;
@@ -48,7 +46,6 @@ private:
     MusicProgressWidget *mMusicProgressWidget = NULL;
     MusicClickWidget *mMusicClickWidget = NULL;
     QString mCurrentPlayPath;
-
 };
 
 
@@ -94,7 +91,7 @@ void MusicPlayWidgetPrivate::initializeListView(QWidget *parent) {
     mAlbumItem->initItem("unknown", ":/Res/drawable/multimedia/music_song_icon.png");
     mAlbumItem->setGeometry(41, top, 0, 0);
 
-    updateCurrentInfo("","","","");
+    updatePlayInfo("","","");
 }
 
 
@@ -137,20 +134,6 @@ void MusicPlayWidgetPrivate::initializeProgressView(QWidget *parent) {
     mMusicProgressWidget->setGeometry(40, 283, 0, 0);
 }
 
-void MusicPlayWidgetPrivate::onPlay()
-{
-    mMusicPlayIcon->start();
-    mMusicPlayAni->start();
-    mMusicClickWidget->setPlayStatus(true);
-}
-
-void MusicPlayWidgetPrivate::onPause()
-{
-    mMusicPlayIcon->stop();
-    mMusicPlayAni->stop();
-    mMusicClickWidget->setPlayStatus(false);
-}
-
 void MusicPlayWidgetPrivate::initializeClickView(QWidget *parent) {
     mMusicClickWidget = new MusicClickWidget(parent);
     mMusicClickWidget->setFixedSize(QSize(800, 60));
@@ -172,11 +155,7 @@ void MusicPlayWidgetPrivate::connectAllSlots()
 void MusicPlayWidget::setPlayStatus(bool isPlay)
 {
     Q_D(MusicPlayWidget);
-    if (isPlay) {
-        d->onPlay();
-    }else {
-        d->onPause();
-    }
+    d->updatePlayStatus(isPlay);
 }
 
 void MusicPlayWidget::setPlayMode(int mode)
@@ -202,16 +181,7 @@ MusicPlayWidget::~MusicPlayWidget() {
 
 }
 
-void MusicPlayWidget::updateScanFile(QString path)
-{
-    Q_D(MusicPlayWidget);
-    if (d->mCurrentPlayPath.size() < 2) {
-        d->updateCurrentPlay(path, 0);
-        d->mMusicProgressWidget->setPrepare(true);
-    }
-}
-
-void MusicPlayWidgetPrivate::updateCurrentInfo(QString title, QString artist, QString album, QString path)
+void MusicPlayWidgetPrivate::updatePlayInfo(QString title, QString artist, QString album)
 {
     if (title.length() > 0) {
         mTitleItem->setName(title);
@@ -230,36 +200,49 @@ void MusicPlayWidgetPrivate::updateCurrentInfo(QString title, QString artist, QS
     }else {
         mAlbumItem->setName("未知");
     }
-
-    if (path.length() > 1) {
-        mFileItem->setName(MediaUtils::getLastToName(path));
-    }
 }
 
-void MusicPlayWidgetPrivate::updateCurrentPlay(QString path, qint64 duration)
-{
+void MusicPlayWidgetPrivate::updatePlayPath(QString path, qint64 duration)
+{  
+    updateProgress(0, duration);
+    if (duration > 0) {
+        updatePlayStatus(true);
+    }
+
+    if (mCurrentPlayPath.length() > 1 && !mCurrentPlayPath.compare(path)) {
+        return;
+    }
+
     mCurrentPlayPath = path;
     mFileItem->setName(MediaUtils::getLastToName(path));
-    updateCurrentProgress(0, duration);
-    if (duration > 0) {
-        onPlay();
-    }
+    decodeMusicInfo(path);
 }
 
-void MusicPlayWidgetPrivate::updateCurrentProgress(qint64 currentPosition, qint64 duration)
+void MusicPlayWidgetPrivate::updateProgress(qint64 currentPosition, qint64 duration)
 {
     mMusicProgressWidget->setProgress(currentPosition, duration);
 }
 
-void MusicPlayWidgetPrivate::updateMusicInfo(QString path)
+void MusicPlayWidgetPrivate::updatePlayStatus(bool isPlay)
+{
+    mMusicClickWidget->setPlayStatus(isPlay);
+    if (isPlay) {
+        mMusicPlayIcon->start();
+        mMusicPlayAni->start();
+    }else {
+        mMusicPlayIcon->stop();
+        mMusicPlayAni->stop();
+    }
+}
+
+void MusicPlayWidgetPrivate::decodeMusicInfo(QString path)
 {
     if (mMusicId3 != NULL && path.length() > 2) {
         mMusicId3->decodeMusic(path);
         if (mMusicId3->isDecodeV1) {
-            updateCurrentInfo(mMusicId3->m_ID3V1.title,
-                              mMusicId3->m_ID3V1.artist,
-                              mMusicId3->m_ID3V1.album,
-                              "");
+            updatePlayInfo(mMusicId3->m_ID3V1.title,
+                           mMusicId3->m_ID3V1.artist,
+                           mMusicId3->m_ID3V1.album);
         }
 
         if (mMusicId3->isDecodeImage) {
@@ -268,26 +251,22 @@ void MusicPlayWidgetPrivate::updateMusicInfo(QString path)
             mMusicPlayIcon->init(":/Res/drawable/multimedia/music_play_icon.png");
             mMusicId3->destoryImage();
         }
+
+        if (mMusicClickWidget->isPlaying()) {
+            mMusicPlayIcon->start();
+        }
         mMusicId3->clear();
     }
 }
 
-void MusicPlayWidget::updateProgress(const qint64 currentPosition, const qint64 duration)
+void MusicPlayWidget::setProgress(const qint64 currentPosition, const qint64 duration)
 {
     Q_D(MusicPlayWidget);
-    d->updateCurrentProgress(currentPosition, duration);
+    d->updateProgress(currentPosition, duration);
 }
 
-void MusicPlayWidget::preparedPlay(QString path, qint64 duration)
+void MusicPlayWidget::setPlayPath(QString path, const qint64 duration)
 {
     Q_D(MusicPlayWidget);
-    d->updateCurrentInfo("", "", "", "");
-    d->updateCurrentPlay(path, duration);
-    d->updateMusicInfo(path);
-}
-
-void MusicPlayWidget::playMusic(QString path, const qint64 duration)
-{
-    Q_D(MusicPlayWidget);
-    d->updateCurrentPlay(path, duration);
+    d->updatePlayPath(path, duration);
 }

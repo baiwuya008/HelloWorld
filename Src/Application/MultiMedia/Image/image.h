@@ -58,7 +58,9 @@ private slots:
     void setCenterTab(int position, int size);
 
     void setPlayItem(int deviceType, QString filePath);
-    void scanImageFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
+
+
+    void backScanFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
 
 private:
     Q_DECLARE_PUBLIC(Image)

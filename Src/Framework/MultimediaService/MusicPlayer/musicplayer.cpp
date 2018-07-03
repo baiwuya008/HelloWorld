@@ -25,8 +25,8 @@ private:
 
 };
 
-MusicPlayer::MusicPlayer(QObject *parent)
-    : Player(parent)
+MusicPlayer::MusicPlayer(QObject *parent, int type)
+    : Player(parent, type)
     , m_Private(new MusicPlayerPrivate(this))
 {
 
@@ -141,7 +141,6 @@ void MusicPlayer::startPlay(int deviceType, QString path)
         if (index >= 0 && index < m_Private->mUsbPathList->size()) {
             m_Private->mCurrentIndex = index;
             play(index, path);
-            emit requestLrc(m_Private->mDeviceType, path);
         }
         break;
     case MultimediaUtils::DWT_SDDisk:

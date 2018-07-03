@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QString>
 #include <QCoreApplication>
+#include <QVideoWidget>
 #include "Src/Application/MultiMedia/Tools/mediautils.h"
 
 class MultimediaPrivate;
@@ -31,11 +32,11 @@ public://界面操作的接口
     qint64 getDuration(const int mediaType);
     bool isPlaying(const int mediaType);
     void queryMediaFiles(int deviceType, int mediaType, int queryMode, QString dirPath);
+    void setVideoWidget(QVideoWidget *videoWidget);
 
 
 signals:
-    void onPlay(const int mediaType, const int index,
-                const QString filePath, const qint64 duration);
+    void onPlay(const int mediaType, const int index, QString path, const qint64 duration);
     void onResume(const int mediaType);
     void onPause(const int mediaType);
     void onStop(const int mediaType, bool isError);

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QScopedPointer>
+#include <QVideoWidget>
 
 
 class MultimediaServicePrivate;
@@ -16,8 +17,7 @@ public:
     ~MultimediaService();
 
 signals:
-    void onPlay(const int mediaType, const int index,
-                const QString filePath, const qint64 duration);
+    void onPlay(const int mediaType, const int index, QString path, const qint64 duration);
     void onResume(const int mediaType);
     void onPause(const int mediaType);
     void onStop(const int mediaType, bool isError);
@@ -37,13 +37,17 @@ public slots://提供给外部界面操作的接口
     int getPlayMode(const int mediaType);
     void exitPlayer(const int mediaType);
     QString queyMediaFiles(int deviceType, int mediaType, int queryMode, QString dirPath);
+    void setVideoWidget(QVideoWidget *videoWidget);
 
 
 private slots:
     void onScanFilesFinish(int deviceType, int mediaType, int queryMode, QString dirPath);
     void onStartScanFiles(int deviceType, int mediaType);
-    void onScanLrc(int deviceType, QString filePath);
 
+    void backPlay(int mediaType, int index, QString &path, qint64 duration);
+    void backResume(const int mediaType);
+    void backPause(const int mediaType);
+    void backStop(const int mediaType, bool isError);
 
 private:
     friend class MultimediaServicePrivate;

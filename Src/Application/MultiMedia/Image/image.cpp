@@ -37,7 +37,7 @@ void ImagePrivate::setPlayItem(int deviceType, QString filePath)
     g_Multimedia->setPlayPath(MediaUtils::IMAGE, deviceType, filePath);
 }
 
-void ImagePrivate::scanImageFiles(int deviceType, int queryMode, QString dirPath, QStringList &pathList)
+void ImagePrivate::backScanFiles(int deviceType, int queryMode, QString dirPath, QStringList &pathList)
 {
     this->mCurrentDeviceType = deviceType;
     mFlowAdapter->setInfoList(pathList);
@@ -143,7 +143,7 @@ void ImagePrivate::connectAllSlots()
     connect(prevBtn, SIGNAL(released()), this, SLOT(onPrev()));
     connect(nextBtn, SIGNAL(released()), this, SLOT(onNext()));
 
-    connect(g_Multimedia, SIGNAL(onScanImageFiles(int,int,QString,QStringList&)), this, SLOT(scanImageFiles(int,int,QString,QStringList&)));
+    connect(g_Multimedia, SIGNAL(onScanImageFiles(int,int,QString,QStringList&)), this, SLOT(backScanFiles(int,int,QString,QStringList&)));
 }
 
 void ImagePrivate::showView(bool isFull)

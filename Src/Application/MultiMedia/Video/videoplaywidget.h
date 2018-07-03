@@ -21,10 +21,12 @@ class VideoPlayWidget : public QWidget
 public:
     explicit VideoPlayWidget(QWidget *parent = NULL);
     ~VideoPlayWidget();
+
+    void setPlayPath(QString path, const qint64 duration);
     void setPlayStatus(bool isPlay);
-    void playVideo(QString path, const qint64 duration);
-    void preparedPlay(QString path, qint64 duration);
-    void updateProgress(const qint64 currentPosition, const qint64 duration);
+    void setProgress(const qint64 currentPosition, const qint64 duration);
+
+    QVideoWidget* getVideoWidget();
 
 protected:
     void resizeEvent(QResizeEvent* event);
@@ -34,20 +36,14 @@ protected:
 signals:
     void onSwitchStatus(bool isPlay);
     void onSwitchIndex(bool isNext);
-    void onSwitchMode(int mode);
-    void onSeekTo(int value);
-
-    void onBackFinish();
-
-public slots:
-private slots:
+    void onSeekTo(int progress);
 
 private:
     Q_DECLARE_PRIVATE(VideoPlayWidget)
     VideoPlayWidgetPrivate* const d_ptr;
 };
 
-class VideoPlayWidgetPrivate : public Player
+class VideoPlayWidgetPrivate : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(VideoPlayWidgetPrivate)
@@ -58,13 +54,6 @@ private slots:
     void onTimeout();
     void onSliderPress();
     void onSliderRelease();
-    void onSeekTo(int progress);
-protected slots:
-    void backPositionChanged(int mediaType, qint64 position, qint64 duration);
-    void backPlay(int mediaType, int index, QString path, qint64 duration);
-    void backResume(int mediaType);
-    void backPause(int mediaType);
-    void backFinish(int mediaType, bool isError);
 
 private:
     Q_DECLARE_PUBLIC(VideoPlayWidget)
@@ -76,9 +65,9 @@ private:
     void initializeTimer();
     void connectAllSlots();
 
-    void updatePlayStatus(bool play);
-    void updateCurrentPlay(QString path, qint64 duration);
-    void updateCurrentProgress(qint64 currentPosition, qint64 duration);
+    void updatePlayPath(QString path, qint64 duration);
+    void updateProgress(qint64 currentPosition, qint64 duration);
+    void updatePlayStatus(bool isPlay);
 
     void stopTimerOut();
     void startTimerOut(int msec);

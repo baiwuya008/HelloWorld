@@ -13,13 +13,10 @@ public:
     explicit MusicPlayWidget(QWidget *parent = NULL);
     ~MusicPlayWidget();
 
-    void updateScanFile(QString path);
-    void updateProgress(const qint64 currentPosition, const qint64 duration);
-    void preparedPlay(QString path, qint64 duration);
-    void playMusic(QString path, const qint64 duration);
-
+    void setPlayPath(QString path, const qint64 duration);
     void setPlayStatus(bool isPlay);
     void setPlayMode(int mode);
+    void setProgress(const qint64 currentPosition, const qint64 duration);
 
 signals:
     void onSwitchStatus(bool isPlay);

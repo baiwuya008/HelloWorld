@@ -19,7 +19,7 @@ private:
 
 };
 
-ImagePlayer::ImagePlayer(QObject *parent)
+ImagePlayer::ImagePlayer(QObject *parent, int type)
     : QObject(parent)
     , m_Private(new ImagePlayerPrivate(this))
 {
