@@ -1,5 +1,5 @@
 #include "viewpagerwidget.h"
-#include <QDebug>
+#include <qDebug>
 #include <QStandardItemModel>
 #include <QList>
 #include <QPainter>
@@ -260,15 +260,15 @@ void ViewPagerWidgetPrivate::initSecondPager() {
     secondVariant.mPageIndex = 1;
 
     secondVariant.mNormalList.clear();
-    secondVariant.mNormalList.append(new QPixmap(QString(":/img/Launcher/img_launcher_fm_a.png")));
+    secondVariant.mNormalList.append(new QPixmap(QString(":/img/Launcher/img_launcher_bt_music_a.png")));
     secondVariant.mNormalList.append(new QPixmap(QString(":/img/Launcher/img_launcher_am_a.png")));
 
     secondVariant.mPressList.clear();
-    secondVariant.mPressList.append(new QPixmap(QString(":/img/Launcher/img_launcher_fm_b.png")));
+    secondVariant.mPressList.append(new QPixmap(QString(":/img/Launcher/img_launcher_bt_music_b.png")));
     secondVariant.mPressList.append(new QPixmap(QString(":/img/Launcher/img_launcher_am_b.png")));
 
     secondVariant.mTitleList.clear();
-    secondVariant.mTitleList.append(QString::fromLocal8Bit("TEST_1"));
+    secondVariant.mTitleList.append(QString::fromLocal8Bit("蓝牙音乐"));
     secondVariant.mTitleList.append(QString::fromLocal8Bit("TEST_2"));
 
     QStandardItem *secondItem = new QStandardItem();
@@ -285,8 +285,8 @@ void ViewPagerWidgetPrivate::initSecondPager() {
  */
 void ViewPagerWidget::resizeEvent(QResizeEvent *event)
 {
-    qDebug() << "resizeEvent size().width() = " << event->size().width()
-             << "; size().height() = " << event->size().height();
+//    qDebug() << "ViewPagerWidget resizeEvent size().width() = " << event->size().width()
+//             << "; size().height() = " << event->size().height();
 }
 
 void ViewPagerWidget::mousePressEvent(QMouseEvent *event)

@@ -17,8 +17,13 @@ signals:
 
 public slots:
 private slots:
-    void onSwitchIndex(bool isNext);
-    void onSwitchStatus(bool isPlay);
+    void backPlay(const int mediaType, const int index, QString path, const qint64 duration);
+    void backPause(const int mediaType);
+    void backResume(const int mediaType);
+    void backStop(const int mediaType, bool isError);
+
+    void setPlayStatus(bool isPlay);
+    void setPlayIndex(bool isNext);
 private:
     Q_DECLARE_PRIVATE(BtMusicWidget)
     BtMusicWidgetPrivate* const d_ptr;

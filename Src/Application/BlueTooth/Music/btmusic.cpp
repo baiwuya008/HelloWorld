@@ -3,38 +3,26 @@
 BtmusicPrivate::BtmusicPrivate(Btmusic *parent)
     : QObject(),q_ptr(parent)
 {
-    mBackground = NULL;
-    mBtnTest = NULL;
 }
 
 void BtmusicPrivate::initializeBasicWidget(QWidget *parent)
 {
-  Q_Q(Btmusic);
-
-    mBackground = new BmpWidget(parent); //设置背景图片
-    mBackground->setBackgroundBmpPath(QString(":/Res/drawable/test/logo01.png"));
-    mBackground->setFixedSize(QSize(800, 435));
-
-//    mBtnTest= new BmpButton(parent);
-//    mBtnTest->setNormalBmpPath(QString(":/Res/drawable/test/btn_n.png"));
-//    mBtnTest->setPressBmpPath(QString(":/Res/drawable/test/btn_p.png"));
-//    mBtnTest->setGeometry(600,300,195,50);
-
-//   q->connect(mBtnTest,SIGNAL(released()),this,SLOT(onBtnTestRelease()));
-
+    Q_Q(Btmusic);
+    mBtMusicWidget = new BtMusicWidget(parent);
+    mBtMusicWidget->setFixedSize(800, 435);
 }
 
 void BtmusicPrivate::onBtnTestRelease()
 {
-  Q_Q(Btmusic);
-  q->startApplication(T_Setting);
+    Q_Q(Btmusic);
+    q->startApplication(T_Setting);
 }
 
 //----------------------------------
 
 Btmusic::Btmusic(QObject *parent):
- Activity(parent),
- d_ptr(new BtmusicPrivate(this))
+    Activity(parent),
+    d_ptr(new BtmusicPrivate(this))
 {
 
 }
@@ -68,7 +56,7 @@ void Btmusic::onDestroy()
 bool Btmusic::onBackPressed()
 {
 
-return false;
+    return false;
 }
 
 void Btmusic::onLanguageChanged()

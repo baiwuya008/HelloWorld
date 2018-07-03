@@ -10,7 +10,7 @@ LauncherPrivate::LauncherPrivate(Launcher *parent)
 void LauncherPrivate::initializeToolsWidget(QWidget *parent)
 {
     QList<QString> list;
-    list.append(tr("多媒体"));
+    list.append("media");
     mMediaToolsWidget = new MediaToolsWidget(parent, list);
     connect(mMediaToolsWidget, SIGNAL(onItemClick(int)), this, SLOT(setCurrentPageView(int)));
 }
@@ -94,6 +94,9 @@ void LauncherPrivate::onItemClick(int index) {
         break;
     case 7:
          q->startApplication(T_Setting);
+        break;
+    case 8:
+        q->startApplication(T_BluetoothMusic);
         break;
     }
 }
