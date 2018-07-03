@@ -7,7 +7,7 @@ class BtMusicPlayer : public QObject
 {
     Q_OBJECT
 public:
-    explicit BtMusicPlayer(QObject *parent = nullptr);
+    explicit BtMusicPlayer(QObject *parent = NULL);
 
 signals:
 
