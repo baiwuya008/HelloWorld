@@ -64,19 +64,16 @@ void VideoPlayWidgetPrivate::initializeTimer()
 }
 
 void VideoPlayWidgetPrivate::onTimeout()
-{
-    showFullView(true);
+{ 
+    if (0 == mPressIndex && isReleaseEvent) {
+        showFullView(true);
+    }
+
+    if (isShortTime) {
+        mPressIndex = 0;
+    }
 }
 
-void VideoPlayWidgetPrivate::onSliderPress()
-{
-    showFullView(false);
-}
-
-void VideoPlayWidgetPrivate::onSliderRelease()
-{
-    startTimerOut(TIME_OUT);
-}
 
 void VideoPlayWidgetPrivate::stopTimerOut()
 {
@@ -88,6 +85,12 @@ void VideoPlayWidgetPrivate::stopTimerOut()
 void VideoPlayWidgetPrivate::startTimerOut(int msec)
 {
     stopTimerOut();
+    if (LONG_TIME_OUT == msec) {
+        isShortTime = false;
+    }else if (SHORT_TIME_OUT == msec) {
+        isShortTime = true;
+    }
+
     if (mQTimer != NULL) {
         if (msec > 1) {
             mQTimer->start(msec);
@@ -99,18 +102,27 @@ void VideoPlayWidgetPrivate::startTimerOut(int msec)
 
 void VideoPlayWidgetPrivate::showFullView(bool isFull)
 {
+     Q_Q(VideoPlayWidget);
     if (isFull && !isFullShow && mVideoClickWidget->isPlaying()) {
         isFullShow = true;
-        mVideoWidget->setFixedSize(800, 384);
-        mVideoContainer->setFixedSize(800, 384);
-        mVideoClickWidget->setVisible(false);
+
+        mVideoWidget->setFixedSize(800, 435);
+        mVideoContainer->setFixedSize(800, 435);
         mProgressContainer->setVisible(false);
+        mVideoClickWidget->setVisible(false);
+
+        emit q->videoFullScreen();
     }else if (!isFull && isFullShow){
         isFullShow = false;
+        mPressIndex = 0;
+
         mVideoContainer->setFixedSize(800, 280);
         mVideoWidget->setFixedSize(800, 280);
-        mVideoClickWidget->setVisible(true);
         mProgressContainer->setVisible(true);
+        mVideoClickWidget->setVisible(true);
+
+        Q_Q(VideoPlayWidget);
+        emit q->videoNormalScreen();
     }
 }
 
@@ -132,7 +144,7 @@ void VideoPlayWidgetPrivate::updatePlayStatus(bool play)
 {
     if (play) {
         mVideoClickWidget->setPlayStatus(true);
-        startTimerOut(TIME_OUT);
+        startTimerOut(LONG_TIME_OUT);
     }else {
         showFullView(false);
         mVideoClickWidget->setPlayStatus(false);
@@ -186,15 +198,47 @@ void VideoPlayWidget::resizeEvent(QResizeEvent *event)
 void VideoPlayWidget::mousePressEvent(QMouseEvent *event)
 {
     Q_D(VideoPlayWidget);
-    d->showFullView(false);
+    d->mousePressEvent();
 }
 
 void VideoPlayWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     Q_D(VideoPlayWidget);
-    d->startTimerOut(d->TIME_OUT);
+    d->mouseReleaseEvent();
 }
 
+void VideoPlayWidgetPrivate::mousePressEvent()
+{
+    isReleaseEvent = false;
+    stopTimerOut();
+
+    if (isFullShow) {
+        mPressIndex++;
+        startTimerOut(SHORT_TIME_OUT);
+    }
+}
+
+void VideoPlayWidgetPrivate::mouseReleaseEvent()
+{
+    isReleaseEvent = true;
+    if (isFullShow && mPressIndex >= 2) {
+        showFullView(false);
+    }
+
+    if (!isFullShow) {
+        startTimerOut(LONG_TIME_OUT);
+    }
+}
+
+void VideoPlayWidgetPrivate::onSliderPress()
+{
+    mousePressEvent();
+}
+
+void VideoPlayWidgetPrivate::onSliderRelease()
+{
+    mouseReleaseEvent();
+}
 
 
 VideoPlayWidget::~VideoPlayWidget()
@@ -207,6 +251,8 @@ VideoPlayWidgetPrivate::~VideoPlayWidgetPrivate()
 {
 
 }
+
+
 
 
 

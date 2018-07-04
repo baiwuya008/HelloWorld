@@ -18,11 +18,32 @@ void VideoPrivate::initializeBasicWidget(QWidget *parent)
     initializeVideoList(parent);
     connectAllSlots();
 
-    setCurrentPageView(0);
+    mMediaToolsWidget->setCurrentIndex(1);
+    setCurrentPageView(1);
 }
 
 void VideoPrivate::setCurrentPageView(int tabIndex) {
     mStackedWidget->setCurrentIndex(tabIndex);
+}
+
+void VideoPrivate::setVideoFullScreen()
+{
+    if (isVideoNormal) {
+        isVideoNormal = false;
+        mStackedWidget->setFixedSize(QSize(800, 435));
+        mStackedWidget->setGeometry(0, 0, 0, 0);
+        mMediaToolsWidget->setVisible(false);
+    }
+}
+
+void VideoPrivate::setVideoNormalScreen()
+{
+    if (!isVideoNormal) {
+        isVideoNormal = true;
+        mStackedWidget->setFixedSize(QSize(800, 384));
+        mStackedWidget->setGeometry(0, 50, 0, 0);
+        mMediaToolsWidget->setVisible(true);
+    }
 }
 
 void VideoPrivate::setPlayItem(int deviceType, QString filePath)
@@ -128,6 +149,8 @@ void VideoPrivate::connectAllSlots()
     connect(mVideoPlayWidget, SIGNAL(onSwitchStatus(bool)), this, SLOT(setPlayStatus(bool)));
     connect(mVideoPlayWidget, SIGNAL(onSwitchIndex(bool)), this, SLOT(setPlayIndex(bool)));
     connect(mVideoPlayWidget, SIGNAL(onSeekTo(int)), this, SLOT(setPlayProgress(int)));
+    connect(mVideoPlayWidget, SIGNAL(videoFullScreen()), this, SLOT(setVideoFullScreen()));
+    connect(mVideoPlayWidget, SIGNAL(videoNormalScreen()), this, SLOT(setVideoNormalScreen()));
 
     connect(mVideoListWidget, SIGNAL(selectItem(int,QString)), this, SLOT(setPlayItem(int,QString)));
     connect(mVideoListWidget, &MusicListWidget::queryFiles, g_Multimedia, &Multimedia::queryMediaFiles);

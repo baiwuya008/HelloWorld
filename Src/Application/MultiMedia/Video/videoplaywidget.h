@@ -38,6 +38,9 @@ signals:
     void onSwitchIndex(bool isNext);
     void onSeekTo(int progress);
 
+    void videoFullScreen();
+    void videoNormalScreen();
+
 private:
     Q_DECLARE_PRIVATE(VideoPlayWidget)
     VideoPlayWidgetPrivate* const d_ptr;
@@ -50,6 +53,11 @@ class VideoPlayWidgetPrivate : public QObject
 public:
     explicit VideoPlayWidgetPrivate(VideoPlayWidget *parent);
     ~VideoPlayWidgetPrivate();
+
+protected:
+    void mousePressEvent();
+    void mouseReleaseEvent();
+
 private slots:
     void onTimeout();
     void onSliderPress();
@@ -77,13 +85,17 @@ private:
     QWidget *mVideoContainer = NULL;
     QVideoWidget *mVideoWidget = NULL;
     bool isFullShow = false;
+    int mPressIndex = 0;
+    bool isReleaseEvent = true;
+    bool isShortTime = false;
+    const int LONG_TIME_OUT = 7*1000;
+    const int SHORT_TIME_OUT = 1000;
 
     MusicClickWidget *mVideoClickWidget = NULL;
     MusicProgressWidget *mVideoProgressWidget = NULL;
     QWidget *mProgressContainer = NULL;
     QString mCurrentPlayPath;
     QTimer *mQTimer = NULL;
-    const int TIME_OUT = 5000;
 };
 
 #endif // VIDEOPLAYWIDGET_H

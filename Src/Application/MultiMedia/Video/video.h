@@ -55,6 +55,8 @@ public:
 
 private slots:
     void setCurrentPageView(int tabIndex);
+    void setVideoFullScreen();
+    void setVideoNormalScreen();
 
 
     void backPlay(const int mediaType, const int index,
@@ -85,6 +87,7 @@ private:
     VideoPlayWidget *mVideoPlayWidget = NULL;
     int mCurrentDeviceType = -1;
     bool isInitVideoWidget = false;
+    bool isVideoNormal = true;
 
 private slots:
     void onBtnTestRelease();
