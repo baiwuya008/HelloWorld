@@ -240,7 +240,7 @@ void MusicId3::decodeV1(QByteArray &info, QTextCodec *tc)
     isDecodeV1 = true;
 }
 
-QByteArray MusicId3::trimmedArray(QByteArray &array)
+QByteArray MusicId3::trimmedArray(QByteArray array)
 {
     QByteArray data;
     int size = array.size();

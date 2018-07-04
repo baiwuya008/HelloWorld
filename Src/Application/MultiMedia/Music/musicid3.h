@@ -87,7 +87,7 @@ public:
     bool isDecodeV1 = false;
     bool isDecodeImage = false;
 private:
-    QByteArray trimmedArray(QByteArray &array);
+    QByteArray trimmedArray(QByteArray array);
     void writeFile(QString path, QByteArray &content);
     int changeChar(char value);
 
