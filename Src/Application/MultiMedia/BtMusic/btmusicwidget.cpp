@@ -87,6 +87,13 @@ void BtMusicWidget::backStop(const int mediaType, bool isError)
     d->updatePlayStatus(false);
 }
 
+void BtMusicWidget::backProgress(const int mediaType, const qint64 currentPosition, const qint64 duration)
+{
+    if (mediaType != MediaUtils::BT_MUSIC) {
+        return;
+    }
+}
+
 BtMusicWidgetPrivate::BtMusicWidgetPrivate(BtMusicWidget *parent) : q_ptr(parent)
 {
     initializeBasicWidget(parent);
@@ -162,6 +169,7 @@ void BtMusicWidgetPrivate::connectAllSlots()
     QObject::connect(g_Multimedia, SIGNAL(onPause(int)), q, SLOT(backPause(int)), type);
     QObject::connect(g_Multimedia, SIGNAL(onResume(int)), q, SLOT(backResume(int)), type);
     QObject::connect(g_Multimedia, SIGNAL(onStop(int,bool)), q, SLOT(backStop(int,bool)), type);
+    QObject::connect(g_Multimedia, SIGNAL(onUpdateProgress(int,qint64,qint64)), q, SLOT(backProgress(int,qint64,qint64)));
 }
 
 void BtMusicWidgetPrivate::updatePlayStatus(bool isPlay)

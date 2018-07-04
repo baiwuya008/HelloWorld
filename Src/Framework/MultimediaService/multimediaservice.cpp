@@ -5,6 +5,7 @@
 #include "Src/Framework/MultimediaService/MusicPlayer/musicplayer.h"
 #include "Src/Framework/MultimediaService/VideoPlayer/videoplayer.h"
 #include "Src/Framework/MultimediaService/ImagePlayer/imageplayer.h"
+#include "Src/Framework/MultimediaService/BtMusicPlayer/btmusicplayer.h"
 #include <QDebug>
 #include <QDomDocument>
 
@@ -22,6 +23,7 @@ public:
     MusicPlayer *mMusicPlayer = NULL;
     VideoPlayer *mVideoPlayer = NULL;
     ImagePlayer *mImagePlayer = NULL;
+    BtMusicPlayer *mBtMusicPlayer = NULL;
     const QString USB_ROOT_DIR = "D:/QT/DA_project/res";
 
 private:
@@ -72,6 +74,7 @@ void MultimediaService::setPlayStatus(const int mediaType, const bool isPlay)
         }
         break;
     case MultimediaUtils::BT_MUSIC:
+        m_Private->mBtMusicPlayer->setPlayStatus(isPlay);
         break;
     }
 }
@@ -135,6 +138,11 @@ void MultimediaService::setPlayPath(const int mediaType, const int deviceType, Q
         m_Private->mImagePlayer->startPlay(deviceType, filePath);
         break;
     case MultimediaUtils::BT_MUSIC:
+        if (!filePath.compare("true")) {
+            m_Private->mBtMusicPlayer->next();
+        }else if (!filePath.compare("false")) {
+            m_Private->mBtMusicPlayer->previous();
+        }
         break;
     }
 }
@@ -197,8 +205,6 @@ QString MultimediaServicePrivate::queryFileList(int deviceType, int mediaType, i
             }
         }
         break;
-    case MultimediaUtils::BT_MUSIC:
-        break;
     }
 
     if (isOtherSan) {
@@ -223,11 +229,15 @@ void MultimediaServicePrivate::setCurrentPlay(int mediaType)
     switch (mediaType) {
     case MultimediaUtils::MUSIC:
         mVideoPlayer->setPlayStatus(false);
+        mBtMusicPlayer->setPlayStatus(false);
         break;
     case MultimediaUtils::VIDEO:
         mMusicPlayer->setPlayStatus(false);
+        mBtMusicPlayer->setPlayStatus(false);
         break;
     case MultimediaUtils::BT_MUSIC:
+        mVideoPlayer->setPlayStatus(false);
+        mMusicPlayer->setPlayStatus(false);
         break;
     }
 }
@@ -287,7 +297,7 @@ bool MultimediaService::isPlaying(const int mediaType)
     case MultimediaUtils::VIDEO:
         return m_Private->mVideoPlayer->isPlaying();
     case MultimediaUtils::BT_MUSIC:
-        break;
+        return m_Private->mBtMusicPlayer->isPlaying();
     }
     return false;
 }
@@ -304,6 +314,8 @@ void MultimediaServicePrivate::initialize()
 
     mImagePlayer = new ImagePlayer();
     mImagePlayer->setScanStatus(MultimediaUtils::SCAN_Undefined);
+
+    mBtMusicPlayer = new BtMusicPlayer();
 }
 
 void MultimediaServicePrivate::connectAllSlots()
@@ -326,6 +338,12 @@ void MultimediaServicePrivate::connectAllSlots()
     QObject::connect(mVideoPlayer, SIGNAL(onResume(int)), m_Parent, SLOT(backResume(int)), type);
     QObject::connect(mVideoPlayer, SIGNAL(onPause(int)), m_Parent, SLOT(backPause(int)), type);
     QObject::connect(mVideoPlayer, SIGNAL(onFinish(int,bool)), m_Parent, SLOT(backStop(int,bool)), type);
+
+    QObject::connect(mBtMusicPlayer, &BtMusicPlayer::onPositionChanged, m_Parent, &MultimediaService::onUpdateProgress, type);
+    QObject::connect(mBtMusicPlayer, SIGNAL(onPlay(int,int,QString&,qint64)), m_Parent, SLOT(backPlay(int,int,QString&,qint64)), type);
+    QObject::connect(mBtMusicPlayer, SIGNAL(onResume(int)), m_Parent, SLOT(backResume(int)), type);
+    QObject::connect(mBtMusicPlayer, SIGNAL(onPause(int)), m_Parent, SLOT(backPause(int)), type);
+    QObject::connect(mBtMusicPlayer, SIGNAL(onFinish(int,bool)), m_Parent, SLOT(backStop(int,bool)), type);
 }
 
 

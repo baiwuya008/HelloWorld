@@ -78,25 +78,23 @@ void LauncherPrivate::onItemClick(int index) {
         q->startApplication(T_RadioAm);
         break;
     case 2:
-         q->startApplication(T_USBDiskMusic);
+        q->startApplication(T_USBDiskMusic);
         break;
     case 3:
-         q->startApplication(T_USBDiskVideo);
+        q->startApplication(T_USBDiskVideo);
         break;
     case 4:
-//         q->startApplication(T_Link);
+        //         q->startApplication(T_Link);
         break;
     case 5:
-         q->startApplication(T_Bluetooth);
+        //         q->startApplication(T_Bluetooth);
+        q->startApplication(T_BluetoothMusic);
         break;
     case 6:
-         q->startApplication(T_USBDiskImage);
+        q->startApplication(T_USBDiskImage);
         break;
     case 7:
-         q->startApplication(T_Setting);
-        break;
-    case 8:
-        q->startApplication(T_BluetoothMusic);
+        q->startApplication(T_Setting);
         break;
     }
 }

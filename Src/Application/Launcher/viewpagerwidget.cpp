@@ -243,7 +243,7 @@ void ViewPagerWidgetPrivate::initFirstPager() {
     firstVariant.mTitleList.append(QString::fromLocal8Bit("音乐"));
     firstVariant.mTitleList.append(QString::fromLocal8Bit("视频"));
     firstVariant.mTitleList.append(QString::fromLocal8Bit("E-Link"));
-    firstVariant.mTitleList.append(QString::fromLocal8Bit("蓝牙"));
+    firstVariant.mTitleList.append(QString::fromLocal8Bit("蓝牙音乐"));
     firstVariant.mTitleList.append(QString::fromLocal8Bit("图片"));
     firstVariant.mTitleList.append(QString::fromLocal8Bit("设置"));
 
@@ -268,7 +268,7 @@ void ViewPagerWidgetPrivate::initSecondPager() {
     secondVariant.mPressList.append(new QPixmap(QString(":/img/Launcher/img_launcher_am_b.png")));
 
     secondVariant.mTitleList.clear();
-    secondVariant.mTitleList.append(QString::fromLocal8Bit("蓝牙音乐"));
+    secondVariant.mTitleList.append(QString::fromLocal8Bit("TEST_1"));
     secondVariant.mTitleList.append(QString::fromLocal8Bit("TEST_2"));
 
     QStandardItem *secondItem = new QStandardItem();
