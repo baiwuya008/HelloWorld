@@ -61,5 +61,12 @@
         <file>blu/scorllbar_bg.png</file>
         <file>blu/scorllbar_indicator.png</file>
         <file>blu/phone_item_bg_normal.png</file>
+        <file>blu/bt_off.png</file>
+        <file>blu/bt_on.png</file>
+        <file>blu/delete_phonedevices_normal.png</file>
+        <file>blu/delete_phonedevices_onclick.png</file>
+        <file>blu/opration_bt_normal.png</file>
+        <file>blu/opration_bt_onclick.png</file>
+        <file>blu/phonestatus_icon.png</file>
     </qresource>
 </RCC>

@@ -2,13 +2,17 @@
 #include <QDebug>
 #include <QPixmap>
 #include <QPalette>
+#include <QSize>
+#include <QFont>
 
 
 PhoneDevicesWidgetPrivate::PhoneDevicesWidgetPrivate(PhoneDevicesWidget *parent)
     : q_ptr(parent)
 {
     initializeBasicWidget(parent);
-    setWidgetBackground(parent);
+    //setWidgetBackground(parent);
+    //initBluetoothConnect();
+    //initBluetoothData();
 }
 
 void PhoneDevicesWidgetPrivate::initializeBasicWidget(QWidget *parent)
@@ -31,69 +35,37 @@ void PhoneDevicesWidgetPrivate::initializeBasicWidget(QWidget *parent)
         mBmpPhoneListTab->setGeometry(0,0,136,50);
         mBmpPhoneListTab->setVisible(true);
         initToolbarText(mBmpPhoneListTab);
-        mBmpPhoneListTab->setNormalBmpPath(":/res/blu/img_btn_tab_b.png");
 
-        mBmpListWidget = new BmpWidget(parent);
-        mBmpListWidget->setGeometry(0,50,800,320);
+        mBmpPhoneOptionTab = new BmpButton(parent);
+        mBmpPhoneOptionTab->setText(tr("选项"));
+        mBmpPhoneOptionTab->setGeometry(136,0,136,50);
+        mBmpPhoneOptionTab->setVisible(true);
+        initToolbarText(mBmpPhoneOptionTab);
 
-        deviceName = new QLabel(mBmpListWidget);
+        mBmpBtInfoWidget = new BmpWidget(parent);
+        mBmpBtInfoWidget->setGeometry(0,50,800,360);
+
+        deviceName = new QLabel(mBmpBtInfoWidget);
         deviceName->setGeometry(0,80,800,100);
-        deviceName->setText("设备名：MIGHY-5ECA");
+        deviceName->setText("设备名: MIGHY-5ECA");
         deviceName->setAlignment(Qt::AlignCenter);
         deviceName->setPalette(pa);
         deviceName->setFont(ft);
 
-        deviceID = new QLabel(mBmpListWidget);
+        deviceID = new QLabel(mBmpBtInfoWidget);
         deviceID->setGeometry(0,130,800,100);
-        deviceID->setText("设备ID：00:14:OA:04:5E:CA");
+        deviceID->setText("设备ID: 00:14:OA:04:5E:CA");
         deviceID->setAlignment(Qt::AlignCenter);
         deviceID->setPalette(pa);
         deviceID->setFont(ft);
 
-        mBmpListToolBarWidget = new BmpWidget(parent);
-        mBmpListToolBarWidget->setGeometry(0,376,800,60);
-        mBmpListToolBarWidget->setBackgroundBmpPath(":/res/blu/phone_toolbar_bg.png");
+        mPhoneOptionsWidget = new PhoneOptionsWidget(parent);
+        mPhoneOptionsWidget->setGeometry(0,50,800,360);
 
-        mBtPhone01 = new BmpButton(mBmpListToolBarWidget);
-        mBtPhone01->setText(tr("华为 Pro"));
-        initToolbarText(mBtPhone01);
-        mBtPhone01->setNormalBmpPath(":/res/blu/phone_toolbar_normal.png");
-        mBtPhone01->setPressBmpPath(":/res/blu/phone_toolbar_press.png");
-        mBtPhone01->setGeometry(0,0,159,60);
-        connect(mBtPhone01,SIGNAL(released()),this,SLOT(onBtnPhoneItemClick()));
+        connect(mBmpPhoneListTab,SIGNAL(released()),this,SLOT(onBtnBtInfoTabClick()));
+        connect(mBmpPhoneOptionTab,SIGNAL(released()),this,SLOT(onBtnOptionTabClick()));
 
-        mBtPhone02 = new BmpButton(mBmpListToolBarWidget);
-        initToolbarText(mBtPhone02);
-        mBtPhone02->setEnabled(false);
-        mBtPhone02->setNormalBmpPath(":/res/blu/phone_toolbar_normal.png");
-        mBtPhone02->setPressBmpPath(":/res/blu/phone_toolbar_press.png");
-        mBtPhone02->setGeometry(161,0,159,60);
-        connect(mBtPhone02,SIGNAL(released()),this,SLOT(onBtnPhoneItemClick()));
-
-        mBtPhone03 = new BmpButton(mBmpListToolBarWidget);
-        initToolbarText(mBtPhone03);
-        mBtPhone03->setEnabled(false);
-        mBtPhone03->setNormalBmpPath(":/res/blu/phone_toolbar_normal.png");
-        mBtPhone03->setPressBmpPath(":/res/blu/phone_toolbar_press.png");
-        mBtPhone03->setGeometry(323,0,159,60);
-        connect(mBtPhone03,SIGNAL(released()),this,SLOT(onBtnPhoneItemClick()));
-
-        mBtPhone04 = new BmpButton(mBmpListToolBarWidget);
-        initToolbarText(mBtPhone04);
-        mBtPhone04->setEnabled(false);
-        mBtPhone04->setNormalBmpPath(":/res/blu/phone_toolbar_normal.png");
-        mBtPhone04->setPressBmpPath(":/res/blu/phone_toolbar_press.png");
-        mBtPhone04->setGeometry(484,0,159,60);
-        connect(mBtPhone04,SIGNAL(released()),this,SLOT(onBtnPhoneItemClick()));
-
-        mBtPhone05 = new BmpButton(mBmpListToolBarWidget);
-        mBtPhone05->setNormalBmpPath(":/res/blu/nextphonepage_normal.png");
-        mBtPhone05->setPressBmpPath(":/res/blu/nextphonepage_press.png");
-        mBtPhone05->setGeometry(645,0,159,60);
-        mBtPhone05->setEnabled(false);
-        initToolbarText(mBtPhone05);
-        connect(mBtPhone05,SIGNAL(released()),this,SLOT(onBtnPhoneItemClick()));
-
+        switchPage(0);
 
 }
 
@@ -102,6 +74,24 @@ PhoneDevicesWidget::PhoneDevicesWidget(QWidget *parent):
  d_ptr(new PhoneDevicesWidgetPrivate(this))
 {
     //setFixedSize(QSize(800, 386));
+}
+
+//切换页面
+void PhoneDevicesWidgetPrivate::switchPage(int index)
+{
+    if(index == 0){
+        mBmpBtInfoWidget->setVisible(true);
+        mPhoneOptionsWidget->setVisible(false);
+        mBmpPhoneListTab->setNormalBmpPath(":/res/blu/img_btn_tab_b.png");
+        mBmpPhoneOptionTab->setNormalBmpPath(":/res/blu/img_btn_tab_a.png");
+
+    }else if(index == 1){
+        mBmpBtInfoWidget->setVisible(false);
+        mPhoneOptionsWidget->setVisible(true);
+        mBmpPhoneListTab->setNormalBmpPath(":/res/blu/img_btn_tab_a.png");
+        mBmpPhoneOptionTab->setNormalBmpPath(":/res/blu/img_btn_tab_b.png");
+
+    }
 }
 
 void PhoneDevicesWidgetPrivate::setWidgetBackground(QWidget *parent){
@@ -126,11 +116,43 @@ void PhoneDevicesWidgetPrivate::initToolbarText(BmpButton *bt) {
     bt->setStyleSheet("color:white;");
 }
 
-//item被点击
-void PhoneDevicesWidgetPrivate::onBtnPhoneItemClick()
+void PhoneDevicesWidgetPrivate::initBluetoothData()
 {
-    Q_Q(PhoneDevicesWidget);
-    emit q->onPhoneItemClick();
+    //获取蓝牙名称和蓝牙地址
+    gBluetoothManager->getLocalName();
+    gBluetoothManager->getLocalAddress();
+}
+
+void PhoneDevicesWidgetPrivate::initBluetoothConnect()
+{
+    //获取本地蓝牙名称
+    connect(gBluetoothManager,SIGNAL(callOnCurrentName(QString)),this,SLOT(onLocalName(QString)));
+    //获取本地蓝牙地址
+    //这里有两个回调，需要测试取其一
+    //connect(gBluetoothManager,SIGNAL(callOnCurrentAddr(QString)),this,SLOT(onLocalAddress(QString)));
+    connect(gBluetoothManager,SIGNAL(callOnLocalAddress(QString)),this,SLOT(onLocalAddress(QString)));
+}
+
+void PhoneDevicesWidgetPrivate::onBtnBtInfoTabClick()
+{
+    switchPage(0);
+}
+
+void PhoneDevicesWidgetPrivate::onBtnOptionTabClick()
+{
+    switchPage(1);
+}
+
+void PhoneDevicesWidgetPrivate::onLocalName(QString name)
+{
+    QString displayName = tr("设备名") + ": " + name ;
+    deviceName->setText(displayName);
+}
+
+void PhoneDevicesWidgetPrivate::onLocalAddress(QString addr)
+{
+    QString displayAddr = tr("设备ID")+ ": " + addr ;
+    deviceName->setText(displayAddr);
 }
 
 PhoneDevicesWidget::~PhoneDevicesWidget()

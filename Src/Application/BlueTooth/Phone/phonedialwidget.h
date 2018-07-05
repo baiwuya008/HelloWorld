@@ -26,6 +26,13 @@ public:
         B_Incoming = 4,
     };
 
+    //通话模式
+    enum PhoneTakeMode {
+        HfpLocal = 0,//车机端通话
+        HfpRemote = 1,//手机端通话
+
+    };
+
 signals:
 
 
@@ -48,6 +55,7 @@ public:
     PhoneDialWidget::PhoneStatus m_PhoneStatus;
     //输入的电话号码，显示在编辑框中
     QString currentPhonenumber;
+    PhoneDialWidget::PhoneTakeMode m_phoneTalkMode ;//设置通话模式， 0：车机端， 1：手机端
 	
 	//显示拨打电话的界面
     void showDialDiaplay(const PhoneDialWidget::PhoneStatus &status);
@@ -127,6 +135,7 @@ private slots:
 
     void onBtPhoneDial();//拨号
     void onBtPhoneHungup();//挂断
+    void onBtVoiceModeChange();//切换通话
 
     //通话时间 计时器
     void updatePhoneTime();
@@ -135,7 +144,9 @@ private slots:
     void onCallSucceed(QString number);
     void onHangUp();//挂断
     void onIncoming(QString number);//来电
-    void onTalking();//来电接听的回调
+    void onTalking(QString number);//来电接听的回调
+    void switchHfpToRemote();//切换通话到手机端
+    void switchHfpLocal();//切换通话到车机端
 
 };
 

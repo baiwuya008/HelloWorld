@@ -8,6 +8,7 @@
 #include "phonelistwidgetitem.h"
 #include <QDialog>
 #include "Src/Framework/Manager/BluetoothManagerGoc.h"
+#include <QSettings>
 
 class PhoneRecordWidgetPrivate;
 class PhoneRecordWidget : public QWidget
@@ -72,9 +73,14 @@ private:
     int mSelectItemIndex = -1;
     //是否删除所有电话记录数据
     bool isDeleteAllData = false;
+    //手动设置、自动设置
+    bool isAutoSetting = false;
 
     //删除dialog
     QDialog *mDeleteDialog;
+
+    //QSettings 数据持久化
+    QSettings q_settings;
 
 
 private slots:

@@ -136,6 +136,7 @@ void PhoneDialWidgetPrivate::initializeBasicWidget(QWidget *parent)
            btn_Swapcalls->setNormalBmpPath(":/res/blu/toolbar_swap.png");
            btn_Swapcalls->setPressBmpPath(":/res/blu/toolbar_press_bg.png");
            btn_Swapcalls->setGeometry(267,0,267,60);
+           connect(btn_Swapcalls,SIGNAL(released()),this,SLOT(onBtVoiceModeChange()));
            btn_hungup = new BmpButton(mBmpToolbarWidget);
            btn_hungup->setNormalBmpPath(":/res/blu/phone_hungup.png");
            btn_hungup->setPressBmpPath(":/res/blu/phone_hungup_press.png");
@@ -217,7 +218,14 @@ void PhoneDialWidgetPrivate::initializeBlutoothManager()
     //来电
     connect(gBluetoothManager,SIGNAL(callOnIncoming(QString)),this,SLOT(onIncoming(QString)));
     //来电接听
-    connect(gBluetoothManager,SIGNAL(callOnTalking()),this,SLOT(callOnTalking()));
+    connect(gBluetoothManager,SIGNAL(callOnTalking(QString)),this,SLOT(onTalking(QString)));
+    //切换声道，手机端/车机端
+    connect(gBluetoothManager,SIGNAL(callOnHfpRemote()),this,SLOT(switchHfpToRemote()));
+    connect(gBluetoothManager,SIGNAL(callOnHfpLocal()),this,SLOT(switchHfpLocal()));
+    //系统语音连接或断开，导致通话声道却换
+    connect(gBluetoothManager,SIGNAL(callOnVoiceConnected()),this,SLOT(switchHfpLocal()));
+    connect(gBluetoothManager,SIGNAL(callOnVoiceDisconnected()),this,SLOT(switchHfpToRemote()));
+
 }
 
 //不同电话状态显示不同的界面
@@ -380,6 +388,7 @@ void PhoneDialWidgetPrivate::onBtPhoneDial()
     mDialingPhoneNumber->setText(currentPhonenumber);
     currentPhonenumber = "";
     setCurrentPhoneNumber(currentPhonenumber);
+    m_phoneTalkMode = PhoneDialWidget::HfpLocal;//默认在车机端通话
 
     //执行拨打代码
     gBluetoothManager->phoneDail(currentPhonenumber);
@@ -394,6 +403,18 @@ void PhoneDialWidgetPrivate::onBtPhoneHungup()
 
 }
 
+//切换通话
+void PhoneDialWidgetPrivate::onBtVoiceModeChange()
+{
+    if(m_phoneTalkMode == PhoneDialWidget::HfpLocal){
+        //切换声道到手机端
+        gBluetoothManager->phoneTransfer();
+    }else{
+        //切换声道到车机端
+        gBluetoothManager->phoneTransferBack();
+    }
+}
+
 //通话计时
 void PhoneDialWidgetPrivate::updatePhoneTime()
 {
@@ -406,7 +427,7 @@ void PhoneDialWidgetPrivate::updatePhoneTime()
 }
 
 //蓝牙回调，信号槽
-//拨打电话成功
+//拨打电话成功的回调
 void PhoneDialWidgetPrivate::onCallSucceed(QString number)
 {
     //切换为通话中界面
@@ -417,7 +438,7 @@ void PhoneDialWidgetPrivate::onCallSucceed(QString number)
     p_Timer->start(1000);//开始计时
 }
 
-//挂断电话
+//挂断电话的回调
 void PhoneDialWidgetPrivate::onHangUp()
 {
     showDialDiaplay(PhoneDialWidget::B_Hangup);
@@ -435,11 +456,30 @@ void PhoneDialWidgetPrivate::onIncoming(QString number)
     showDialDiaplay(PhoneDialWidget::B_Dialing);
     mDialingPhoneNumber->setText(number);
     mDialingPhoneText->setText("某某某来电");
-
+    m_phoneTalkMode = PhoneDialWidget::HfpLocal;//默认在车机端通话
 }
 
 //来电接听
-void PhoneDialWidgetPrivate::onTalking()
+void PhoneDialWidgetPrivate::onTalking(QString number)
 {
-
+    //mCallingPhoneName->setText(tr("张三"));
+    mCallingPhoneNumber->setText(number);
+    mCallingTime->setText(tr("00:00:00"));
+    showDialDiaplay(PhoneDialWidget::B_Calling);
+    p_Timer->start(1000);//开始计时
 }
+
+//切换通话模式到手机端的回调
+void PhoneDialWidgetPrivate::switchHfpToRemote()
+{
+    m_phoneTalkMode = PhoneDialWidget::HfpRemote;
+}
+
+//切换通话模式到车机端的回调
+void PhoneDialWidgetPrivate::switchHfpLocal()
+{
+    m_phoneTalkMode = PhoneDialWidget::HfpLocal;
+}
+
+
+
