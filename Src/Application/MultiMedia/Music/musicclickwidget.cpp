@@ -90,6 +90,11 @@ void MusicClickWidget::setPlayStatus(bool play)
     d->refreshStatusView(play);
 }
 
+bool MusicClickWidget::isPlaying()
+{
+    Q_D(MusicClickWidget);
+    return d->isCurrentPlay;
+}
 
 void MusicClickWidgetPrivate::refreshStatusView(bool play) {
     this->isCurrentPlay = play;

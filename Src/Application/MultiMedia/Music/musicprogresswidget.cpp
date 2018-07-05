@@ -6,7 +6,8 @@
 #include "Src/CommonUserWidget/BmpButton.h"
 #include "Src/Application/MultiMedia/Tools/mediautils.h"
 #include <QMouseEvent>
-#include <qmath.h>
+#include <QCommonStyle>
+
 
 class MusicProgressWidgetPrivate {
     Q_DISABLE_COPY(MusicProgressWidgetPrivate)
@@ -217,24 +218,34 @@ void MusicProgressWidgetPrivate::initializeSlider(QWidget *parent) {
 bool MusicProgressWidget::eventFilter(QObject *watched, QEvent *event)
 {
     Q_D(MusicProgressWidget);
-    if (d->filterSliderClick(watched, event)) {
-        return true;
-    }
+    d->filterSliderClick(watched, event);
     return QObject::eventFilter(watched, event);
 }
 
 bool MusicProgressWidgetPrivate::filterSliderClick(QObject *watched, QEvent *event)
 {
     if (QEvent::MouseButtonPress == event->type()) {
+        Q_Q(MusicProgressWidget);
+        q->sliderMousePress();
+
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-        int dur = horizontalSlider->maximum() - horizontalSlider->minimum();
-        int pos = horizontalSlider->minimum() + dur * ((double)mouseEvent->x() / horizontalSlider->width());
-        if(pos != horizontalSlider->sliderPosition()) {
+        //        int dur = horizontalSlider->maximum() - horizontalSlider->minimum();
+        //        int value = horizontalSlider->minimum() + dur * ((double)mouseEvent->x() / horizontalSlider->width());
+        QCommonStyle style;
+        int value = style.sliderValueFromPosition(horizontalSlider->minimum(),
+                                                  horizontalSlider->maximum(),
+                                                  mouseEvent->pos().x(),
+                                                  horizontalSlider->width());
+
+        if(value != horizontalSlider->sliderPosition() && value <= 100) {
             Q_Q(MusicProgressWidget);
-            emit q->seekTo(pos);
-            horizontalSlider->setValue(pos);
+            emit q->seekTo(value);
+            horizontalSlider->setValue(value);
             return true;
         }
+    }else if (QEvent::MouseButtonRelease == event->type()) {
+        Q_Q(MusicProgressWidget);
+        q->sliderMouseRelease();
     }
 
     return false;

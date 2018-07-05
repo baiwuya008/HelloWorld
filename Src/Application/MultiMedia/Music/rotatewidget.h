@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QResizeEvent>
 #include <QList>
+#include <QPixmap>
 
 class RotateWidgetPrivate;
 class RotateWidget : public QWidget
@@ -26,6 +27,7 @@ signals:
 public slots:
    void init(QList<QString> list);
    void init(QString path);
+   void setPixmap(QPixmap *pixmap);
    void start(QString path);
    void start();
    void stop();

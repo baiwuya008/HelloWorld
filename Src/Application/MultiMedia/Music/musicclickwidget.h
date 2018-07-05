@@ -13,6 +13,7 @@ public:
     explicit MusicClickWidget(QWidget *parent = NULL);
     ~MusicClickWidget();
     void setPlayStatus(bool play);
+    bool isPlaying();
 
 signals:
     void switchIndex(bool isNext);

@@ -4,15 +4,13 @@
 VideoPrivate::VideoPrivate(Video *parent)
     : QObject(),q_ptr(parent)
 {
-    mBackground = NULL;
-    mBtnTest = NULL;
 }
 
 void VideoPrivate::initializeBasicWidget(QWidget *parent)
 {
     MediaUtils::setWidgetBackground(parent, ":/img/Common/img_wap_bg.png");
     mStackedWidget = new QStackedWidget(parent);
-    mStackedWidget->setFixedSize(QSize(800, 435));
+    mStackedWidget->setFixedSize(QSize(800, 384));
     mStackedWidget->setGeometry(0, 50, 0, 0);
 
     initializeToolsWidget(parent);
@@ -20,22 +18,42 @@ void VideoPrivate::initializeBasicWidget(QWidget *parent)
     initializeVideoList(parent);
     connectAllSlots();
 
-    setCurrentPageView(0);
+    mMediaToolsWidget->setCurrentIndex(1);
+    setCurrentPageView(1);
 }
 
 void VideoPrivate::setCurrentPageView(int tabIndex) {
     mStackedWidget->setCurrentIndex(tabIndex);
 }
 
+void VideoPrivate::setVideoFullScreen()
+{
+    if (isVideoNormal) {
+        isVideoNormal = false;
+        mStackedWidget->setFixedSize(QSize(800, 435));
+        mStackedWidget->setGeometry(0, 0, 0, 0);
+        mMediaToolsWidget->setVisible(false);
+    }
+}
+
+void VideoPrivate::setVideoNormalScreen()
+{
+    if (!isVideoNormal) {
+        isVideoNormal = true;
+        mStackedWidget->setFixedSize(QSize(800, 384));
+        mStackedWidget->setGeometry(0, 50, 0, 0);
+        mMediaToolsWidget->setVisible(true);
+    }
+}
+
 void VideoPrivate::setPlayItem(int deviceType, QString filePath)
 {
-    mVideoPlayWidget->preparedPlay(filePath, 0);
+    mVideoPlayWidget->setPlayPath(filePath, 0);
     g_Multimedia->setPlayPath(MediaUtils::VIDEO, deviceType, filePath);
 }
 
 void VideoPrivate::setPlayStatus(bool isPlay)
 {
-    mVideoPlayWidget->setPlayStatus(isPlay);
     g_Multimedia->setPlayStatus(MediaUtils::VIDEO, isPlay);
 }
 
@@ -44,22 +62,23 @@ void VideoPrivate::setPlayIndex(bool isNext)
     mVideoListWidget->setPlayNext(isNext);
 }
 
-void VideoPrivate::setPlaySeek(int progress)
+void VideoPrivate::setPlayProgress(int progress)
 {
     g_Multimedia->seekTo(MediaUtils::VIDEO, progress);
 }
 
-void VideoPrivate::playVideo(const int mediaType, const int index, const QString &filePath, const qint64 duration)
+void VideoPrivate::backPlay(const int mediaType, const int index, const QString path, const qint64 duration)
 {
     if (mediaType != MediaUtils::VIDEO) {
         return;
     }
 
+
     mVideoListWidget->refreshItem(index);
-    mVideoPlayWidget->playVideo(filePath, duration);
+    mVideoPlayWidget->setPlayPath(path, duration);
 }
 
-void VideoPrivate::pauseVideo(const int mediaType)
+void VideoPrivate::backPause(const int mediaType)
 {
     if (mediaType != MediaUtils::VIDEO) {
         return;
@@ -68,7 +87,7 @@ void VideoPrivate::pauseVideo(const int mediaType)
     mVideoPlayWidget->setPlayStatus(false);
 }
 
-void VideoPrivate::resumeVideo(const int mediaType)
+void VideoPrivate::backResume(const int mediaType)
 {
     if (mediaType != MediaUtils::VIDEO) {
         return;
@@ -76,7 +95,7 @@ void VideoPrivate::resumeVideo(const int mediaType)
     mVideoPlayWidget->setPlayStatus(true);
 }
 
-void VideoPrivate::stopVideo(const int mediaType, bool isError)
+void VideoPrivate::backStop(const int mediaType, bool isError)
 {
     if (mediaType != MediaUtils::VIDEO) {
         return;
@@ -85,25 +104,23 @@ void VideoPrivate::stopVideo(const int mediaType, bool isError)
     mVideoPlayWidget->setPlayStatus(false);
 }
 
-void VideoPrivate::updateProgress(const int mediaType, const qint64 currentPosition, const qint64 duration)
+void VideoPrivate::backProgress(const int mediaType, const qint64 currentPosition, const qint64 duration)
 {
     if (mediaType != MediaUtils::VIDEO) {
         return;
     }
-    mVideoPlayWidget->updateProgress(currentPosition, duration);
+    mVideoPlayWidget->setProgress(currentPosition, duration);
 }
 
-void VideoPrivate::scanVideoFiles(int deviceType, int queryMode, QString dirPath, QStringList &pathList)
+void VideoPrivate::backScanFiles(int deviceType, int queryMode, QString dirPath, QStringList &pathList)
 {
     this->mCurrentDeviceType = deviceType;
     mVideoListWidget->updateList(deviceType, queryMode, dirPath, pathList);
+    if (!isInitVideoWidget) {
+        isInitVideoWidget = true;
+        g_Multimedia->setVideoWidget(mVideoPlayWidget->getVideoWidget());
+    }
 }
-
-void VideoPrivate::backFinish()
-{
-
-}
-
 
 void VideoPrivate::initializeToolsWidget(QWidget *parent) {
     QList<QString> list;
@@ -122,24 +139,22 @@ void VideoPrivate::initializeVideoList(QWidget *parent)
 
 void VideoPrivate::connectAllSlots()
 {
-    connect(g_Multimedia, SIGNAL(onPlay(int, int, QString, qint64)), this, SLOT(playVideo(int,int,QString,qint64)));
-    connect(g_Multimedia, SIGNAL(onPause(int)), this, SLOT(pauseVideo(int)));
-    connect(g_Multimedia, SIGNAL(onResume(int)), this, SLOT(resumeVideo(int)));
-    connect(g_Multimedia, SIGNAL(onStop(int,bool)), this, SLOT(stopVideo(int,bool)));
-    connect(g_Multimedia, SIGNAL(onUpdateProgress(int,qint64,qint64)), this, SLOT(updateProgress(int,qint64,qint64)));
-    connect(g_Multimedia, SIGNAL(onScanVideoFiles(int,int,QString,QStringList&)), this, SLOT(scanVideoFiles(int,int,QString,QStringList&)));
-
+    connect(g_Multimedia, SIGNAL(onPlay(int,int,QString,qint64)), this, SLOT(backPlay(int,int,QString,qint64)));
+    connect(g_Multimedia, SIGNAL(onPause(int)), this, SLOT(backPause(int)));
+    connect(g_Multimedia, SIGNAL(onResume(int)), this, SLOT(backResume(int)));
+    connect(g_Multimedia, SIGNAL(onStop(int,bool)), this, SLOT(backStop(int,bool)));
+    connect(g_Multimedia, SIGNAL(onUpdateProgress(int,qint64,qint64)), this, SLOT(backProgress(int,qint64,qint64)));
+    connect(g_Multimedia, SIGNAL(onScanVideoFiles(int,int,QString,QStringList&)), this, SLOT(backScanFiles(int,int,QString,QStringList&)));
 
     connect(mVideoPlayWidget, SIGNAL(onSwitchStatus(bool)), this, SLOT(setPlayStatus(bool)));
     connect(mVideoPlayWidget, SIGNAL(onSwitchIndex(bool)), this, SLOT(setPlayIndex(bool)));
-    connect(mVideoPlayWidget, SIGNAL(onSeekTo(int)), this, SLOT(setPlaySeek(int)));
-
-    connect(mVideoPlayWidget, SIGNAL(onBackFinish()), this, SLOT(backFinish()));
+    connect(mVideoPlayWidget, SIGNAL(onSeekTo(int)), this, SLOT(setPlayProgress(int)));
+    connect(mVideoPlayWidget, SIGNAL(videoFullScreen()), this, SLOT(setVideoFullScreen()));
+    connect(mVideoPlayWidget, SIGNAL(videoNormalScreen()), this, SLOT(setVideoNormalScreen()));
 
     connect(mVideoListWidget, SIGNAL(selectItem(int,QString)), this, SLOT(setPlayItem(int,QString)));
     connect(mVideoListWidget, &MusicListWidget::queryFiles, g_Multimedia, &Multimedia::queryMediaFiles);
 }
-
 
 void VideoPrivate::initializeVideoPlay(QWidget *parent)
 {

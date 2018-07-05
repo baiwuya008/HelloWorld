@@ -6,9 +6,11 @@
 #include "Src/Application/MultiMedia/Music/musicprogresswidget.h"
 #include <QDebug>
 #include <QVideoWidget>
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include "Src/Framework/MultimediaService/player.h"
-
+#include <QTimer>
+#include <QResizeEvent>
+#include <QMouseEvent>
 
 
 class VideoPlayWidgetPrivate;
@@ -19,41 +21,47 @@ class VideoPlayWidget : public QWidget
 public:
     explicit VideoPlayWidget(QWidget *parent = NULL);
     ~VideoPlayWidget();
+
+    void setPlayPath(QString path, const qint64 duration);
     void setPlayStatus(bool isPlay);
-    void playVideo(QString path, const qint64 duration);
-    void preparedPlay(QString path, qint64 duration);
-    void updateProgress(const qint64 currentPosition, const qint64 duration);
+    void setProgress(const qint64 currentPosition, const qint64 duration);
+
+    QVideoWidget* getVideoWidget();
+
+protected:
+    void resizeEvent(QResizeEvent* event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
 signals:
     void onSwitchStatus(bool isPlay);
     void onSwitchIndex(bool isNext);
-    void onSwitchMode(int mode);
-    void onSeekTo(int value);
+    void onSeekTo(int progress);
 
-    void onBackFinish();
-
-public slots:
-private slots:
+    void videoFullScreen();
+    void videoNormalScreen();
 
 private:
     Q_DECLARE_PRIVATE(VideoPlayWidget)
     VideoPlayWidgetPrivate* const d_ptr;
 };
 
-class VideoPlayWidgetPrivate : public Player
+class VideoPlayWidgetPrivate : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(VideoPlayWidgetPrivate)
 public:
     explicit VideoPlayWidgetPrivate(VideoPlayWidget *parent);
     ~VideoPlayWidgetPrivate();
+
+protected:
+    void mousePressEvent();
+    void mouseReleaseEvent();
+
 private slots:
-protected slots:
-    void backPositionChanged(int mediaType, qint64 position, qint64 duration);
-    void backPlay(int mediaType, int index, QString path, qint64 duration);
-    void backResume(int mediaType);
-    void backPause(int mediaType);
-    void backFinish(int mediaType, bool isError);
+    void onTimeout();
+    void onSliderPress();
+    void onSliderRelease();
 
 private:
     Q_DECLARE_PUBLIC(VideoPlayWidget)
@@ -62,18 +70,32 @@ private:
     void initializeClickView(QWidget *parent);
     void initializeProgressView(QWidget *parent);
     void initializeVideoView(QWidget *parent);
+    void initializeTimer();
     void connectAllSlots();
 
-    void updatePlayStatus(bool play);
-    void updateCurrentPlay(QString path, qint64 duration);
-    void updateCurrentProgress(qint64 currentPosition, qint64 duration);
+    void updatePlayPath(QString path, qint64 duration);
+    void updateProgress(qint64 currentPosition, qint64 duration);
+    void updatePlayStatus(bool isPlay);
 
+    void stopTimerOut();
+    void startTimerOut(int msec);
+    void showFullView(bool isFull);
+
+    QVBoxLayout *mVideoLayout = NULL;
+    QWidget *mVideoContainer = NULL;
     QVideoWidget *mVideoWidget = NULL;
+    bool isFullShow = false;
+    int mPressIndex = 0;
+    bool isReleaseEvent = true;
+    bool isShortTime = false;
+    const int LONG_TIME_OUT = 7*1000;
+    const int SHORT_TIME_OUT = 1000;
 
     MusicClickWidget *mVideoClickWidget = NULL;
     MusicProgressWidget *mVideoProgressWidget = NULL;
     QWidget *mProgressContainer = NULL;
     QString mCurrentPlayPath;
+    QTimer *mQTimer = NULL;
 };
 
 #endif // VIDEOPLAYWIDGET_H

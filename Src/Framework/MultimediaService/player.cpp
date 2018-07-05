@@ -1,11 +1,10 @@
 #include "player.h"
-#include <QTimer>
-#include "Src/Framework/MultimediaService/multimediautils.h"
+
 
 class PlayerPrivate {
     Q_DISABLE_COPY(PlayerPrivate)
 public:
-    explicit PlayerPrivate(Player *parent, MultimediaType type);
+    explicit PlayerPrivate(Player *parent, int type);
     ~PlayerPrivate();
 
 
@@ -17,10 +16,10 @@ public:
 
     QVideoWidget *mVideoWidget = NULL;
     QMediaPlayer *mMediaPlayer = NULL;
-    MultimediaType mPlayType;
+    int mPlayType = -1;
     qint64 mDuration = 0;
-    QString mPath;
     int mCurrentIndex = -1;
+    QString mPath;
     QMediaPlayer::State mCurrentStatus = QMediaPlayer::StoppedState;
     QTimer *mQTimer = NULL;
     bool isContinuePlay = false;
@@ -31,16 +30,17 @@ private:
 };
 
 
-Player::Player(QObject *parent, MultimediaType type)
+Player::Player(QObject *parent, int type)
     : QObject(parent)
     , m_Private(new PlayerPrivate(this, type))
 {
 
 }
 
-PlayerPrivate::PlayerPrivate(Player *parent, MultimediaType type)
+PlayerPrivate::PlayerPrivate(Player *parent, int type)
     : m_Parent(parent)
 {
+    this->mPath = "";
     this->isContinuePlay = false;
     this->mPlayType = type;
     this->mQTimer = new QTimer(m_Parent);
@@ -56,8 +56,8 @@ void Player::play(int index, QString path)
 }
 
 void PlayerPrivate::startPlay(int index, QString path) {
-    isContinuePlay = true;
     mPath = path;
+    isContinuePlay = true;
     mCurrentIndex = index;
     deleteMediaPlayer();
     if (NULL == mMediaPlayer) {
@@ -72,20 +72,6 @@ void PlayerPrivate::startPlay(int index, QString path) {
 
     mMediaPlayer->play();
     mQTimer->start(500);
-}
-
-void Player::play()
-{
-    if (m_Private->mMediaPlayer != NULL && m_Private->mCurrentStatus != QMediaPlayer::StoppedState) {
-        m_Private->mMediaPlayer->play();
-    }
-}
-
-void Player::pause()
-{
-    if (m_Private->mMediaPlayer != NULL && m_Private->mCurrentStatus != QMediaPlayer::StoppedState) {
-        m_Private->mMediaPlayer->pause();
-    }
 }
 
 void Player::seekTo(int progress)
@@ -124,6 +110,17 @@ void Player::setPlayStatus(bool isPlay)
     m_Private->switchPlayStatus(isPlay);
 }
 
+void Player::play()
+{
+    m_Private->switchPlayStatus(true);
+}
+
+void Player::pause()
+{
+    m_Private->switchPlayStatus(false);
+}
+
+
 void Player::setVideoWidget(QVideoWidget *videoWidget)
 {
     m_Private->setVideoWidget(videoWidget);
@@ -144,7 +141,7 @@ void PlayerPrivate::connectAllSlots()
 
 
 void Player::onPrepared(bool available) {
-    //    qDebug() << "onPrepared available = " << available;
+//    qDebug() << "onPrepared available = " << available;
     if (available) {
         m_Private->mCurrentStatus = QMediaPlayer::PlayingState;
         m_Private->mDuration = m_Private->mMediaPlayer->duration();
@@ -154,7 +151,6 @@ void Player::onPrepared(bool available) {
 
 
 void Player::onError(QMediaPlayer::Error error) {
-    //    qDebug() << "onError -----error = " << error;
     onCompletion(true);
 }
 
@@ -164,6 +160,7 @@ void Player::onCompletion(bool isError) {
         return;
     }
 
+//    qDebug() << "onCompletion -----isError = " << isError;
     m_Private->mCurrentStatus = QMediaPlayer::StoppedState;
     emit onFinish(m_Private->mPlayType, isError);
 }
@@ -186,10 +183,9 @@ void PlayerPrivate::switchPlayStatus(bool isPlay)
     }
 }
 
-
 void Player::onStatusChanged(QMediaPlayer::State status) {
-    //    qDebug() << "onStatusChanged status = " << status
-    //             << "; m_Private->mCurrentStatus = " << m_Private->mCurrentStatus;
+//    qDebug() << "onStatusChanged status = " << status
+//             << "; m_Private->mCurrentStatus = " << m_Private->mCurrentStatus;
     switch (status) {
     case QMediaPlayer::PlayingState:
         if (m_Private->mCurrentStatus != QMediaPlayer::StoppedState) {

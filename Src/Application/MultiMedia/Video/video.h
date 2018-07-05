@@ -55,24 +55,22 @@ public:
 
 private slots:
     void setCurrentPageView(int tabIndex);
+    void setVideoFullScreen();
+    void setVideoNormalScreen();
+
+
+    void backPlay(const int mediaType, const int index,
+                  const QString path, const qint64 duration);
+    void backPause(const int mediaType);
+    void backResume(const int mediaType);
+    void backStop(const int mediaType, bool isError);
+    void backProgress(const int mediaType, const qint64 currentPosition, const qint64 duration);
+    void backScanFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
 
     void setPlayItem(int deviceType, QString filePath);
     void setPlayStatus(bool isPlay);
     void setPlayIndex(bool isNext);
-    void setPlaySeek(int progress);
-
-
-    void playVideo(const int mediaType, const int index,
-                   const QString &filePath, const qint64 duration);
-    void pauseVideo(const int mediaType);
-    void resumeVideo(const int mediaType);
-    void stopVideo(const int mediaType, bool isError);
-    void updateProgress(const int mediaType, const qint64 currentPosition, const qint64 duration);
-    void scanVideoFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
-
-
-protected slots:
-    void backFinish();
+    void setPlayProgress(int progress);
 
 private:
     Q_DECLARE_PUBLIC(Video)
@@ -88,12 +86,9 @@ private:
     MusicListWidget *mVideoListWidget = NULL;
     VideoPlayWidget *mVideoPlayWidget = NULL;
     int mCurrentDeviceType = -1;
+    bool isInitVideoWidget = false;
+    bool isVideoNormal = true;
 
-
-    //----------
-    BmpWidget *mBackground;
-    BmpButton *mBtnTest;
-    //----------
 private slots:
     void onBtnTestRelease();
 

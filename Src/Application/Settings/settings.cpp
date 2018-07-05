@@ -832,6 +832,16 @@ void SettingsPrivate::onBmpTimeSetPressed()
     int month = mWheelView->getMonth();
     int day = mWheelView->getDay();
     qDebug() << year << "-" << month << "-" << day;
+
+    // 用进程调用命令QProcess
+    QString strDateTime =  QString::number(year) + "-" + QString::number(month) + "-" + QString::number(day);
+    qDebug() << strDateTime;
+    // 格式请按照上面格式输入。
+    QProcess::execute("data", QStringList() << "-s" << strDateTime);
+    // 如果需要写入时钟RTC的话继续调用
+    QProcess::execute("hwclock -w");
+    // 同步保存
+    QProcess::execute("sync");
 }
 
 void SettingsPrivate::onResetDialogOkPressed()

@@ -57,10 +57,10 @@ SOURCES += main.cpp\
     Src/Application/MultiMedia/Music/musiclistitem.cpp \
     Src/Application/MultiMedia/Music/musicprogresswidget.cpp \
     Src/Application/MultiMedia/Music/musicclickwidget.cpp \
-    Src/CommonUserWidget/rotatewidget.cpp \
-    Src/Application/MultiMedia/Music/btmusicwidget.cpp \
-    Src/CommonUserWidget/flowview.cpp \
-    Src/CommonUserWidget/flowadapter.cpp \
+    Src/Application/MultiMedia/Image/flowadapter.cpp \
+    Src/Application/MultiMedia/Image/flowview.cpp \
+    Src/Application/MultiMedia/Music/rotatewidget.cpp \
+    Src/Application/MultiMedia/BtMusic/btmusicwidget.cpp \
     Src/Application/MultiMedia/Video/videoplaywidget.cpp \
     Src/Application/MultiMedia/Tools/mediatoolswidget.cpp \
     Src/Application/MultiMedia/Tools/mediautils.cpp \
@@ -76,6 +76,8 @@ SOURCES += main.cpp\
     Src/Framework/MultimediaService/MediaDb/mediadbentity.cpp \
     Src/Framework/MultimediaService/VideoPlayer/videoplayer.cpp \
     Src/Framework/MultimediaService/ImagePlayer/imageplayer.cpp \
+    Src/Application/MultiMedia/Music/musicid3.cpp \
+    Src/Framework/MultimediaService/BtMusicPlayer/btmusicplayer.cpp \
     Src/Application/Launcher/viewpagerwidget.cpp \
     Src/Application/Radio/radio_unit.cpp \
     Src/Application/Radio/radio_data.cpp \
@@ -135,10 +137,10 @@ HEADERS  += mainwindow.h \
     Src/Application/MultiMedia/Music/musiclistitem.h \
     Src/Application/MultiMedia/Music/musicprogresswidget.h \
     Src/Application/MultiMedia/Music/musicclickwidget.h \
-    Src/CommonUserWidget/rotatewidget.h \
-    Src/Application/MultiMedia/Music/btmusicwidget.h \
-    Src/CommonUserWidget/flowview.h \
-    Src/CommonUserWidget/flowadapter.h \
+    Src/Application/MultiMedia/Image/flowadapter.h \
+    Src/Application/MultiMedia/Image/flowview.h \
+    Src/Application/MultiMedia/Music/rotatewidget.h \
+    Src/Application/MultiMedia/BtMusic/btmusicwidget.h \
     Src/Application/MultiMedia/Video/videoplaywidget.h \
     Src/Application/MultiMedia/Tools/mediatoolswidget.h \
     Src/Application/MultiMedia/Tools/mediautils.h \
@@ -154,6 +156,8 @@ HEADERS  += mainwindow.h \
     Src/Framework/MultimediaService/MediaDb/mediadbentity.h \
     Src/Framework/MultimediaService/VideoPlayer/videoplayer.h \
     Src/Framework/MultimediaService/ImagePlayer/imageplayer.h \
+    Src/Application/MultiMedia/Music/musicid3.h \
+    Src/Framework/MultimediaService/BtMusicPlayer/btmusicplayer.h \
     Src/Application/Launcher/viewpagerwidget.h \
     Src/Application/Radio/radio_unit.h \
     Src/Application/Radio/radio_data.h \

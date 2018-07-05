@@ -3,6 +3,10 @@
 
 #include <QWidget>
 #include "Src/Framework/Base/Core/activity.h"
+#include "Src/Framework/Manager/BluetoothManagerGoc.h"
+#include <QTimer>
+#include <QTime>
+#include <QString>
 
 class PhoneDialWidgetPrivate;
 class PhoneDialWidget : public QWidget
@@ -49,6 +53,9 @@ public:
     void showDialDiaplay(const PhoneDialWidget::PhoneStatus &status);
     void setCurrentPhoneNumber(QString phoneNumber);
     void setWidgetBackground(PhoneDialWidget *parent);
+
+    //初始化蓝牙信号 回调
+    void initializeBlutoothManager();
 
 private:
     Q_DECLARE_PUBLIC(PhoneDialWidget)
@@ -97,6 +104,9 @@ private:
 
     //未通话和挂断界面
     BmpWidget *mNormalWidget;
+
+    QTimer *p_Timer;//计时器
+    QString showStrTime;//显示通话时间
 	
 private slots:
 	
@@ -117,6 +127,15 @@ private slots:
 
     void onBtPhoneDial();//拨号
     void onBtPhoneHungup();//挂断
+
+    //通话时间 计时器
+    void updatePhoneTime();
+
+    //拨打电话的信号槽
+    void onCallSucceed(QString number);
+    void onHangUp();//挂断
+    void onIncoming(QString number);//来电
+    void onTalking();//来电接听的回调
 
 };
 

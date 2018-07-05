@@ -10,7 +10,7 @@ class MusicPlayer : public Player
 {
     Q_OBJECT
 public:
-    explicit MusicPlayer(QObject *parent = NULL);
+    explicit MusicPlayer(QObject *parent = NULL, int type = MultimediaUtils::MUSIC);
     ~MusicPlayer();
 
     QStringList* getPathList(int deviceType);
@@ -25,7 +25,6 @@ public:
 
 
 signals:
-    void requestLrc(int deviceType, QString filePath);
 
 private slots:
     void scanMusicFilePath(int deviceType, const QString &filePath);

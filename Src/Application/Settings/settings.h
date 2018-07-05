@@ -14,6 +14,7 @@
 #include <QCoreApplication>
 #include "wheelview.h"
 #include <QDate>
+#include <QProcess>
 
 class SettingsPrivate;
 class Settings : public Activity

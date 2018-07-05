@@ -6,7 +6,11 @@ PhoneDialWidgetPrivate::PhoneDialWidgetPrivate(PhoneDialWidget *parent)
     : q_ptr(parent)
 {
     m_PhoneStatus = PhoneDialWidget::B_Normal ;
+    p_Timer = new QTimer;
+    connect(this->p_Timer,SIGNAL(timeout()),this,SLOT(updatePhoneTime()));
+
     initializeBasicWidget(parent);
+    initializeBlutoothManager();//初始化蓝牙信号 回调
 }
 
 void PhoneDialWidgetPrivate::initializeBasicWidget(QWidget *parent)
@@ -203,6 +207,19 @@ void PhoneDialWidgetPrivate::initializeBasicWidget(QWidget *parent)
 		
 }
 
+//connect 蓝牙信号
+void PhoneDialWidgetPrivate::initializeBlutoothManager()
+{
+    //拨打电话回调
+    connect(gBluetoothManager,SIGNAL(callOnCallSucceed(QString)),this,SLOT(onCallSucceed(QString)));
+    //挂断电话
+    connect(gBluetoothManager,SIGNAL(callOnHangUp()),this,SLOT(onHangUp()));
+    //来电
+    connect(gBluetoothManager,SIGNAL(callOnIncoming(QString)),this,SLOT(onIncoming(QString)));
+    //来电接听
+    connect(gBluetoothManager,SIGNAL(callOnTalking()),this,SLOT(callOnTalking()));
+}
+
 //不同电话状态显示不同的界面
 void PhoneDialWidgetPrivate::showDialDiaplay(const PhoneDialWidget::PhoneStatus &status)
 {
@@ -332,28 +349,6 @@ void PhoneDialWidgetPrivate::onclickbackspace()
     }
 }
 
-//拨号
-void PhoneDialWidgetPrivate::onBtPhoneDial()
-{
-    if(currentPhonenumber.length() == 0){
-
-
-    }
-    showDialDiaplay(PhoneDialWidget::B_Dialing);
-    btn_dial->setEnabled(false);
-    mDialingPhoneNumber->setText(currentPhonenumber);
-    currentPhonenumber = "";
-    setCurrentPhoneNumber(currentPhonenumber);
-}
-
-//挂断
-void PhoneDialWidgetPrivate::onBtPhoneHungup()
-{
-    showDialDiaplay(PhoneDialWidget::B_Hangup);
-    btn_dial->setEnabled(true);
-    mDialingPhoneNumber->setText("");
-}
-
 //显示电话号码
 void PhoneDialWidgetPrivate::setCurrentPhoneNumber(QString phoneNumber)
 {
@@ -370,5 +365,81 @@ void PhoneDialWidgetPrivate::setWidgetBackground(PhoneDialWidget *parent){
                 Qt::IgnoreAspectRatio,
                 Qt::SmoothTransformation)));             // 使用平滑的缩放方式
     parent->setPalette(palette);                           // 给widget加上背景图
+
+}
+
+//拨号
+void PhoneDialWidgetPrivate::onBtPhoneDial()
+{
+    if(currentPhonenumber.length() == 0){
+        qDebug() << "号码为空" << endl;
+        return;
+    }
+    showDialDiaplay(PhoneDialWidget::B_Dialing);
+    btn_dial->setEnabled(false);
+    mDialingPhoneNumber->setText(currentPhonenumber);
+    currentPhonenumber = "";
+    setCurrentPhoneNumber(currentPhonenumber);
+
+    //执行拨打代码
+    gBluetoothManager->phoneDail(currentPhonenumber);
+
+}
+
+//挂断
+void PhoneDialWidgetPrivate::onBtPhoneHungup()
+{
+    //挂断电话
+    gBluetoothManager->phoneHangUp();
+
+}
+
+//通话计时
+void PhoneDialWidgetPrivate::updatePhoneTime()
+{
+    QTime showTime(0,0,0);
+    //在当前时间基础上增加ms毫秒，ms可为负
+    showTime = showTime.addSecs(1);
+    //设置时间格式
+    showStrTime = showTime.toString("hh:mm:ss");
+    mCallingTime->setText(showStrTime);
+}
+
+//蓝牙回调，信号槽
+//拨打电话成功
+void PhoneDialWidgetPrivate::onCallSucceed(QString number)
+{
+    //切换为通话中界面
+    //mCallingPhoneName->setText(tr("张三"));
+    mCallingPhoneNumber->setText(number);
+    mCallingTime->setText(tr("00:00:00"));
+    showDialDiaplay(PhoneDialWidget::B_Calling);
+    p_Timer->start(1000);//开始计时
+}
+
+//挂断电话
+void PhoneDialWidgetPrivate::onHangUp()
+{
+    showDialDiaplay(PhoneDialWidget::B_Hangup);
+    btn_dial->setEnabled(true);
+    mDialingPhoneNumber->setText("");
+    p_Timer->stop();//挂断电话，停止计时
+    mCallingTime->setText(tr("00:00:00"));
+    //mCallingPhoneName->setText(tr("张三"));
+    mCallingPhoneNumber->setText("");
+}
+
+//来电
+void PhoneDialWidgetPrivate::onIncoming(QString number)
+{
+    showDialDiaplay(PhoneDialWidget::B_Dialing);
+    mDialingPhoneNumber->setText(number);
+    mDialingPhoneText->setText("某某某来电");
+
+}
+
+//来电接听
+void PhoneDialWidgetPrivate::onTalking()
+{
 
 }

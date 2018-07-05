@@ -55,28 +55,24 @@ class MusicPrivate :public QObject
     Q_DISABLE_COPY(MusicPrivate)
 public:
     explicit MusicPrivate(Music* parent);
-    ~MusicPrivate(){delete q_ptr;}
+    ~MusicPrivate();
     void initializeBasicWidget(QWidget *parent);
 private slots:
-    void playMusic(const int mediaType, const int index,
-                   const QString &filePath, const qint64 duration);
-    void pauseMusic(const int mediaType);
-    void updateMusicInfo(const QString filePath, const QString title,
-                           const QString artist, const QString album);
-    void resumeMusic(const int mediaType);
-    void stopMusic(const int mediaType, bool isError);
-    void setPlayModeMusic(const int mediaType, const int playMode);
-    void updateProgressMusic(const int mediaType, const qint64 currentPosition, const qint64 duration);
-    void scanMusicFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
-
-
     void setCurrentPageView(int tabIndex);
+
+    void backPlay(const int mediaType, const int index, QString path, const qint64 duration);
+    void backPause(const int mediaType);
+    void backResume(const int mediaType);
+    void backStop(const int mediaType, bool isError);
+    void backPlayMode(const int mediaType, const int playMode);
+    void backProgress(const int mediaType, const qint64 currentPosition, const qint64 duration);
+    void backScanFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
+
     void setPlayItem(int deviceType, QString filePath);
     void setPlayStatus(bool isPlay);
     void setPlayMode(int mode);
     void setPlayIndex(bool isNext);
-    void setPlaySeek(int progress);
-
+    void setPlayProgress(int progress);
 
 private:
     Q_DECLARE_PUBLIC(Music)
@@ -85,19 +81,14 @@ private:
     void initializeToolsWidget(QWidget *parent);
     void initializePlayView(QWidget *parent);
     void initializeListView(QWidget *parent);
+    void connectAllSlots();
+
     MediaToolsWidget *mMediaToolsWidget = NULL;
     MusicPlayWidget *mMusicPlayWidget = NULL;
     MusicListWidget *mMusicListWidget = NULL;
     QStackedWidget *mStackedWidget = NULL;
 
-
-    void connectAllSlots();
     int mCurrentDeviceType = -1;
-
-    //----------
-    BmpWidget *mBackground;
-    BmpButton *mBtnTest;
-    //----------
 private slots:
     void onBtnTestRelease();
 

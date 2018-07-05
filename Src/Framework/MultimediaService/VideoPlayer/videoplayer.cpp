@@ -19,8 +19,8 @@ private:
 
 };
 
-VideoPlayer::VideoPlayer(QObject *parent)
-    : QObject(parent)
+VideoPlayer::VideoPlayer(QObject *parent, int type)
+    : Player(parent, type)
     , m_Private(new VideoPlayerPrivate(this))
 {
 
@@ -126,7 +126,7 @@ void VideoPlayer::startPlay(int deviceType, QString path)
         index = m_Private->computePathIndex(m_Private->mUsbPathList, path);
         if (index >= 0 && index < m_Private->mUsbPathList->size()) {
             m_Private->mCurrentIndex = index;
-//            play(index, path);
+            play(index, path);
         }
         break;
     case MultimediaUtils::DWT_SDDisk:

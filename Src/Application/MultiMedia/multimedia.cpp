@@ -55,7 +55,6 @@ void MultimediaPrivate::connectAllSlots()
     QObject::connect(mMultimediaService, &MultimediaService::onSetPlayMode, m_Parent, &Multimedia::onSetPlayMode, type);
     QObject::connect(mMultimediaService, &MultimediaService::onUpdateProgress, m_Parent, &Multimedia::onUpdateProgress, type);
     QObject::connect(mMultimediaService, SIGNAL(onScanFilesPath(QString)), m_Parent, SLOT(readFilesPathXml(QString)), type);
-    QObject::connect(mMultimediaService, &MultimediaService::onUpdateMusic, m_Parent, &Multimedia::onUpdateMusicInfo, type);
 }
 
 
@@ -146,6 +145,12 @@ bool Multimedia::isPlaying(const int mediaType)
 void Multimedia::queryMediaFiles(int deviceType, int mediaType, int queryMode, QString dirPath)
 {
     m_Private->mMultimediaService->queyMediaFiles(deviceType, mediaType, queryMode, dirPath);
+}
+
+void Multimedia::setVideoWidget(QVideoWidget *videoWidget)
+{
+
+    m_Private->mMultimediaService->setVideoWidget(videoWidget);
 }
 
 void Multimedia::exitPlayer(const int mediaType)

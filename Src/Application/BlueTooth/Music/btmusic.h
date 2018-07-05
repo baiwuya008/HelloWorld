@@ -2,7 +2,7 @@
 #define BTMUSIC_H
 
 #include "Src/Framework/Base/Core/activity.h"
-
+#include "Src/Application/MultiMedia/BtMusic/btmusicwidget.h"
 
 class BtmusicPrivate;
 class Btmusic : public Activity
@@ -45,10 +45,7 @@ private:
     Q_DECLARE_PUBLIC(Btmusic)
     Btmusic* const q_ptr;
 
-    //----------
-    BmpWidget *mBackground;
-    BmpButton *mBtnTest;
-    //----------
+    BtMusicWidget *mBtMusicWidget = NULL;
 private slots:
     void onBtnTestRelease();
 

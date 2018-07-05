@@ -4,8 +4,8 @@
 #include "Src/Framework/Base/Core/activity.h"
 #include <QHBoxLayout>
 #include <QPushButton>
-#include "Src/CommonUserWidget/flowview.h"
-#include "Src/CommonUserWidget/flowadapter.h"
+#include "flowview.h"
+#include "flowadapter.h"
 #include "Src/Application/MultiMedia/Tools/mediatoolswidget.h"
 #include "Src/Application/MultiMedia/multimedia.h"
 #include <QList>
@@ -58,7 +58,9 @@ private slots:
     void setCenterTab(int position, int size);
 
     void setPlayItem(int deviceType, QString filePath);
-    void scanImageFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
+
+
+    void backScanFiles(int deviceType, int queryMode, QString dirPath, QStringList& pathList);
 
 private:
     Q_DECLARE_PUBLIC(Image)

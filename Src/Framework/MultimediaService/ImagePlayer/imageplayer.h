@@ -11,7 +11,7 @@ class ImagePlayer : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(ImagePlayer)
 public:
-    explicit ImagePlayer(QObject *parent = NULL);
+    explicit ImagePlayer(QObject *parent = NULL, int type = MultimediaUtils::IMAGE);
     ~ImagePlayer();
     QStringList* getPathList(int deviceType);
     void clearPathList(int deviceType);
