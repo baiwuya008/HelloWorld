@@ -7,6 +7,7 @@
 #include "Src/Application/MultiMedia/Tools/mediautils.h"
 #include <QMouseEvent>
 #include <QCommonStyle>
+#include <QtMath>
 
 
 class MusicProgressWidgetPrivate {

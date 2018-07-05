@@ -1,5 +1,5 @@
 #include "btmusicplayer.h"
-#include "Src/Framework/Manager/Bluetoothmanagergoc.h"
+#include "Src/Framework/Manager/BluetoothManagerGoc.h"
 
 class BtMusicPlayerPrivate {
     Q_DISABLE_COPY(BtMusicPlayerPrivate)

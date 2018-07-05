@@ -1,6 +1,9 @@
 #include "btphone.h"
 #include <QDebug>
 
+class PhoneDevicesWidget;
+class BtPhoneWidget;
+
 BtphonePrivate::BtphonePrivate(Btphone *parent)
     : q_ptr(parent)
 {

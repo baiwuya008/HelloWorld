@@ -89,6 +89,8 @@ SOURCES += main.cpp\
     Src/Application/BlueTooth/Phone/listitembean.cpp \
     Src/Application/BlueTooth/Phone/customwidget.cpp \
     Src/Application/BlueTooth/Phone/phonedialwidget.cpp \
+    Src/Application/BlueTooth/Phone/phonedeviceswidget.cpp \
+    Src/Application/BlueTooth/Phone/btphonewidget.cpp \
     Src/Hardware/RadioService.cpp \
     Src/Framework/Manager/RadioManager.cpp
 
@@ -169,6 +171,8 @@ HEADERS  += mainwindow.h \
     Src/Application/BlueTooth/Phone/listitembean.h \
     Src/Application/BlueTooth/Phone/customwidget.h \
     Src/Application/BlueTooth/Phone/phonedialwidget.h \
+    Src/Application/BlueTooth/Phone/phonedeviceswidget.h \
+    Src/Application/BlueTooth/Phone/btphonewidget.h \
     Libs/Etal/etal_api.h \
     Libs/Etal/etaltml_api.h \
     Libs/Etal/etaltml_types.h \
