@@ -3,8 +3,10 @@
 
 #include <QWidget>
 #include "Src/Framework/Base/Core/activity.h"
+#include "Src/Framework/Manager/BluetoothManagerGoc.h"
 #include <QString>
 #include <QLabel>
+#include "phoneoptionswidget.h"
 
 class PhoneDevicesWidgetPrivate;
 class PhoneDevicesWidget : public QWidget
@@ -20,9 +22,6 @@ private:
     Q_DECLARE_PRIVATE(PhoneDevicesWidget)
     PhoneDevicesWidgetPrivate* const d_ptr;
 
-signals:
-    void onPhoneItemClick();
-
 };
 
 class PhoneDevicesWidgetPrivate :public QObject
@@ -36,7 +35,10 @@ public:
     void initializeBasicWidget(QWidget *parent);
     void setWidgetBackground(QWidget *parent);
     void initToolbarText(BmpButton *bt);
+    void initBluetoothData();//初始化蓝牙数据
+    void initBluetoothConnect();//设置蓝牙信号connect，
 
+    void switchPage(int index);
 
 private:
     Q_DECLARE_PUBLIC(PhoneDevicesWidget)
@@ -45,20 +47,23 @@ private:
     //tab分页标题
     BmpWidget *mPhoneTitle;
     BmpButton *mBmpPhoneListTab;
+    BmpButton *mBmpPhoneOptionTab;
 
-    BmpWidget *mBmpListWidget;
+    PhoneOptionsWidget *mPhoneOptionsWidget;//选项布局
+
+    BmpWidget *mBmpBtInfoWidget;
     QLabel *deviceName;
     QLabel *deviceID;
 
-    BmpWidget *mBmpListToolBarWidget;
-    BmpButton *mBtPhone01;
-    BmpButton *mBtPhone02;
-    BmpButton *mBtPhone03;
-    BmpButton *mBtPhone04;
-    BmpButton *mBtPhone05;
+
 
 private slots:
-    void onBtnPhoneItemClick();
+
+    void onBtnBtInfoTabClick();//切换tab
+    void onBtnOptionTabClick();//切换tab
+
+    void onLocalName(QString name);
+    void onLocalAddress(QString addr);
 
 };
 

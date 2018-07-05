@@ -88,7 +88,11 @@ SOURCES += main.cpp\
     Src/Application/BlueTooth/Phone/phonerecordwidget.cpp \
     Src/Application/BlueTooth/Phone/listitembean.cpp \
     Src/Application/BlueTooth/Phone/customwidget.cpp \
-    Src/Application/BlueTooth/Phone/phonedialwidget.cpp
+    Src/Application/BlueTooth/Phone/phonedialwidget.cpp \
+    Src/Application/BlueTooth/Phone/btphonewidget.cpp \
+    Src/Application/BlueTooth/Phone/phonedeviceswidget.cpp \
+    Src/Application/BlueTooth/Phone/phoneoptionswidget.cpp \
+    Src/Application/BlueTooth/Phone/phoneoptionwidgetitem.cpp
 
 HEADERS  += mainwindow.h \
     configuration.h \
@@ -166,7 +170,11 @@ HEADERS  += mainwindow.h \
     Src/Application/BlueTooth/Phone/phonerecordwidget.h \
     Src/Application/BlueTooth/Phone/listitembean.h \
     Src/Application/BlueTooth/Phone/customwidget.h \
-    Src/Application/BlueTooth/Phone/phonedialwidget.h
+    Src/Application/BlueTooth/Phone/phonedialwidget.h \
+    Src/Application/BlueTooth/Phone/btphonewidget.h \
+    Src/Application/BlueTooth/Phone/phonedeviceswidget.h \
+    Src/Application/BlueTooth/Phone/phoneoptionswidget.h \
+    Src/Application/BlueTooth/Phone/phoneoptionwidgetitem.h
 
 
 

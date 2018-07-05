@@ -24,9 +24,9 @@ PhoneRecordWidget::PhoneRecordWidget(QWidget *parent)
     : QWidget(parent)
     , d_ptr(new PhoneRecordWidgetPrivate(this))
 {
-    setFixedSize(QSize(800, 386));
-    Q_D(PhoneRecordWidget);
-    d->setWidgetBackground(this);
+    //setFixedSize(QSize(800, 386));
+    //Q_D(PhoneRecordWidget);
+    //d->setWidgetBackground(this);
 }
 
 void PhoneRecordWidgetPrivate::setWidgetBackground(PhoneRecordWidget *parent){
@@ -91,7 +91,12 @@ void PhoneRecordWidgetPrivate::initializeBasicWidget(QWidget *parent) {
     connect(deleteAllBtn,SIGNAL(released()),this,SLOT(onClickDelete()));
 
     manualsettingBtn = new BmpButton(mReCordToolbarWidget);
-    manualsettingBtn->setText(tr("手动设置"));
+    isAutoSetting = q_settings.value("autosetting").toBool();
+    if(isAutoSetting){
+       manualsettingBtn->setText(tr("自动设置"));
+    }else{
+       manualsettingBtn->setText(tr("手动设置"));
+    }
     initToolbarText(manualsettingBtn,true);
     manualsettingBtn->setNormalBmpPath(":/res/blu/phone_toolbar_normal.png");
     manualsettingBtn->setPressBmpPath(":/res/blu/phone_toolbar_press.png");
@@ -338,10 +343,20 @@ void PhoneRecordWidgetPrivate::onClickDelete()
 
 }
 
-//手动设置
+//手动设置/自动设置
 void PhoneRecordWidgetPrivate::onClickSetting()
 {
-    qDebug() << "onClickSetting()" << endl;
+    qDebug() << "onClickSetting()==" << isAutoSetting <<endl;
+    if(isAutoSetting){
+       manualsettingBtn->setText(tr("手动设置"));
+       isAutoSetting = false;
+       q_settings.setValue("autosetting",false);
+    }else{
+       manualsettingBtn->setText(tr("自动设置"));
+       isAutoSetting = true;
+       q_settings.setValue("autosetting",true);
+    }
+
 }
 
 //下一页
