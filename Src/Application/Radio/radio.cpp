@@ -6,10 +6,7 @@
 #include <QDebug>
 
 
-#define FREQ_MAX  108.0
-#define FREQ_MIN  87.5
-#define FREQ_STEP  0.1
-#define SLIDER_BAR_MAX  ((FREQ_MAX-FREQ_MIN)/FREQ_STEP)
+#define SLIDER_BAR_MAX  ((FM_MAX-FM_MIN)/FM_STEP)
 
 #define LISTVIEW_SLIDER_THRESHOLD  5
 
@@ -136,10 +133,14 @@ void RadioPrivate::initializeBasicWidget(QWidget *parent)
     mBottom_Fm_Seek_Prev->setNormalBmpPath(QString(":/res/drawable/bottom_bar_seek_prev.png"));
     mBottom_Fm_Seek_Prev->setPressBmpPath(QString(":/res/drawable/bottom_bar_seek_prev_pressed.png"));
     mBottom_Fm_Seek_Prev->setGeometry(200,0,200,60);
+    mBottom_Fm_Seek_Prev->enableLongPress(true);
+    mBottom_Fm_Seek_Prev->enableLongPressRestore(true);
     mBottom_Fm_Seek_Next= new BmpButton(mBottom_Fm);
     mBottom_Fm_Seek_Next->setNormalBmpPath(QString(":/res/drawable/bottom_bar_seek_next.png"));
     mBottom_Fm_Seek_Next->setPressBmpPath(QString(":/res/drawable/bottom_bar_seek_next_pressed.png"));
     mBottom_Fm_Seek_Next->setGeometry(400,0,200,60);
+    mBottom_Fm_Seek_Next->enableLongPress(true);
+    mBottom_Fm_Seek_Next->enableLongPressRestore(true);
     mBottom_Fm_Next= new BmpButton(mBottom_Fm);
     mBottom_Fm_Next->setNormalBmpPath(QString(":/res/drawable/bottom_bar_next.png"));
     mBottom_Fm_Next->setPressBmpPath(QString(":/res/drawable/bottom_bar_next_pressed.png"));
@@ -198,6 +199,8 @@ void RadioPrivate::initializeBasicWidget(QWidget *parent)
     connect(mBottom_Fm_Seek_Prev,SIGNAL(released()),this,SLOT(onBtnBottomFmSeekPrev()));
     connect(mBottom_Fm_Seek_Next,SIGNAL(released()),this,SLOT(onBtnBottomFmSeekNext()));
     connect(mBottom_Fm_Next,SIGNAL(released()),this,SLOT(onBtnBottomFmNext()));
+    connect(mBottom_Fm_Seek_Prev,SIGNAL(longPressed()),this,SLOT(onBtnBottomFmSeekPrevLong()));
+    connect(mBottom_Fm_Seek_Next,SIGNAL(longPressed()),this,SLOT(onBtnBottomFmSeekNextLong()));
 
     connect(mBottom_Preset_Seek_Prev,SIGNAL(released()),this,SLOT(onBtnBottomPresetSeekPrev()));
     connect(mBottom_Preset_AutoSearch,SIGNAL(released()),this,SLOT(onBtnBottomPresetAutoSearch()));
@@ -271,18 +274,18 @@ void RadioPrivate::initRadioFmFragment()
     const int freq_y= 85;
     const int freq_text_w= 200;
     const int freq_scalebar_y= 205;
-    const double cur_freq = gRadioData->getData().getCurFmFreq();
+    const int cur_freq = gRadioData->getData().getCurFmFreq();
 
     if(mFmFragment_FreqBg==NULL)
     {
-        int slider_val = (cur_freq-FREQ_MIN)*SLIDER_BAR_MAX/(FREQ_MAX-FREQ_MIN);
+        int slider_val = (cur_freq-FM_MIN)*SLIDER_BAR_MAX/(FM_MAX-FM_MIN);
 
         mFmFragment_FreqBg = new BmpWidget(mFmFragmentView);
         mFmFragment_FreqBg->setBackgroundBmpPath(QString(":/res/drawable/radio_freq_bg.png"));
         mFmFragment_FreqBg->setGeometry((800-124)/2,freq_y,124,50);
         mFmFragment_FreqText = new TextWidget(mFmFragmentView);
         mFmFragment_FreqText->setLanguageType(TextWidget::T_NoTranslate);
-        mFmFragment_FreqText->setText(QString("%1").arg(cur_freq,1,'f',1));
+        mFmFragment_FreqText->setText(QString("%1").arg((float)cur_freq/1000,1,'f',1));
         mFmFragment_FreqText->setFontPointSize(28);
         mFmFragment_FreqText->setGeometry((800-freq_text_w)/2,freq_y,freq_text_w,50);
 
@@ -413,7 +416,7 @@ void RadioPrivate::initRadioPresetData()
 
     if(mRadioPresetStandardItemModel != NULL)
     {
-        QList<double> fm_freq = gRadioData->getData().getFmPresetFreqs();
+        QList<int> fm_freq = gRadioData->getData().getFmPresetFreqs();
         unsigned int i;
         for(i=0;i<fm_freq.size();i++)
         {
@@ -427,7 +430,7 @@ void RadioPrivate::initRadioPresetData()
         }
         //add current freq in the last item
         {
-            double cur_freq = gRadioData->getData().getCurFmFreq();
+            int cur_freq = gRadioData->getData().getCurFmFreq();
             QStandardItem* listItem = new QStandardItem();
             PresetVariant itemVariant;
             itemVariant.mFrequency = cur_freq;
@@ -517,7 +520,7 @@ void RadioPrivate::initRadioListData(){
 
     if(mRadioListStandardItemModel != NULL)
     {
-        QList<double> fm_freq = gRadioData->getData().getFmListFreqs();
+        QList<int> fm_freq = gRadioData->getData().getFmListFreqs();
         unsigned int i;
         for(i=0;i<fm_freq.size();i++)
         {
@@ -534,26 +537,28 @@ void RadioPrivate::initRadioListData(){
 
 }
 
-void RadioPrivate::doReFreshCurFreq(const double &curFreq,bool updatePreset,bool updateList){
+void RadioPrivate::onStart(){
+    const int cur_freq = gRadioData->getData().getCurFmFreq();
+    mProcess->setFmCurFreq(cur_freq,false,false,false);
+}
+
+void RadioPrivate::doReFreshCurFreq(const int &curFreq,bool updatePreset,bool updateList){
     //qDebug()<<"doReFreshCurFreq curFreq:"<<curFreq<<endl;
 
     if(mFmFragment_FreqText != NULL){
-      mFmFragment_FreqText->setText(QString("%1").arg(curFreq,1,'f',1));
+      mFmFragment_FreqText->setText(QString("%1").arg((float)curFreq/1000,1,'f',1));
     }
     if(mFmFreqBarSlider != NULL){
-       int slider_val = (curFreq-FREQ_MIN)*SLIDER_BAR_MAX/(FREQ_MAX-FREQ_MIN);
+       int slider_val = (curFreq-FM_MIN)*SLIDER_BAR_MAX/(FM_MAX-FM_MIN);
        mFmFreqBarSlider->setValue(slider_val);
     }
 
     if(updatePreset){
-       QList<double> presetFreqs =gRadioData->getData().getFmPresetFreqs();
+       QList<int> presetFreqs =gRadioData->getData().getFmPresetFreqs();
        int curfreq_in_preset_idx = -1;
        for (int i = 0; i < presetFreqs.size(); ++i) {
            //qDebug()<<"doReFreshCurFreq presetFreqs["<<i<<"]="<<presetFreqs.at(i)<<endl;
            if(curFreq == presetFreqs.at(i)){
-               curfreq_in_preset_idx = i;
-               break;
-           }else if((float)curFreq == (float)presetFreqs.at(i)){
                curfreq_in_preset_idx = i;
                break;
            }
@@ -592,13 +597,10 @@ void RadioPrivate::doReFreshCurFreq(const double &curFreq,bool updatePreset,bool
     }
 
     if(updateList){
-        QList<double> listFreqs =gRadioData->getData().getFmListFreqs();
+        QList<int> listFreqs =gRadioData->getData().getFmListFreqs();
         int curfreq_in_list_idx = -1;
         for (int i = 0; i < listFreqs.size(); ++i) {
             if(curFreq == listFreqs.at(i)){
-                curfreq_in_list_idx = i;
-                break;
-            }else if((float)curFreq == (float)listFreqs.at(i)){
                 curfreq_in_list_idx = i;
                 break;
             }
@@ -614,7 +616,7 @@ void RadioPrivate::doReFreshCurFreq(const double &curFreq,bool updatePreset,bool
         }
     }
 }
-void RadioPrivate::doReFreshPresetFreqs(const QList<double> &presetFreqs){
+void RadioPrivate::doReFreshPresetFreqs(const QList<int> &presetFreqs){
     if(mRadioPresetStandardItemModel !=NULL){
         unsigned int i;
         mRadioPresetStandardItemModel->clear();
@@ -631,7 +633,7 @@ void RadioPrivate::doReFreshPresetFreqs(const QList<double> &presetFreqs){
 
         //add current freq in the last item if not in the list here!!
         //if in the qlist then set the item hight light
-        double cur_freq = gRadioData->getData().getCurFmFreq();
+        int cur_freq = gRadioData->getData().getCurFmFreq();
         QStandardItem* listItem = new QStandardItem();
         PresetVariant itemVariant;
         itemVariant.mFrequency = cur_freq;
@@ -646,9 +648,6 @@ void RadioPrivate::doReFreshPresetFreqs(const QList<double> &presetFreqs){
             int curfreq_in_preset_idx = -1;
             for (int i = 0; i < presetFreqs.size(); ++i) {
                 if(cur_freq == presetFreqs.at(i)){
-                    curfreq_in_preset_idx = i;
-                    break;
-                }else if((float)cur_freq == (float)presetFreqs.at(i)){
                     curfreq_in_preset_idx = i;
                     break;
                 }
@@ -667,7 +666,7 @@ void RadioPrivate::doReFreshPresetFreqs(const QList<double> &presetFreqs){
 
     }
 }
-void RadioPrivate::doReFreshListFreqs(const QList<double> &listFreqs){
+void RadioPrivate::doReFreshListFreqs(const QList<int> &listFreqs){
     if(mRadioListStandardItemModel !=NULL){
         unsigned int i;
         mRadioListStandardItemModel->clear();
@@ -701,6 +700,14 @@ void RadioPrivate::onBtnBottomFmNext()
  mProcess->requestFmNextChannel();
 }
 
+void RadioPrivate::onBtnBottomFmSeekPrevLong(){
+ mProcess->requestFmSeekPrevLong();
+}
+
+void RadioPrivate::onBtnBottomFmSeekNextLong(){
+ mProcess->requestFmSeekNextLong();
+}
+
 void RadioPrivate::onBtnBottomPresetSeekPrev()
 {
  //mProcess->requestFmSeekPrev();
@@ -709,7 +716,7 @@ void RadioPrivate::onBtnBottomPresetSeekPrev()
 }
 void RadioPrivate::onBtnBottomPresetAutoSearch()
 {
-
+  mProcess->requestFmSeekNextLong();
 }
 void RadioPrivate::onBtnBottomPresetSeekNext()
 {
@@ -726,7 +733,7 @@ void RadioPrivate::onBtnBottomListSeekPrev()
 }
 void RadioPrivate::onBtnBottomListSearch()
 {
-
+  mProcess->scanFm();
 }
 void RadioPrivate::onBtnBottomListSeekNext()
 {
@@ -738,23 +745,23 @@ void RadioPrivate::onBtnBottomListSeekNext()
 
 
 void RadioPrivate::doSliderPressed(const int value){
-   double freq = (FREQ_MAX-FREQ_MIN)*value/SLIDER_BAR_MAX+FREQ_MIN;
+   int freq = (FM_MAX-FM_MIN)*value/SLIDER_BAR_MAX+FM_MIN;
    if(mFmFragment_FreqText != NULL){
-     mFmFragment_FreqText->setText(QString("%1").arg(freq,1,'f',1));
+     mFmFragment_FreqText->setText(QString("%1").arg((float)freq/1000,1,'f',1));
    }
    mProcess->setFmCurFreq(freq,true,true);
 }
 void RadioPrivate::doSliderMoved(const int value){
-    double freq = (FREQ_MAX-FREQ_MIN)*value/SLIDER_BAR_MAX+FREQ_MIN;
+    int freq = (FM_MAX-FM_MIN)*value/SLIDER_BAR_MAX+FM_MIN;
     if(mFmFragment_FreqText != NULL){
-       mFmFragment_FreqText->setText(QString("%1").arg(freq,1,'f',1));
+       mFmFragment_FreqText->setText(QString("%1").arg((float)freq/1000,1,'f',1));
     }
     mProcess->setFmCurFreq(freq,true,true);
 }
 void RadioPrivate::doSliderReleased(const int value){
-    double freq = (FREQ_MAX-FREQ_MIN)*value/SLIDER_BAR_MAX+FREQ_MIN;
+    int freq = (FM_MAX-FM_MIN)*value/SLIDER_BAR_MAX+FM_MIN;
     if(mFmFragment_FreqText != NULL){
-       mFmFragment_FreqText->setText(QString("%1").arg(freq,1,'f',1));
+       mFmFragment_FreqText->setText(QString("%1").arg((float)freq/1000,1,'f',1));
     }
     mProcess->setFmCurFreq(freq,true,true);
 }
@@ -800,7 +807,7 @@ void RadioPresetFreqDelegate::paint(QPainter* painter,
                                693,
                                40);
 
-    QString freqShow = QString("PO%1   FM ").arg(index.row()+1)+tr("电台")+QString(" %2 MHz").arg(variant.mFrequency,1,'f',1);
+    QString freqShow = QString("PO%1   FM ").arg(index.row()+1)+tr("电台")+QString(" %2 MHz").arg((float)variant.mFrequency/1000,1,'f',1);
     painter->drawText(textRect, Qt::AlignLeft, freqShow);
 
     QRect spaceLineRect(30 + option.rect.x(),
@@ -909,7 +916,7 @@ void RadioPresetFreqDelegate::mouseReleaseEvent(QMouseEvent* event,
                                mFunIconRect.y() + option.rect.y(),
                                mFunIconRect.width(),
                                mFunIconRect.height());
-    QList<double> presetFreqs =gRadioData->getData().getFmPresetFreqs();
+    QList<int> presetFreqs =gRadioData->getData().getFmPresetFreqs();
     variant.m_SaveIconSta = PresetVariant::B_Normal;
     variant.m_RemoveIconSta = PresetVariant::B_Normal;
     model->setData(index, qVariantFromValue(variant), Qt::UserRole);
@@ -1028,7 +1035,7 @@ void RadioListFreqDelegate::paint(QPainter* painter,
                                693,
                                40);
 
-    QString freqShow = QString("PO%1   FM ").arg(index.row()+1)+tr("电台")+QString(" %2 MHz").arg(variant.mFrequency,1,'f',1);
+    QString freqShow = QString("PO%1   FM ").arg(index.row()+1)+tr("电台")+QString(" %2 MHz").arg((float)variant.mFrequency/1000,1,'f',1);
     painter->drawText(textRect, Qt::AlignLeft, freqShow);
 
     QRect spaceLineRect(30 + option.rect.x(),
@@ -1105,7 +1112,8 @@ void Radio::onCreate(QWidget *parent)
 void Radio::onStart()
 {
 qDebug()<<"Radio::onStart()"<<endl;
-
+   Q_D(Radio);
+   d->onStart();
 }
 void Radio::onResume()
 {

@@ -3,6 +3,8 @@
 #include "Src/Framework/Base/Core/application.h"
 #include "configuration.h"
 #include "Src/Framework/Manager/BluetoothManagerGoc.h"
+#include "Src/Framework/Manager/RadioManager.h"
+
 
 #if (APP_WITH_SIMULATION == 1)
   #include "Src/Simulation/simulationda.h"
@@ -31,7 +33,9 @@ int main(int argc, char *argv[])
     app.startApplication(T_SystemUi); //状态栏启动
     app.startApplication(T_Home);//启动媒体主界面
     //app.startApplication(T_Radio);//启动收音机
+    //init the service or data manager
     gBluetoothManager;
+    gRadioManager;
 
     return app.exec();
 }

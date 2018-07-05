@@ -173,7 +173,7 @@ void BmpButton::mouseReleaseEvent(QMouseEvent *event)
 
             //在这里做按键音的处理
             bool boolKeySound = settings.value("keySound").toBool();
-            qDebug() << boolKeySound;
+            qDebug() <<"BmpButton::mouseReleaseEvent playKeyEffect="<< boolKeySound;
             if(boolKeySound){
                 //播放声音 lgl
                 if(!effect.isPlaying()){

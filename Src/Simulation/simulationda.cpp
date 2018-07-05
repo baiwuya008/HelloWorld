@@ -2,7 +2,7 @@
 #include <QDebug>
 
 #include "Src/Framework/Manager/BluetoothManagerGoc.h"
-
+#include "Src/Hardware/RadioService.h"
 
 //-----------------
 
@@ -106,11 +106,35 @@ void SimulationDaPrivate::onBtnFM_AM_Release()
 }
 void SimulationDaPrivate::onBtnVOL_UP_Release()
 {
- gBluetoothManager->openBluetooth();
+ //for test
+ //gBluetoothManager->openBluetooth();
+
+ //for test Radio FM Scan Found good frequency
+ //gRadioService->notifyScanFoundOne(BAND_FM,88800);
+ //gRadioService->notifyScanFoundOne(BAND_FM,89800);
+ //gRadioService->notifyScanFoundOne(BAND_FM,93800);
+ //gRadioService->notifyScanFoundOne(BAND_FM,98800);
+
+ //for test Radio FM Scan Found good frequency
+//   gRadioService->notifyScanFoundOne(BAND_AM,888);
+//   gRadioService->notifyScanFoundOne(BAND_AM,998);
+//   gRadioService->notifyScanFoundOne(BAND_AM,1080);
+//   gRadioService->notifyScanFoundOne(BAND_AM,1280);
+//   gRadioService->notifyScanFoundOne(BAND_AM,1380);
+//   gRadioService->notifyScanFoundOne(BAND_AM,1480);
+
 }
 void SimulationDaPrivate::onBtnVOL_DOWN_Release()
 {
- gBluetoothManager->closeBluetooth();
+ //for test
+ //gBluetoothManager->closeBluetooth();
+
+ //for test Radio FM Scan Found good frequency
+ //gRadioService->notifyScanFoundFinish(BAND_FM);
+
+ //for test Radio FM Scan Found good frequency
+//   gRadioService->notifyScanFoundFinish(BAND_AM);
+
 }
 void SimulationDaPrivate::onBtnPHONE_Release()
 {
@@ -125,10 +149,18 @@ void SimulationDaPrivate::onBtnMEDIA_Release()
 void SimulationDaPrivate::onBtnDISP_Release()
 {
    Q_Q(SimulationDa);
-   qDebug()<<"test send msg to systemUi here!!"<<endl;
-   OMessage myMsg;
-   myMsg.mId = 0xFF00;
-   q->sendBroadcast(T_SystemUi,myMsg);
+//for test
+//   qDebug()<<"test send msg to systemUi here!!"<<endl;
+//   OMessage myMsg;
+//   myMsg.mId = 0xFF00;
+//   q->sendBroadcast(T_SystemUi,myMsg);
+
+//for test Radio FM Seek Found good frequency
+//  gRadioService->notifySeekFoundOrFinish(BAND_FM,88800);
+
+//for test Radio AM Seek Found good frequency
+//  gRadioService->notifySeekFoundOrFinish(BAND_AM,800);
+
 }
 void SimulationDaPrivate::onBtnSETUP_Release()
 {

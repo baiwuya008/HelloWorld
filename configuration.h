@@ -5,6 +5,25 @@
 #define STATEBAR_WITH_BACK  1  // 0   // 1 mean have back button then 0 is not
 #define STATEBAR_WITH_HOME  1  // 0   // 1 mean have home button then 0 is not
 
-#define QT_IN_WINDOWS  0  // 0   //当设置为1 QT 在windows环境编译，当设置为0在 linux环境编译
+#define QT_IN_WINDOWS  1  // 0   //当设置为1 QT 在windows环境编译，当设置为0在 linux环境编译
+#define COMPILE_IN_SERVICE  0  // 0   //当设置为1 在服务器编译，当设置为0 在QT CREATE环境编译
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif // CONFIGURATION_H

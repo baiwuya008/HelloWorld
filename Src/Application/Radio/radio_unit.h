@@ -25,7 +25,7 @@ public:
     };
     PresetVariant();
     ~PresetVariant();
-    double mFrequency;
+    int mFrequency;
     PresetVariant::BtnStatus m_SaveIconSta;
     PresetVariant::BtnStatus m_RemoveIconSta;
     PresetVariant::BtnIcon m_ActiveIcon;
@@ -38,7 +38,7 @@ class ListVariant
 public:
     ListVariant();
     ~ListVariant();
-    double mFrequency;
+    int mFrequency;
 };
 Q_DECLARE_METATYPE(ListVariant)
 

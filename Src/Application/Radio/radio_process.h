@@ -1,6 +1,10 @@
 #ifndef RADIO_PROCESS_H
 #define RADIO_PROCESS_H
 #include <QObject>
+#include "Src/Framework/Manager/RadioUnit.h"
+
+
+
 
 class RadioPrivate;
 class RadioAmPrivate;
@@ -23,36 +27,48 @@ public:
     static RadioProcess *instance();
 
 signals:
-    void callReFreshFmCurFreq(const double &curFreq,bool updatePreset=false,bool updateList=false);
-    void callReFreshFmPresetFreqs(const QList<double> &presetFreqs);
-    void callReFreshFmListFreqs(const QList<double> &listFreqs);
+    void callReFreshFmCurFreq(const int &curFreq,bool updatePreset=false,bool updateList=false);
+    void callReFreshFmPresetFreqs(const QList<int> &presetFreqs);
+    void callReFreshFmListFreqs(const QList<int> &listFreqs);
     void callReFreshAmCurFreq(const int &curAmFreq,bool updatePreset=false,bool updateList=false);
     void callReFreshAmPresetFreqs(const QList<int> &presetFreqs);
     void callReFreshAmListFreqs(const QList<int> &listFreqs);
+public slots:
+    void updateCurFrequency(BAND band,int freq); //Khz
+    void updateFrequencyList(BAND band,QList<int> lists); //Khz
 
 private:
     //-------- this func call by the gui change
     bool mIsRadioLink;
     bool mIsRadioAmLink;
-    void setFmCurFreq(const double &curFreq,bool updateMain=false,bool updatePreset=false,bool updateList=false);
-    void setFmPresetFreqs(const QList<double> &presetFreqs);
-    void setFmListFreqs(const QList<double> &listFreqs);
+    void setFmCurFreq(const int &curFreq,bool updateMain=false,bool updatePreset=false,bool updateList=false);
+    void setFmPresetFreqs(const QList<int> &presetFreqs);
+    void setFmListFreqs(const QList<int> &listFreqs);
     void setAmCurFreq(const int &curFreq,bool updateMain=false,bool updatePreset=false,bool updateList=false);
     void setAmPresetFreqs(const QList<int> &presetFreqs);
     void setAmListFreqs(const QList<int> &listFreqs);
+    void setCurBand(BAND band);
 
     void requestFmPrevChannel();
     void requestFmSeekPrev();
+    void requestFmSeekPrevLong();
     void requestFmSeekNext();
+    void requestFmSeekNextLong();
     void requestFmNextChannel();
+    void scanFm();
 
     void requestAmPrevChannel();
     void requestAmSeekPrev();
+    void requestAmSeekPrevLong();
     void requestAmSeekNext();
+    void requestAmSeekNextLong();
     void requestAmNextChannel();
+    void scanAm();
+
 
     static RadioProcess *self;
     static int testCount;
+    static BAND mCurBand;
     friend class RadioPrivate;
     friend class RadioAmPrivate;
     friend class RadioPresetFreqDelegate;

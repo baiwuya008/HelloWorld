@@ -21,12 +21,12 @@ public:
     ~RadioData();
 
     //-------
-    double getCurFmFreq();
+    int getCurFmFreq();
     int    getCurFmBand();
     int    getCurFmChannel();
 
-    QList<double> getFmPresetFreqs();
-    QList<double> getFmListFreqs();
+    QList<int> getFmPresetFreqs();
+    QList<int> getFmListFreqs();
     int    getCurAmFreq();
     int    getCurAmBand();
     int    getCurAmChannel();
@@ -38,12 +38,12 @@ public:
 private:
     QSharedDataPointer<RadioSharedData> data;
 
-    void setFmCurFreq(const double &curFreq);
+    void setFmCurFreq(const int &curFreq);
     void setFmCurChannel(const int &curChan);
     void setFmCurBand(const int &curBand);
 
-    void setFmPresetFreqs(const QList<double> &presetFreqs);
-    void setFmListFreqs(const QList<double> &listFreqs);
+    void setFmPresetFreqs(const QList<int> &presetFreqs);
+    void setFmListFreqs(const QList<int> &listFreqs);
     void setAmCurFreq(const int &curAmFreq);
     void setAmCurChannel(const int &curChan);
     void setAmCurBand(const int &curBand);

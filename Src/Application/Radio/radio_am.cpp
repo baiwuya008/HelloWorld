@@ -132,10 +132,14 @@ void RadioAmPrivate::initializeBasicWidget(QWidget *parent)
     mBottom_Am_Seek_Prev->setNormalBmpPath(QString(":/res/drawable/bottom_bar_seek_prev.png"));
     mBottom_Am_Seek_Prev->setPressBmpPath(QString(":/res/drawable/bottom_bar_seek_prev_pressed.png"));
     mBottom_Am_Seek_Prev->setGeometry(200,0,200,60);
+    mBottom_Am_Seek_Prev->enableLongPress(true);
+    mBottom_Am_Seek_Prev->enableLongPressRestore(true);
     mBottom_Am_Seek_Next= new BmpButton(mBottom_Am);
     mBottom_Am_Seek_Next->setNormalBmpPath(QString(":/res/drawable/bottom_bar_seek_next.png"));
     mBottom_Am_Seek_Next->setPressBmpPath(QString(":/res/drawable/bottom_bar_seek_next_pressed.png"));
     mBottom_Am_Seek_Next->setGeometry(400,0,200,60);
+    mBottom_Am_Seek_Next->enableLongPress(true);
+    mBottom_Am_Seek_Next->enableLongPressRestore(true);
     mBottom_Am_Next= new BmpButton(mBottom_Am);
     mBottom_Am_Next->setNormalBmpPath(QString(":/res/drawable/bottom_bar_next.png"));
     mBottom_Am_Next->setPressBmpPath(QString(":/res/drawable/bottom_bar_next_pressed.png"));
@@ -313,6 +317,8 @@ void RadioAmPrivate::initRadioAmFragment()
         connect(mBottom_Am_Seek_Prev,SIGNAL(released()),this,SLOT(onBtnBottomAmSeekPrev()));
         connect(mBottom_Am_Seek_Next,SIGNAL(released()),this,SLOT(onBtnBottomAmSeekNext()));
         connect(mBottom_Am_Next,SIGNAL(released()),this,SLOT(onBtnBottomAmNext()));
+        connect(mBottom_Am_Seek_Prev,SIGNAL(longPressed()),this,SLOT(onBtnBottomAmSeekPrevLong()));
+        connect(mBottom_Am_Seek_Next,SIGNAL(longPressed()),this,SLOT(onBtnBottomAmSeekNextLong()));
 
         connect(mBottom_Preset_Seek_Prev,SIGNAL(released()),this,SLOT(onBtnBottomPresetSeekPrev()));
         connect(mBottom_Preset_AutoSearch,SIGNAL(released()),this,SLOT(onBtnBottomPresetAutoSearch()));
@@ -528,6 +534,11 @@ void RadioAmPrivate::initRadioListData(){
 
 }
 
+void RadioAmPrivate::onStart(){
+    const int cur_freq = gRadioData->getData().getCurAmFreq();
+    mProcess->setAmCurFreq(cur_freq,false,false,false);
+}
+
 void RadioAmPrivate::doReFreshCurFreq(const int &curFreq,bool updatePreset,bool updateList){
     //qDebug()<<"doReFreshCurFreq curFreq:"<<curFreq<<endl;
     if(mAmFragment_FreqText != NULL){
@@ -684,6 +695,16 @@ void RadioAmPrivate::onBtnBottomAmNext()
   mProcess->requestAmNextChannel();
 }
 
+void RadioAmPrivate::onBtnBottomAmSeekPrevLong()
+{
+  mProcess->requestAmSeekPrevLong();
+}
+
+void RadioAmPrivate::onBtnBottomAmSeekNextLong()
+{
+  mProcess->requestAmSeekNextLong();
+}
+
 void RadioAmPrivate::onBtnBottomPresetSeekPrev()
 {
   //mProcess->requestAmSeekPrev();
@@ -692,7 +713,7 @@ void RadioAmPrivate::onBtnBottomPresetSeekPrev()
 }
 void RadioAmPrivate::onBtnBottomPresetAutoSearch()
 {
-
+  mProcess->requestAmSeekNextLong();
 }
 void RadioAmPrivate::onBtnBottomPresetSeekNext()
 {
@@ -710,7 +731,7 @@ void RadioAmPrivate::onBtnBottomListSeekPrev()
 }
 void RadioAmPrivate::onBtnBottomListSearch()
 {
-
+  mProcess->scanAm();
 }
 void RadioAmPrivate::onBtnBottomListSeekNext()
 {
@@ -1081,7 +1102,8 @@ void RadioAm::onCreate(QWidget *parent)
 void RadioAm::onStart()
 {
 qDebug()<<"RadioAm::onStart()"<<endl;
-
+    Q_D(RadioAm);
+    d->onStart();
 }
 void RadioAm::onResume()
 {

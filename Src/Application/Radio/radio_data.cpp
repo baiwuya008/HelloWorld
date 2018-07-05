@@ -7,12 +7,12 @@ class RadioSharedData : public QSharedData
 {
 public:
     //----data
-     double mCurFmFreq;
+     int mCurFmFreq;
      int    mCurFmBand;
      int    mCurFmChannel;
 
-     QList<double> mFmPresetFreqs;
-     QList<double> mFmListFreqs;
+     QList<int> mFmPresetFreqs;
+     QList<int> mFmListFreqs;
      int    mCurAmFreq;
      int    mCurAmBand;
      int    mCurAmChannel;
@@ -30,32 +30,32 @@ void RadioSharedData::initWholeData()
 {
     readDataFromDataBase();
     //for test
-    //---init fm data ASIA[87.5-108];
+    //---init fm data ASIA[87500-108000]; KHz
 
-    mFmPresetFreqs.append(87.50);
-    mFmPresetFreqs.append(88.50);
-    mFmPresetFreqs.append(90.00);
-    mFmPresetFreqs.append(92.00);
-    mFmPresetFreqs.append(95.50);
-    mFmPresetFreqs.append(98.00);
-    mFmPresetFreqs.append(102.50);
-    mFmPresetFreqs.append(104.50);
-    mFmPresetFreqs.append(106.50);
-    mFmPresetFreqs.append(107.00);
-    mFmPresetFreqs.append(108.00);
+    mFmPresetFreqs.append(87500);
+    mFmPresetFreqs.append(88500);
+    mFmPresetFreqs.append(90000);
+    mFmPresetFreqs.append(92000);
+    mFmPresetFreqs.append(95500);
+    mFmPresetFreqs.append(98000);
+    mFmPresetFreqs.append(102500);
+    mFmPresetFreqs.append(104500);
+    mFmPresetFreqs.append(106500);
+    mFmPresetFreqs.append(107000);
+    mFmPresetFreqs.append(108000);
 
-    mFmListFreqs.append(87.5);
-    mFmListFreqs.append(88.0);
-    mFmListFreqs.append(91.00);
-    mFmListFreqs.append(92.50);
-    mFmListFreqs.append(93.50);
-    mFmListFreqs.append(97.80);
-    mFmListFreqs.append(101.50);
-    mFmListFreqs.append(102.00);
-    mFmListFreqs.append(103.50);
-    mFmListFreqs.append(105.50);
-    mFmListFreqs.append(107.50);
-    mFmListFreqs.append(108.00);
+    mFmListFreqs.append(87500);
+    mFmListFreqs.append(88000);
+    mFmListFreqs.append(91000);
+    mFmListFreqs.append(92500);
+    mFmListFreqs.append(93500);
+    mFmListFreqs.append(97800);
+    mFmListFreqs.append(101500);
+    mFmListFreqs.append(102000);
+    mFmListFreqs.append(103500);
+    mFmListFreqs.append(105500);
+    mFmListFreqs.append(107500);
+    mFmListFreqs.append(108000);
 
     //mCurFmFreq = 97.8;
     mCurFmBand = 1;  //1~3
@@ -128,7 +128,7 @@ RadioData::~RadioData()
 
 }
 
-double RadioData::getCurFmFreq()
+int RadioData::getCurFmFreq()
 {
   return data->mCurFmFreq;
 }
@@ -140,15 +140,15 @@ int  RadioData::getCurFmChannel(){
   return data->mCurFmChannel;
 }
 
-QList<double> RadioData::getFmPresetFreqs()
+QList<int> RadioData::getFmPresetFreqs()
 {
-  QList<double> newList;
+  QList<int> newList;
   newList.append(data->mFmPresetFreqs);
   return newList;
 }
-QList<double> RadioData::getFmListFreqs()
+QList<int> RadioData::getFmListFreqs()
 {
-  QList<double> newList;
+  QList<int> newList;
   newList.append(data->mFmListFreqs);
   return newList;
 }
@@ -177,7 +177,7 @@ QList<int> RadioData::getAmListFreqs()
   return newList;
 }
 
-void RadioData::setFmCurFreq(const double &curFreq){
+void RadioData::setFmCurFreq(const int &curFreq){
     data->mCurFmFreq = curFreq;
 }
 
@@ -188,11 +188,11 @@ void RadioData::setFmCurBand(const int &curBand){
     data->mCurFmBand = curBand;
 }
 
-void RadioData::setFmPresetFreqs(const QList<double> &presetFreqs){
+void RadioData::setFmPresetFreqs(const QList<int> &presetFreqs){
     data->mFmPresetFreqs.clear();
     data->mFmPresetFreqs.append(presetFreqs);
 }
-void RadioData::setFmListFreqs(const QList<double> &listFreqs){
+void RadioData::setFmListFreqs(const QList<int> &listFreqs){
     data->mFmListFreqs.clear();
     data->mFmListFreqs.append(listFreqs);
 }

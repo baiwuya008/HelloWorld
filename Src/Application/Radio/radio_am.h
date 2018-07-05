@@ -213,6 +213,7 @@ private:
     void initRadioPresetData();
     void initRadioListFragment();
     void initRadioListData();
+    void onStart();
 
 public slots:
     //----------
@@ -229,6 +230,8 @@ private slots:
     void onBtnBottomAmSeekPrev();
     void onBtnBottomAmSeekNext();
     void onBtnBottomAmNext();
+    void onBtnBottomAmSeekPrevLong();
+    void onBtnBottomAmSeekNextLong();
 
     void onBtnBottomPresetSeekPrev();
     void onBtnBottomPresetAutoSearch();

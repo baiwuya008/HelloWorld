@@ -218,12 +218,13 @@ private:
     void initRadioPresetData();
     void initRadioListFragment();
     void initRadioListData();
+    void onStart();
 
 public slots:
     //----------
-    void doReFreshCurFreq(const double &curFreq,bool updatePreset=false,bool updateList=false);
-    void doReFreshPresetFreqs(const QList<double> &presetFreqs);
-    void doReFreshListFreqs(const QList<double> &listFreqs);
+    void doReFreshCurFreq(const int &curFreq,bool updatePreset=false,bool updateList=false);
+    void doReFreshPresetFreqs(const QList<int> &presetFreqs);
+    void doReFreshListFreqs(const QList<int> &listFreqs);
     //----------
 private slots:
     void onBtnTabFm();
@@ -234,6 +235,8 @@ private slots:
     void onBtnBottomFmSeekPrev();
     void onBtnBottomFmSeekNext();
     void onBtnBottomFmNext();
+    void onBtnBottomFmSeekPrevLong();
+    void onBtnBottomFmSeekNextLong();
 
     void onBtnBottomPresetSeekPrev();
     void onBtnBottomPresetAutoSearch();

@@ -86,7 +86,9 @@ SOURCES += main.cpp\
     Src/Application/BlueTooth/Phone/phonerecordwidget.cpp \
     Src/Application/BlueTooth/Phone/listitembean.cpp \
     Src/Application/BlueTooth/Phone/customwidget.cpp \
-    Src/Application/BlueTooth/Phone/phonedialwidget.cpp
+    Src/Application/BlueTooth/Phone/phonedialwidget.cpp \
+    Src/Hardware/RadioService.cpp \
+    Src/Framework/Manager/RadioManager.cpp
 
 HEADERS  += mainwindow.h \
     configuration.h \
@@ -162,7 +164,16 @@ HEADERS  += mainwindow.h \
     Src/Application/BlueTooth/Phone/phonerecordwidget.h \
     Src/Application/BlueTooth/Phone/listitembean.h \
     Src/Application/BlueTooth/Phone/customwidget.h \
-    Src/Application/BlueTooth/Phone/phonedialwidget.h
+    Src/Application/BlueTooth/Phone/phonedialwidget.h \
+    Libs/Etal/etal_api.h \
+    Libs/Etal/etaltml_api.h \
+    Libs/Etal/etaltml_types.h \
+    Libs/Etal/etal_types.h \
+    Libs/Etal/etalversion.h \
+    Src/Hardware/RadioService.h \
+    Src/Framework/Manager/RadioManager.h \
+    Src/Framework/Manager/RadioUnit.h
+
 
 
 
@@ -179,6 +190,21 @@ RESOURCES += \
 	Res/resource.qrc
 	
 
+
 #DISTFILES += \
 
+#INCLUDEPATH += $$PWD/Libs/Etal
+#DEPENDPATH += $$PWD/Libs/Etal
+#unix:!macx: LIBS += -L$$PWD/Libs/Etal/etal.a
+#unix:!macx: PRE_TARGETDEPS += $$PWD/Libs/Etal/etal.a
 
+
+
+
+
+unix:!macx: LIBS += $$PWD/Libs/Etal/etal.a
+
+INCLUDEPATH += $$PWD/Libs/Etal
+DEPENDPATH += $$PWD/Libs/Etal
+
+##unix:!macx: PRE_TARGETDEPS += $$PWD/Libs/Etal/libetal.a
